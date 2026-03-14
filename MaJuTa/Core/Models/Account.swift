@@ -1,5 +1,11 @@
 import Foundation
 
+// MARK: - Account Group (COA hierarchy: Assets vs Liabilities)
+enum AccountGroup: String, Codable {
+    case asset     = "asset"
+    case liability = "liability"
+}
+
 struct Account: Identifiable, Codable {
     let id: UUID
     var name: String
@@ -48,32 +54,50 @@ struct Account: Identifiable, Codable {
         default: return false
         }
     }
+
+    /// Whether this account represents a debt/obligation (liability in COA terms)
+    var isLiability: Bool {
+        switch type {
+        case .creditCard, .loan: return true
+        default: return false
+        }
+    }
+
+    var accountGroup: AccountGroup { isLiability ? .liability : .asset }
 }
 
 enum AccountType: String, Codable, CaseIterable {
-    case bank       = "bank"
-    case wallet     = "wallet"
-    case savings    = "savings"
-    case investment = "investment"
-    case cash       = "cash"
+    // Assets
+    case bank        = "bank"
+    case wallet      = "wallet"
+    case savings     = "savings"
+    case investment  = "investment"
+    case cash        = "cash"
+    // Liabilities
+    case creditCard  = "credit_card"
+    case loan        = "loan"
 
     var displayName: String {
         switch self {
-        case .bank:       return "حساب بنكي"
-        case .wallet:     return "محفظة إلكترونية"
-        case .savings:    return "حساب توفير"
-        case .investment: return "حساب استثماري"
-        case .cash:       return "نقد"
+        case .bank:        return "حساب بنكي"
+        case .wallet:      return "محفظة إلكترونية"
+        case .savings:     return "حساب توفير"
+        case .investment:  return "حساب استثماري"
+        case .cash:        return "نقد"
+        case .creditCard:  return "بطاقة ائتمان"
+        case .loan:        return "قرض"
         }
     }
 
     var icon: String {
         switch self {
-        case .bank:       return "building.columns.fill"
-        case .wallet:     return "wallet.pass.fill"
-        case .savings:    return "banknote.fill"
-        case .investment: return "chart.line.uptrend.xyaxis"
-        case .cash:       return "banknote"
+        case .bank:        return "building.columns.fill"
+        case .wallet:      return "wallet.pass.fill"
+        case .savings:     return "banknote.fill"
+        case .investment:  return "chart.line.uptrend.xyaxis"
+        case .cash:        return "banknote"
+        case .creditCard:  return "creditcard.fill"
+        case .loan:        return "doc.plaintext.fill"
         }
     }
 }

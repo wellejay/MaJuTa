@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -28,6 +28,7 @@
 		47F234496E8AD1EEF9BC7D9E /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = F18B004823FD81B88A12DE10 /* FirebaseCore */; };
 		4D29D4084BF9001F560DF530 /* UserModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F348A30974733BF4A6C4D /* UserModels.swift */; };
 		57555822B5229E32F56C4F05 /* Investment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEBEBF16273EC1E2C770C94 /* Investment.swift */; };
+		5E8ACC3D83B140B89928B8D7C73C6D38 /* EmailVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8563CE577BC54B518E7790A0A20D4D1D /* EmailVerificationView.swift */; };
 		5E8FE6473EE8B517DFB5719B /* TransactionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1D9D0ECEFEA085BA011F2B /* TransactionRowView.swift */; };
 		5EE3CF3999A82093A2CFCCA1 /* SavingsGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6304A8B3702E24F1633C0E55 /* SavingsGoal.swift */; };
 		60D97CDC4EB15EA0E68AC65E /* CashFlowEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F598BE42575CC78157DD16C9 /* CashFlowEngine.swift */; };
@@ -41,7 +42,6 @@
 		8EE364B0ADC4B4372806C38A /* SARText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04944A817F249DD4511DED9F /* SARText.swift */; };
 		917B13102DDC10DE60573F2B /* InstallmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02F31BCDC2869AC65ADF169 /* InstallmentsView.swift */; };
 		91E5DFC7FE90E02420B0E9A4 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E88CED33EB01DE641BD6CC /* RegistrationView.swift */; };
-		5E8ACC3D83B140B89928B8D7C73C6D38 /* EmailVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8563CE577BC54B518E7790A0A20D4D1D /* EmailVerificationView.swift */; };
 		94D1F5AB643379C9B46C47CC /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420604D5F62781D91B3B92CD /* OnboardingView.swift */; };
 		9C7D86E20C7BD6EE34BD9460 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C77902398E294DC55B3DB5F /* MainTabView.swift */; };
 		9CDE8556B91F5DFF0807B2AE /* MaJuTaSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026C23DE3DCC161493837B47 /* MaJuTaSpacing.swift */; };
@@ -57,6 +57,7 @@
 		D137F508BA931961AD8FA633 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DC06D07453AA02A8211A2B /* Account.swift */; };
 		D1D9B369C1158C8A76C88B8B /* Household.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B270E3325B5D6AFF568C9E4 /* Household.swift */; };
 		D439B0311DE20932C40DF209 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4654F606F58279CC81E0ABF3 /* UserService.swift */; };
+		D5E8A91B2C3F4D7EA5B6C8D9 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A3F72B8C1D4E5F60A3F72B8C /* PrivacyInfo.xcprivacy */; };
 		D7923BA5107AFA3FA853407A /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD29D39920D382C0C6246E14 /* Category.swift */; };
 		DCB28320BE81546CD1E1A700 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CFD9DA5A074E115B40451F4 /* SettingsView.swift */; };
 		DD0A13B3CA3638B057F2599D /* MaJuTaIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B58C2604CE652F3E17E12F4 /* MaJuTaIcons.swift */; };
@@ -66,8 +67,10 @@
 		EDDD4EE4E6A8AC6007AAF8BA /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 428553479B935134F39F1CA3 /* FirebaseFirestore */; };
 		EF80C4ECFFEF0ADB2ECD37FB /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A2D435B2E123A492E3A382 /* DashboardView.swift */; };
 		F96A8F7754B19B74F9727465 /* FinancialHealthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FCFB50A4AFDF562092EB7A /* FinancialHealthView.swift */; };
-		D5E8A91B2C3F4D7EA5B6C8D9 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A3F72B8C1D4E5F60A3F72B8C /* PrivacyInfo.xcprivacy */; };
-/* End PBXBuildFile section */
+		DC7F42F5FA644244BC512B65 /* LedgerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C719BA7F1244E0580CD67D6 /* LedgerEngine.swift */; };
+		1020615405DB4CB3B7CBBDBA /* ZakatEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B53BC5294714B0BB4015949 /* ZakatEngine.swift */; };
+		7FA523E3A8C34FB3B277F81E /* Budget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C8DAC6AB544D42A7DB6F24 /* Budget.swift */; };
+		/* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		885E0D6DAC9B30FB2D994023 /* PBXContainerItemProxy */ = {
@@ -84,7 +87,7 @@
 		026C23DE3DCC161493837B47 /* MaJuTaSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaJuTaSpacing.swift; sourceTree = "<group>"; };
 		04944A817F249DD4511DED9F /* SARText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SARText.swift; sourceTree = "<group>"; };
 		118B585913C4A0062BFEDB4C /* FamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyView.swift; sourceTree = "<group>"; };
-		214BA9DE5075E844C26EB297 /* MaJuTa.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = MaJuTa.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		214BA9DE5075E844C26EB297 /* MaJuTa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MaJuTa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2269B80DC77B06C01C7D5A4B /* BNPLInstallment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BNPLInstallment.swift; sourceTree = "<group>"; };
 		23248AE5764EA39721CF35FF /* InvestmentEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvestmentEngine.swift; sourceTree = "<group>"; };
 		261F348A30974733BF4A6C4D /* UserModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModels.swift; sourceTree = "<group>"; };
@@ -113,19 +116,20 @@
 		6B5C4C84FE6EDE06A83FE18B /* BillsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillsView.swift; sourceTree = "<group>"; };
 		7B58C2604CE652F3E17E12F4 /* MaJuTaIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaJuTaIcons.swift; sourceTree = "<group>"; };
 		8081C8912652535267533A5C /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
+		8563CE577BC54B518E7790A0A20D4D1D /* EmailVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationView.swift; sourceTree = "<group>"; };
 		8846E7AF83FFF5901A419D3D /* FirebaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
 		8C68BB1FECCC8F499FF657E5 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
 		93C6079828C9A5D5AC524E21 /* FinancialHealthEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialHealthEngine.swift; sourceTree = "<group>"; };
 		95F9132B3667AD385B9F69F5 /* LockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenView.swift; sourceTree = "<group>"; };
 		95FB8178175AA1E7E2A8F479 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		9B2FC65A622A023B9D2B008C /* GoalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsView.swift; sourceTree = "<group>"; };
+		A3F72B8C1D4E5F60A3F72B8C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		A4604B7E043932F1EFDD8D4D /* UserPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPickerView.swift; sourceTree = "<group>"; };
 		A510D5F9D64C05D19FE318ED /* InvestmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvestmentsView.swift; sourceTree = "<group>"; };
 		AA16A3FAE74D4D8614FD6F54 /* MajuliaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MajuliaTests.swift; sourceTree = "<group>"; };
 		B056C39C2F69EBE6AD0933DA /* PINPadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PINPadView.swift; sourceTree = "<group>"; };
 		BCFAEDCA5DF14DD824A8CE9E /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		C4E88CED33EB01DE641BD6CC /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
-		8563CE577BC54B518E7790A0A20D4D1D /* EmailVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationView.swift; sourceTree = "<group>"; };
 		D0DC06D07453AA02A8211A2B /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		D269D99DEA8D72162902E09C /* NumberFormatter+SAR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+SAR.swift"; sourceTree = "<group>"; };
 		D56B62C900FB7AA0768478DC /* MaJuTaTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = MaJuTaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,8 +144,10 @@
 		F598BE42575CC78157DD16C9 /* CashFlowEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CashFlowEngine.swift; sourceTree = "<group>"; };
 		FC3DE5F745967075E631B528 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FEEBEBF16273EC1E2C770C94 /* Investment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Investment.swift; sourceTree = "<group>"; };
-		A3F72B8C1D4E5F60A3F72B8C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-/* End PBXFileReference section */
+		1C719BA7F1244E0580CD67D6 /* LedgerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LedgerEngine.swift; sourceTree = "<group>"; };
+		4B53BC5294714B0BB4015949 /* ZakatEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZakatEngine.swift; sourceTree = "<group>"; };
+		71C8DAC6AB544D42A7DB6F24 /* Budget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Budget.swift; sourceTree = "<group>"; };
+		/* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		1E5771DD126935210B522437 /* Frameworks */ = {
@@ -205,6 +211,8 @@
 				F598BE42575CC78157DD16C9 /* CashFlowEngine.swift */,
 				93C6079828C9A5D5AC524E21 /* FinancialHealthEngine.swift */,
 				23248AE5764EA39721CF35FF /* InvestmentEngine.swift */,
+				1C719BA7F1244E0580CD67D6 /* LedgerEngine.swift */,
+				4B53BC5294714B0BB4015949 /* ZakatEngine.swift */,
 			);
 			path = Engines;
 			sourceTree = "<group>";
@@ -298,6 +306,7 @@
 				5B270E3325B5D6AFF568C9E4 /* Household.swift */,
 				FEEBEBF16273EC1E2C770C94 /* Investment.swift */,
 				6304A8B3702E24F1633C0E55 /* SavingsGoal.swift */,
+				71C8DAC6AB544D42A7DB6F24 /* Budget.swift */,
 				BCFAEDCA5DF14DD824A8CE9E /* Transaction.swift */,
 				501C3DF00707F64270BB3A7F /* User.swift */,
 				261F348A30974733BF4A6C4D /* UserModels.swift */,
@@ -533,7 +542,6 @@
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					57FF13109C22124E1A88B2C9 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -551,7 +559,6 @@
 			packageReferences = (
 				ADC3712FDD92D4C6FC86A3F2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -613,6 +620,8 @@
 				917B13102DDC10DE60573F2B /* InstallmentsView.swift in Sources */,
 				57555822B5229E32F56C4F05 /* Investment.swift in Sources */,
 				EC4C7DA826502E8F012EE7D6 /* InvestmentEngine.swift in Sources */,
+				DC7F42F5FA644244BC512B65 /* LedgerEngine.swift in Sources */,
+				1020615405DB4CB3B7CBBDBA /* ZakatEngine.swift in Sources */,
 				B0F6B8E1E632FFB789E8BD9F /* InvestmentsView.swift in Sources */,
 				0B4C4A48BC135CFBD665E1F9 /* KeychainService.swift in Sources */,
 				07870D3A3CE9BBFA2A4395AE /* LockScreenView.swift in Sources */,
@@ -632,6 +641,7 @@
 				5E8ACC3D83B140B89928B8D7C73C6D38 /* EmailVerificationView.swift in Sources */,
 				8EE364B0ADC4B4372806C38A /* SARText.swift in Sources */,
 				5EE3CF3999A82093A2CFCCA1 /* SavingsGoal.swift in Sources */,
+				7FA523E3A8C34FB3B277F81E /* Budget.swift in Sources */,
 				DCB28320BE81546CD1E1A700 /* SettingsView.swift in Sources */,
 				041FC5CC88D7FB27FA7FA001 /* Transaction.swift in Sources */,
 				5E8FE6473EE8B517DFB5719B /* TransactionRowView.swift in Sources */,
@@ -677,9 +687,11 @@
 				CODE_SIGN_ENTITLEMENTS = MaJuTa/Resources/MaJuTa.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = X5Z9Y83B3W;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = MaJuTa/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MaJuTa;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -768,9 +780,11 @@
 				CODE_SIGN_ENTITLEMENTS = MaJuTa/Resources/MaJuTa.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = X5Z9Y83B3W;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = MaJuTa/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MaJuTa;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

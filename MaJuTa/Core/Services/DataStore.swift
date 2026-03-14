@@ -17,6 +17,7 @@ final class DataStore: ObservableObject {
     @Published var installmentPlans: [InstallmentPlan] = []
     @Published var installments: [Installment] = []
     @Published var activityLog: [ActivityEntry] = []
+    @Published var budgets: [Budget] = []
 
     // MARK: - Firestore Listeners
     private var listeners: [ListenerRegistration] = []
@@ -42,7 +43,7 @@ final class DataStore: ObservableObject {
         // Clear local data
         accounts = []; transactions = []; savingsGoals = []
         bills = []; investments = []; installmentPlans = []
-        installments = []; activityLog = []
+        installments = []; activityLog = []; budgets = []
 
         guard let user = UserService.shared.currentUser else { return }
         let hid = user.householdId
@@ -74,6 +75,9 @@ final class DataStore: ObservableObject {
             if (self?.activityLog.count ?? 0) > 100 {
                 self?.activityLog = Array((self?.activityLog ?? []).prefix(100))
             }
+        })
+        listeners.append(fs.listen(collection: "budgets", householdId: hid) { [weak self] (items: [Budget]) in
+            self?.budgets = items.sorted { $0.monthYear > $1.monthYear }
         })
     }
 
@@ -273,9 +277,85 @@ final class DataStore: ObservableObject {
         InvestmentEngine.portfolioValue(assets: investments)
     }
 
+    // MARK: - Balance Sheet Aggregates (COA-based)
+
+    /// Total of all asset accounts (bank, wallet, savings, investment, cash)
+    var totalAssets: Double {
+        visibleAccounts.filter { !$0.isLiability }.reduce(0) { $0 + $1.balance } + portfolioValue
+    }
+
+    /// Total of all liability accounts (credit card, loan) — what you owe
+    var totalLiabilities: Double {
+        visibleAccounts.filter { $0.isLiability }.reduce(0) { $0 + $1.balance }
+    }
+
+    /// Net Worth = Assets − Liabilities (the correct accounting identity)
     var netWorth: Double {
-        let assets = visibleAccounts.reduce(0) { $0 + $1.balance } + portfolioValue
-        return CashFlowEngine.netWorth(totalAssets: assets, totalLiabilities: 0)
+        CashFlowEngine.netWorth(totalAssets: totalAssets, totalLiabilities: totalLiabilities)
+    }
+
+    // MARK: - Financial Statements (computed on demand)
+
+    var currentMonthIncomeStatement: IncomeStatement {
+        LedgerEngine.incomeStatement(
+            transactions: visibleTransactions,
+            categories: categories
+        )
+    }
+
+    var currentBalanceSheet: BalanceSheet {
+        LedgerEngine.balanceSheet(
+            accounts: visibleAccounts,
+            investments: investments,
+            installments: installments
+        )
+    }
+
+    var currentCashFlowStatement: CashFlowStatement {
+        LedgerEngine.cashFlowStatement(
+            transactions: visibleTransactions,
+            categories: categories
+        )
+    }
+
+    // MARK: - Zakat
+
+    var zakatSummary: ZakatEngine.ZakatSummary {
+        ZakatEngine.calculate(
+            liquidCash: totalLiquidCash,
+            savingsBalance: emergencyFundBalance,
+            investmentPortfolio: portfolioValue,
+            liabilities: totalLiabilities
+        )
+    }
+
+    // MARK: - Budget
+
+    /// Returns the budget for the current calendar month, if one exists.
+    var currentMonthBudget: Budget? {
+        budgets.first {
+            Calendar.current.isDate($0.monthYear, equalTo: Date(), toGranularity: .month)
+        }
+    }
+
+    /// Budget variances for the current month (planned vs actual per category).
+    var currentMonthBudgetVariances: [BudgetVariance] {
+        guard let budget = currentMonthBudget else { return [] }
+        return LedgerEngine.budgetVariances(
+            budget: budget,
+            transactions: visibleTransactions,
+            categories: categories
+        )
+    }
+
+    func saveBudget(_ budget: Budget) {
+        if let idx = budgets.firstIndex(where: { $0.id == budget.id }) {
+            budgets[idx] = budget
+        } else {
+            budgets.append(budget)
+        }
+        FirestoreService.shared.save(budget, to: "budgets", householdId: currentHouseholdId)
+        logActivity(.goalUpdated, objectType: "budget", description: "تحديث الميزانية")
     }
 
     // Bills + BNPL installments = total monthly fixed obligations
@@ -488,7 +568,7 @@ final class DataStore: ObservableObject {
         let hid = user.householdId
         let fs = FirestoreService.shared
         // Delete all collections in Firestore
-        for collection in ["accounts", "transactions", "savingsGoals", "bills", "investments", "installmentPlans", "installments", "activityLog"] {
+        for collection in ["accounts", "transactions", "savingsGoals", "bills", "investments", "installmentPlans", "installments", "activityLog", "budgets"] {
             fs.collection(collection, householdId: hid).getDocuments { snap, _ in
                 snap?.documents.forEach { $0.reference.delete() }
             }

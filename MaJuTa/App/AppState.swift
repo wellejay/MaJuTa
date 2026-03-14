@@ -77,6 +77,9 @@ final class AppState: ObservableObject {
     func resetAll() {
         hasCompletedOnboarding = false
         KeychainService.delete(for: "monthlyIncome")
+        KeychainService.delete(for: "spendingLimit")
+        KeychainService.delete(for: "lastLoggedInUserId")
+        deleteProfileImage()
         UserService.shared.logout()
         Task { @MainActor in
             DataStore.shared.loadForCurrentUser()

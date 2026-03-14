@@ -55,25 +55,7 @@ struct SettingsView: View {
                             ToolbarItem(placement: .navigationBarTrailing) {
                                 Button("حفظ") {
                                     let newIncome = Double(incomeText) ?? appState.monthlyIncome
-                                    let oldIncome = appState.monthlyIncome
                                     appState.monthlyIncome = newIncome
-                                    // Add adjustment transaction if income changed
-                                    if newIncome != oldIncome, newIncome > 0,
-                                       let user = UserService.shared.currentUser,
-                                       let account = dataStore.visibleAccounts.first,
-                                       let cat = dataStore.categories.first(where: { $0.name == "Salary" }) {
-                                        let tx = Transaction(
-                                            amount: newIncome,
-                                            categoryId: cat.id,
-                                            accountId: account.id,
-                                            merchant: "الراتب الشهري",
-                                            paymentMethod: .bankTransfer,
-                                            isRecurring: true,
-                                            ownerUserId: user.id,
-                                            createdByUserId: user.id
-                                        )
-                                        dataStore.addTransaction(tx)
-                                    }
                                     showIncomeEdit = false
                                 }
                                 .foregroundColor(.maJuTaGold)

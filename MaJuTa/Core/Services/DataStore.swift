@@ -242,7 +242,14 @@ final class DataStore: ObservableObject {
     }
 
     var emergencyFundBalance: Double {
-        visibleAccounts.filter { $0.type == .savings }.reduce(0) { $0 + $1.balance }
+        let emergencyAccounts = visibleAccounts.filter {
+            $0.type == .savings &&
+            ($0.name.contains("طوارئ") || $0.name.lowercased().contains("emergency"))
+        }
+        let target = emergencyAccounts.isEmpty
+            ? visibleAccounts.filter { $0.type == .savings }
+            : emergencyAccounts
+        return target.reduce(0) { $0 + $1.balance }
     }
 
     var monthlyEssentialExpenses: Double {
@@ -516,7 +523,7 @@ final class DataStore: ObservableObject {
 
         // 2. Create a savings transaction so it shows in cashflow and deducts from account
         let savingsCatId = categories.first(where: { $0.type == .savings })?.id ?? UUID()
-        let accountId = visibleAccounts.first(where: { $0.isLiquid })?.id ?? UUID()
+        guard let accountId = visibleAccounts.first(where: { $0.isLiquid })?.id else { return }
         let userId = currentUserId
         let tx = Transaction(
             amount: -amount,   // negative = money leaving spending pool

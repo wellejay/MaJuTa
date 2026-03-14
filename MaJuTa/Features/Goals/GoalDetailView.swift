@@ -6,6 +6,11 @@ struct GoalDetailView: View {
     @State private var showContribute = false
     @State private var contributionAmount = ""
 
+    /// Always reflects the latest state from DataStore after contributions.
+    private var currentGoal: SavingsGoal {
+        dataStore.visibleGoals.first { $0.id == goal.id } ?? goal
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: MaJuTaSpacing.lg) {
@@ -35,7 +40,7 @@ struct GoalDetailView: View {
             .padding(.vertical, MaJuTaSpacing.lg)
         }
         .background(Color.maJuTaBackground)
-        .navigationTitle(goal.nameArabic.isEmpty ? goal.name : goal.nameArabic)
+        .navigationTitle(currentGoal.nameArabic.isEmpty ? currentGoal.name : currentGoal.nameArabic)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showContribute) {
             contributeSheet
@@ -46,18 +51,18 @@ struct GoalDetailView: View {
         VStack(spacing: MaJuTaSpacing.md) {
             ZStack {
                 Circle()
-                    .fill(Color(hex: goal.colorHex).opacity(0.15))
+                    .fill(Color(hex: currentGoal.colorHex).opacity(0.15))
                     .frame(width: 88, height: 88)
-                Image(systemName: goal.icon)
+                Image(systemName: currentGoal.icon)
                     .font(.system(size: 36))
-                    .foregroundColor(Color(hex: goal.colorHex))
+                    .foregroundColor(Color(hex: currentGoal.colorHex))
             }
 
-            SARText.hero(goal.currentAmount)
+            SARText.hero(currentGoal.currentAmount)
 
             HStack(spacing: 2) {
                 Text("من").font(.maJuTaBody).foregroundColor(.maJuTaTextSecondary)
-                SARText.body(goal.targetAmount, color: .maJuTaTextSecondary)
+                SARText.body(currentGoal.targetAmount, color: .maJuTaTextSecondary)
             }
         }
         .frame(maxWidth: .infinity)
@@ -69,9 +74,9 @@ struct GoalDetailView: View {
 
     private var statsGrid: some View {
         HStack(spacing: MaJuTaSpacing.sm) {
-            statItem(value: "\(goal.progressPercentage)%", label: "مكتمل")
+            statItem(value: "\(currentGoal.progressPercentage)%", label: "مكتمل")
             VStack(spacing: 4) {
-                SARText.compact(goal.remainingAmount)
+                SARText.compact(currentGoal.remainingAmount)
                 Text("المتبقي")
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
@@ -81,7 +86,7 @@ struct GoalDetailView: View {
             .background(Color.maJuTaCard)
             .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
             .maJuTaCardShadow()
-            if let deadline = goal.deadline {
+            if let deadline = currentGoal.deadline {
                 let days = Calendar.current.dateComponents([.day], from: Date(), to: deadline).day ?? 0
                 statItem(value: "\(max(0, days))", label: "يوماً متبقياً")
             }
@@ -117,11 +122,11 @@ struct GoalDetailView: View {
                         .frame(height: 16)
                     RoundedRectangle(cornerRadius: 8)
                         .fill(LinearGradient(
-                            colors: [Color(hex: goal.colorHex), Color(hex: goal.colorHex).opacity(0.6)],
+                            colors: [Color(hex: currentGoal.colorHex), Color(hex: currentGoal.colorHex).opacity(0.6)],
                             startPoint: .trailing,
                             endPoint: .leading
                         ))
-                        .frame(width: geo.size.width * goal.progress, height: 16)
+                        .frame(width: geo.size.width * currentGoal.progress, height: 16)
                 }
             }
             .frame(height: 16)
@@ -155,7 +160,7 @@ struct GoalDetailView: View {
 
                 Button("إضافة") {
                     if let amount = Double(contributionAmount), amount > 0 {
-                        dataStore.contribute(to: goal, amount: amount)
+                        dataStore.contribute(to: currentGoal, amount: amount)
                         contributionAmount = ""
                     }
                     showContribute = false

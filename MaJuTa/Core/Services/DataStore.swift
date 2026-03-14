@@ -179,11 +179,21 @@ final class DataStore: ObservableObject {
         }.reduce(0) { $0 + $1.amount }
     }
 
+    // Actual goal contributions made this month (creates transactions, so tracked in cashflow)
+    var goalContributionsThisMonth: Double {
+        let savingsCatIds = Set(categories.filter { $0.type == .savings }.map { $0.id })
+        let monthly = CashFlowEngine.transactions(from: visibleTransactions, in: Date())
+        return monthly.filter { savingsCatIds.contains($0.categoryId) && $0.amount < 0 }
+                      .reduce(0) { $0 + abs($1.amount) }
+    }
+
     var safeToSpend: Double {
-        CashFlowEngine.safeToSpend(
+        // Subtract only REMAINING planned savings (already-contributed amounts are reflected in liquidCash)
+        let remainingPlanned = max(0, plannedSavingsThisMonth - goalContributionsThisMonth)
+        return CashFlowEngine.safeToSpend(
             liquidCash: totalLiquidCash,
             upcomingBills: upcomingBillsTotal,
-            plannedSavings: plannedSavingsThisMonth,
+            plannedSavings: remainingPlanned,
             emergencyContribution: emergencyMonthlyContribution
         )
     }
@@ -412,10 +422,29 @@ final class DataStore: ObservableObject {
 
     func contribute(to goal: SavingsGoal, amount: Double) {
         guard amount > 0, var updated = savingsGoals.first(where: { $0.id == goal.id }) else { return }
+
+        // 1. Update goal balance
         updated.currentAmount += amount
         updated.updatedAt = Date()
-        logActivity(.goalUpdated, objectType: "goal", description: goal.name)
+        if let idx = savingsGoals.firstIndex(where: { $0.id == goal.id }) { savingsGoals[idx] = updated }
         FirestoreService.shared.save(updated, to: "savingsGoals", householdId: currentHouseholdId)
+
+        // 2. Create a savings transaction so it shows in cashflow and deducts from account
+        let savingsCatId = categories.first(where: { $0.type == .savings })?.id ?? UUID()
+        let accountId = visibleAccounts.first(where: { $0.isLiquid })?.id ?? UUID()
+        let userId = currentUserId
+        let tx = Transaction(
+            amount: -amount,   // negative = money leaving spending pool
+            categoryId: savingsCatId,
+            accountId: accountId,
+            merchant: goal.name,
+            note: "تحويل لهدف: \(goal.name)",
+            ownerUserId: userId,
+            createdByUserId: userId
+        )
+        addTransaction(tx)
+
+        logActivity(.goalUpdated, objectType: "goal", description: goal.name)
     }
 
     func addInvestment(_ asset: InvestmentAsset) {

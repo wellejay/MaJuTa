@@ -49,6 +49,12 @@ final class AppState: ObservableObject {
         set { KeychainService.set(newValue, for: "monthlyIncome"); objectWillChange.send() }
     }
 
+    // User-defined monthly spending limit for the safeToSpend card
+    var spendingLimit: Double {
+        get { KeychainService.getDouble(for: "spendingLimit") ?? 0 }
+        set { KeychainService.set(newValue, for: "spendingLimit"); objectWillChange.send() }
+    }
+
     @Published var selectedTab: AppTab = .dashboard
     @Published var showAddTransaction: Bool = false
 

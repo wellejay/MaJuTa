@@ -5,6 +5,19 @@ struct DashboardView: View {
     @EnvironmentObject var dataStore: DataStore
     @EnvironmentObject var appState: AppState
     @State private var showNotifications = false
+    @State private var showSetLimit = false
+    @State private var limitInput = ""
+
+    // Color of safeToSpend card based on spending limit
+    var spendingLimitColor: Color {
+        let limit = appState.spendingLimit
+        guard limit > 0 else { return .maJuTaGold }
+        let remaining = dataStore.safeToSpend
+        let pct = remaining / limit
+        if remaining < 0 || pct <= 0.05 { return .maJuTaNegative }
+        if pct <= 0.20 { return .maJuTaWarning }
+        return .maJuTaPositive
+    }
 
     var body: some View {
         NavigationStack {
@@ -141,7 +154,7 @@ struct DashboardView: View {
             )
             cashFlowMiniCard(
                 title: "الأهداف",
-                amount: dataStore.plannedSavingsThisMonth,
+                amount: dataStore.goalContributionsThisMonth,
                 icon: "banknote.fill",
                 color: .maJuTaGold
             )
@@ -172,9 +185,19 @@ struct DashboardView: View {
     private var safeToSpendCard: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
             HStack {
-                NavigationLink(destination: FinancialHealthView()) {
-                    Image(systemName: "info.circle")
-                        .foregroundColor(.maJuTaTextSecondary)
+                HStack(spacing: MaJuTaSpacing.xs) {
+                    NavigationLink(destination: FinancialHealthView()) {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(.maJuTaTextSecondary)
+                    }
+                    Button {
+                        limitInput = appState.spendingLimit > 0 ? String(format: "%.0f", appState.spendingLimit) : ""
+                        showSetLimit = true
+                    } label: {
+                        Image(systemName: appState.spendingLimit > 0 ? "slider.horizontal.3" : "plus.circle")
+                            .foregroundColor(spendingLimitColor)
+                            .font(.system(size: 16))
+                    }
                 }
                 Spacer()
                 Text(dataStore.safeToSpend >= 0 ? "يمكنك إنفاق اليوم" : "تجاوزت ميزانيتك بـ")
@@ -206,10 +229,15 @@ struct DashboardView: View {
                 .fill(Color.maJuTaCard)
                 .overlay(
                     RoundedRectangle(cornerRadius: MaJuTaRadius.card)
-                        .strokeBorder(LinearGradient.goldGradient, lineWidth: 1)
+                        .strokeBorder(spendingLimitColor, lineWidth: appState.spendingLimit > 0 ? 2 : 1)
                 )
         )
         .maJuTaCardShadow()
+        .sheet(isPresented: $showSetLimit) {
+            SpendingLimitSheet(limitInput: $limitInput, onSave: { value in
+                appState.spendingLimit = value
+            })
+        }
     }
 
     private func breakdownItem(label: String, amount: Double, color: Color) -> some View {
@@ -493,5 +521,97 @@ struct DashboardView: View {
         }
         .background(Color.maJuTaCard)
         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
+    }
+}
+
+// MARK: - Spending Limit Sheet
+private struct SpendingLimitSheet: View {
+    @Binding var limitInput: String
+    let onSave: (Double) -> Void
+    @Environment(\.dismiss) private var dismiss
+    @FocusState private var focused: Bool
+
+    var amount: Double { Double(limitInput) ?? 0 }
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: MaJuTaSpacing.xl) {
+                VStack(spacing: MaJuTaSpacing.sm) {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.system(size: 48))
+                        .foregroundColor(.maJuTaGold)
+                    Text("حد الإنفاق الشهري")
+                        .font(.maJuTaTitle2)
+                        .foregroundColor(.maJuTaTextPrimary)
+                    Text("يتغير لون البطاقة تبعاً للمتبقي من ميزانيتك")
+                        .font(.maJuTaCaption)
+                        .foregroundColor(.maJuTaTextSecondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.top, MaJuTaSpacing.xl)
+
+                // Color legend
+                HStack(spacing: MaJuTaSpacing.md) {
+                    legendItem(color: .maJuTaPositive, label: "أكثر من 20%")
+                    legendItem(color: .maJuTaWarning, label: "5% - 20%")
+                    legendItem(color: .maJuTaNegative, label: "أقل من 5%")
+                }
+                .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
+
+                TextField("0", text: $limitInput)
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.center)
+                    .font(.system(size: 36, weight: .bold))
+                    .foregroundColor(.maJuTaTextPrimary)
+                    .padding(MaJuTaSpacing.md)
+                    .background(Color.maJuTaBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
+                    .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
+                    .focused($focused)
+
+                Button {
+                    onSave(amount)
+                    dismiss()
+                } label: {
+                    Text(amount > 0 ? "حفظ \(String(format: "%.0f", amount)) ﷼" : "حفظ")
+                        .font(.maJuTaBodyBold)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(MaJuTaSpacing.md)
+                        .background(amount > 0 ? Color.maJuTaGold : Color.maJuTaTextSecondary)
+                        .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
+                }
+                .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
+                .disabled(amount <= 0)
+
+                if limitInput != "" {
+                    Button("إزالة الحد") {
+                        onSave(0)
+                        dismiss()
+                    }
+                    .font(.maJuTaCaption)
+                    .foregroundColor(.maJuTaTextSecondary)
+                }
+
+                Spacer()
+            }
+            .background(Color.maJuTaBackground)
+            .navigationTitle("حد الإنفاق")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("إلغاء") { dismiss() }.foregroundColor(.maJuTaTextSecondary)
+                }
+            }
+            .onAppear { focused = true }
+        }
+    }
+
+    private func legendItem(color: Color, label: String) -> some View {
+        VStack(spacing: 4) {
+            Circle().fill(color).frame(width: 12, height: 12)
+            Text(label).font(.maJuTaLabel).foregroundColor(.maJuTaTextSecondary)
+        }
+        .frame(maxWidth: .infinity)
     }
 }

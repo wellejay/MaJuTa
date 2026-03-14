@@ -297,6 +297,56 @@ final class UserService: ObservableObject {
         FirestoreService.shared.db.collection("users").document(userId.uuidString).delete()
     }
 
+    /// Permanently deletes the current user's account — Firebase Auth, Firestore, and all local data.
+    func deleteCurrentAccount() async {
+        guard let user = currentUser else { return }
+        let userId = user.id
+        let householdId = user.householdId
+        let isOwner = user.role == .owner
+        let fs = FirestoreService.shared
+
+        // 1. Delete all household Firestore data if owner
+        if isOwner {
+            for col in ["accounts", "transactions", "savingsGoals", "bills", "investments",
+                        "installmentPlans", "installments", "activityLog", "budgets", "loans"] {
+                let docs = try? await fs.collection(col, householdId: householdId).getDocuments()
+                docs?.documents.forEach { $0.reference.delete() }
+            }
+            // Delete household doc and invite codes
+            try? await fs.db.collection("households").document(householdId.uuidString).delete()
+            let codeSnap = try? await fs.db.collection("inviteCodes")
+                .whereField("householdId", isEqualTo: householdId.uuidString)
+                .getDocuments()
+            if let codeSnap = codeSnap {
+                for doc in codeSnap.documents { try? await doc.reference.delete() }
+            }
+        }
+
+        // 2. Delete authLookup and user doc
+        if let uid = FirebaseAuthService.shared.firebaseUID {
+            try? await fs.db.collection("authLookup").document(uid).delete()
+        }
+        try? await fs.db.collection("users").document(userId.uuidString).delete()
+
+        // 3. Delete Keychain entries
+        KeychainService.delete(for: "pin_\(userId.uuidString)")
+        KeychainService.delete(for: "biometric_\(userId.uuidString)")
+        KeychainService.delete(for: "invite_household_\(householdId.uuidString)")
+        KeychainService.delete(for: "invite_expiry_\(householdId.uuidString)")
+        KeychainService.delete(for: "lastLoggedInUserId")
+        KeychainService.delete(for: "monthlyIncome")
+        KeychainService.delete(for: "spendingLimit")
+
+        // 4. Delete Firebase Auth account
+        try? await FirebaseAuthService.shared.deleteCurrentUser()
+
+        // 5. Clear local state
+        registeredUsers.removeAll { $0.id == userId }
+        if isOwner { registeredHouseholds.removeAll { $0.id == householdId } }
+        currentUser = nil
+        saveUsersToKeychain()
+    }
+
     // MARK: - Keychain Persistence (local cache)
 
     private func loadUsersFromKeychain() {

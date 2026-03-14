@@ -30,6 +30,12 @@ struct MainTabView: View {
                 }
                 .tag(AppTab.investments)
 
+            LoansView()
+                .tabItem {
+                    Label(AppTab.loans.title, systemImage: AppTab.loans.icon)
+                }
+                .tag(AppTab.loans)
+
             FamilyView()
                 .tabItem {
                     Label(AppTab.family.title, systemImage: AppTab.family.icon)

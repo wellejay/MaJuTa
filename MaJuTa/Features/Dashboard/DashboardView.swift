@@ -8,15 +8,32 @@ struct DashboardView: View {
     @State private var showSetLimit = false
     @State private var limitInput = ""
 
-    // Color of safeToSpend card based on spending limit
+    // Color of spending card based on how much of the limit has been spent
     var spendingLimitColor: Color {
         let limit = appState.spendingLimit
         guard limit > 0 else { return .maJuTaGold }
-        let remaining = dataStore.safeToSpend
+        let spent = dataStore.discretionaryExpensesThisMonth
+        let remaining = limit - spent
         let pct = remaining / limit
         if remaining < 0 || pct <= 0.05 { return .maJuTaNegative }
         if pct <= 0.20 { return .maJuTaWarning }
         return .maJuTaPositive
+    }
+
+    // Amount shown in the spending card — budget remaining when limit is set, otherwise safeToSpend
+    var spendingCardAmount: Double {
+        let limit = appState.spendingLimit
+        guard limit > 0 else { return dataStore.safeToSpend }
+        return max(0, limit - dataStore.discretionaryExpensesThisMonth)
+    }
+
+    var spendingCardLabel: String {
+        let limit = appState.spendingLimit
+        guard limit > 0 else {
+            return dataStore.safeToSpend >= 0 ? "المتاح للإنفاق" : "تجاوزت ميزانيتك"
+        }
+        let remaining = limit - dataStore.discretionaryExpensesThisMonth
+        return remaining < 0 ? "تجاوزت الحد بـ" : "باقي من ميزانيتك"
     }
 
     var body: some View {
@@ -113,7 +130,7 @@ struct DashboardView: View {
 
                 // Safe To Spend (after all deductions)
                 VStack(spacing: 4) {
-                    Text("المتاح للإنفاق")
+                    Text(dataStore.safeToSpend >= 0 ? "المتاح للإنفاق" : "تجاوزت الميزانية")
                         .font(.maJuTaCaption)
                         .foregroundColor(.white.opacity(0.7))
 
@@ -127,7 +144,7 @@ struct DashboardView: View {
                         Text("•").foregroundColor(.white.opacity(0.3))
                         HStack(spacing: 4) {
                             Image(systemName: "arrow.up.circle.fill")
-                            SARText(dataStore.monthlyExpenses(), size: 13, weight: .medium, color: .maJuTaNegative)
+                            SARText(dataStore.discretionaryExpensesThisMonth, size: 13, weight: .medium, color: .maJuTaNegative)
                         }
                     }
                     .font(.maJuTaCaptionMedium)
@@ -148,7 +165,7 @@ struct DashboardView: View {
             )
             cashFlowMiniCard(
                 title: "المصاريف",
-                amount: dataStore.monthlyExpenses(),
+                amount: dataStore.discretionaryExpensesThisMonth,
                 icon: "arrow.up.circle.fill",
                 color: .maJuTaNegative
             )
@@ -201,11 +218,11 @@ struct DashboardView: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text(dataStore.safeToSpend >= 0 ? "يمكنك إنفاق اليوم" : "تجاوزت ميزانيتك بـ")
+                    Text(spendingCardLabel)
                         .font(.maJuTaCaptionMedium)
-                        .foregroundColor(dataStore.safeToSpend >= 0 ? .maJuTaTextSecondary : .maJuTaNegative)
+                        .foregroundColor(spendingCardAmount >= 0 ? .maJuTaTextSecondary : .maJuTaNegative)
                     if appState.spendingLimit > 0 {
-                        Text("الحد: \(String(format: "%.0f", appState.spendingLimit)) ﷼")
+                        Text("أنفقت: \(String(format: "%.0f", dataStore.discretionaryExpensesThisMonth)) ﷼ من \(String(format: "%.0f", appState.spendingLimit)) ﷼")
                             .font(.maJuTaLabel)
                             .foregroundColor(spendingLimitColor)
                     }
@@ -216,8 +233,8 @@ struct DashboardView: View {
                 Text("")
                     .font(.maJuTaBody)
                     .foregroundColor(.maJuTaTextSecondary)
-                SARText.hero(dataStore.safeToSpend,
-                    color: dataStore.safeToSpend > 0 ? .maJuTaTextPrimary : .maJuTaNegative)
+                SARText.hero(spendingCardAmount,
+                    color: spendingCardAmount > 0 ? .maJuTaTextPrimary : .maJuTaNegative)
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
 
@@ -277,11 +294,13 @@ struct DashboardView: View {
     private var financialMetricsGrid: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: MaJuTaSpacing.sm) {
             metricCard(
-                title: "أشهر الطوارئ",
-                value: String(format: "%.1f", dataStore.emergencyMonths),
-                suffix: "شهر",
+                title: "صندوق الطوارئ",
+                amount: dataStore.emergencyFundBalance,
+                suffix: "",
                 icon: "exclamationmark.shield.fill",
-                color: dataStore.emergencyMonths >= 3 ? .maJuTaPositive : .maJuTaNegative
+                color: dataStore.emergencyMonths >= 3 ? .maJuTaPositive
+                     : dataStore.emergencyMonths >= 1 ? .maJuTaWarning
+                     : .maJuTaNegative
             )
             metricCard(
                 title: "صافي الثروة",

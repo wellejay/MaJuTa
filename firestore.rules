@@ -87,6 +87,16 @@ service cloud.firestore {
         allow write: if isSignedIn() && householdId == myHouseholdId() && canWrite();
       }
 
+      // ── Loans ─────────────────────────────────────────────────────────────────
+      match /loans/{loanId} {
+        allow read: if isSignedIn() && householdId == myHouseholdId();
+        allow create: if isSignedIn() && householdId == myHouseholdId() && canWrite();
+        allow update: if isSignedIn() && householdId == myHouseholdId() &&
+          (canWrite() ||
+           (isMember() && resource.data.ownerUserId == myUserId()));
+        allow delete: if isSignedIn() && householdId == myHouseholdId() && isOwner();
+      }
+
       // ── Installment Plans + Installments ────────────────────────────────────
       match /installmentPlans/{planId} {
         allow read: if isSignedIn() && householdId == myHouseholdId();

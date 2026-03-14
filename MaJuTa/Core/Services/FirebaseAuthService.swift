@@ -79,6 +79,14 @@ final class FirebaseAuthService: ObservableObject {
         isEmailVerified = false
     }
 
+    // MARK: - Delete Account
+    /// Permanently deletes the Firebase Auth account. Requires recent sign-in.
+    func deleteCurrentUser() async throws {
+        try await Auth.auth().currentUser?.delete()
+        firebaseUID = nil
+        isEmailVerified = false
+    }
+
     // MARK: - Helper
     func firebasePassword(pin: String, userId: UUID) -> String {
         let input = "fb_\(pin)_\(userId.uuidString)_majuta"

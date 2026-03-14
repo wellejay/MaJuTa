@@ -70,7 +70,9 @@
 		DC7F42F5FA644244BC512B65 /* LedgerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C719BA7F1244E0580CD67D6 /* LedgerEngine.swift */; };
 		1020615405DB4CB3B7CBBDBA /* ZakatEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B53BC5294714B0BB4015949 /* ZakatEngine.swift */; };
 		7FA523E3A8C34FB3B277F81E /* Budget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C8DAC6AB544D42A7DB6F24 /* Budget.swift */; };
-		/* End PBXBuildFile section */
+				2A5614726EC9439DBEA5F8AB /* Loan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E609E8495FF41EA99B88593 /* Loan.swift */; };
+		B1A9BBE67CE94D9E9110EF62 /* LoansView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E717E908F09640179D902612 /* LoansView.swift */; };
+/* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		885E0D6DAC9B30FB2D994023 /* PBXContainerItemProxy */ = {
@@ -147,7 +149,9 @@
 		1C719BA7F1244E0580CD67D6 /* LedgerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LedgerEngine.swift; sourceTree = "<group>"; };
 		4B53BC5294714B0BB4015949 /* ZakatEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZakatEngine.swift; sourceTree = "<group>"; };
 		71C8DAC6AB544D42A7DB6F24 /* Budget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Budget.swift; sourceTree = "<group>"; };
-		/* End PBXFileReference section */
+				1E609E8495FF41EA99B88593 /* Loan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loan.swift; sourceTree = "<group>"; };
+		E717E908F09640179D902612 /* LoansView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoansView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		1E5771DD126935210B522437 /* Frameworks */ = {
@@ -242,7 +246,8 @@
 				E7A1FB69B3E1FA9DDF5E78C5 /* ReceiptScanner */,
 				B854D995F5BEA9625591A707 /* Settings */,
 				18A143757CD20ADB1DE960D2 /* Transactions */,
-			);
+			
+				F9C18FE5F7E848C28D39D70D /* Loans */,);
 			path = Features;
 			sourceTree = "<group>";
 		};
@@ -310,7 +315,8 @@
 				BCFAEDCA5DF14DD824A8CE9E /* Transaction.swift */,
 				501C3DF00707F64270BB3A7F /* User.swift */,
 				261F348A30974733BF4A6C4D /* UserModels.swift */,
-			);
+			
+				1E609E8495FF41EA99B88593 /* Loan.swift */,);
 			path = Models;
 			sourceTree = "<group>";
 		};
@@ -489,6 +495,15 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+
+		F9C18FE5F7E848C28D39D70D /* Loans */ = {
+			isa = PBXGroup;
+			children = (
+				E717E908F09640179D902612 /* LoansView.swift */,
+			);
+			path = Loans;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -595,6 +610,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A5614726EC9439DBEA5F8AB /* Loan.swift in Sources */,
+				B1A9BBE67CE94D9E9110EF62 /* LoansView.swift in Sources */,
 				D137F508BA931961AD8FA633 /* Account.swift in Sources */,
 				63C093F31694217918D5EA31 /* AccountsView.swift in Sources */,
 				E143EFA079765BFAA8BCFF4E /* AddTransactionView.swift in Sources */,

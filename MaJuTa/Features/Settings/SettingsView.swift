@@ -7,6 +7,7 @@ struct SettingsView: View {
     @State private var notificationsEnabled = true
     @State private var biometricEnabled = true
     @State private var showResetAlert = false
+    @State private var showDeleteAccountAlert = false
     @State private var showIncomeEdit = false
     @State private var incomeText: String = ""
 
@@ -128,7 +129,27 @@ struct SettingsView: View {
                         appState.resetAll()
                     }
                 } message: {
-                    Text("سيتم حذف جميع بياناتك. هذا الإجراء لا يمكن التراجع عنه.")
+                    Text("سيتم حذف جميع بياناتك المحلية. هذا الإجراء لا يمكن التراجع عنه.")
+                }
+
+                Button("حذف الحساب نهائياً") {
+                    showDeleteAccountAlert = true
+                }
+                .font(.maJuTaCaption).foregroundColor(.maJuTaNegative)
+                .padding(.top, MaJuTaSpacing.xs)
+                .alert("حذف الحساب", isPresented: $showDeleteAccountAlert) {
+                    Button("إلغاء", role: .cancel) {}
+                    Button("حذف نهائياً", role: .destructive) {
+                        Task {
+                            await UserService.shared.deleteCurrentAccount()
+                            await MainActor.run {
+                                DataStore.shared.loans = []
+                                appState.resetAll()
+                            }
+                        }
+                    }
+                } message: {
+                    Text("سيتم حذف حسابك وجميع بياناتك بشكل دائم لا يمكن التراجع عنه. إذا كنت مالك الحساب، سيتم حذف بيانات العائلة بالكامل.")
                 }
             }
             .padding(.horizontal, MaJuTaSpacing.horizontalPadding)

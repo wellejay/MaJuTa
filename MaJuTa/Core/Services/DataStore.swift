@@ -18,6 +18,7 @@ final class DataStore: ObservableObject {
     @Published var installments: [Installment] = []
     @Published var activityLog: [ActivityEntry] = []
     @Published var budgets: [Budget] = []
+    @Published var loans: [Loan] = []
 
     // MARK: - Firestore Listeners
     private var listeners: [ListenerRegistration] = []
@@ -43,7 +44,7 @@ final class DataStore: ObservableObject {
         // Clear local data
         accounts = []; transactions = []; savingsGoals = []
         bills = []; investments = []; installmentPlans = []
-        installments = []; activityLog = []; budgets = []
+        installments = []; activityLog = []; budgets = []; loans = []
 
         guard let user = UserService.shared.currentUser else { return }
         let hid = user.householdId
@@ -78,6 +79,9 @@ final class DataStore: ObservableObject {
         })
         listeners.append(fs.listen(collection: "budgets", householdId: hid) { [weak self] (items: [Budget]) in
             self?.budgets = items.sorted { $0.monthYear > $1.monthYear }
+        })
+        listeners.append(fs.listen(collection: "loans", householdId: hid) { [weak self] (items: [Loan]) in
+            self?.loans = items.sorted { $0.nextPaymentDate < $1.nextPaymentDate }
         })
     }
 
@@ -198,23 +202,31 @@ final class DataStore: ObservableObject {
         }.reduce(0) { $0 + abs($1.amount) }
     }
 
-    // Actual emergency fund deposits made this month (tracked via savings transactions)
+    // Actual emergency fund deposits this month — match by merchant name only (category ID may be a fallback UUID)
     var emergencyDepositsThisMonth: Double {
-        let savingsCatIds = Set(categories.filter { $0.type == .savings }.map { $0.id })
         let monthly = CashFlowEngine.transactions(from: visibleTransactions, in: Date())
-        return monthly.filter {
-            savingsCatIds.contains($0.categoryId) && $0.amount < 0 &&
-            $0.merchant == "صندوق الطوارئ"
+        return monthly.filter { $0.amount < 0 && $0.merchant == "صندوق الطوارئ" }
+                      .reduce(0) { $0 + abs($1.amount) }
+    }
+
+    // Discretionary spending this month — all negative transactions EXCEPT savings/investment/income categories and emergency deposits.
+    // Uses exclusion (not inclusion) so transactions with unrecognized category IDs are still counted as expenses.
+    var discretionaryExpensesThisMonth: Double {
+        let nonExpenseCatIds = Set(categories.filter { $0.type != .expense }.map { $0.id })
+        let monthly = CashFlowEngine.transactions(from: visibleTransactions, in: Date())
+        return monthly.filter { tx in
+            tx.amount < 0 &&
+            !nonExpenseCatIds.contains(tx.categoryId) &&
+            tx.merchant != "صندوق الطوارئ"   // never count emergency deposits as expenses
         }.reduce(0) { $0 + abs($1.amount) }
     }
 
     var safeToSpend: Double {
-        // Only reserve what's NOT yet contributed to savings or emergency fund this month
         let remainingPlanned = max(0, plannedSavingsThisMonth - goalContributionsThisMonth)
         let remainingEmergency = max(0, emergencyMonthlyContribution - emergencyDepositsThisMonth)
         return CashFlowEngine.safeToSpend(
             liquidCash: totalLiquidCash,
-            upcomingBills: upcomingBillsTotal,
+            upcomingBills: upcomingBillsTotal + upcomingLoanPaymentsTotal,
             plannedSavings: remainingPlanned,
             emergencyContribution: remainingEmergency
         )
@@ -304,9 +316,41 @@ final class DataStore: ObservableObject {
         visibleAccounts.filter { !$0.isLiability }.reduce(0) { $0 + $1.balance } + portfolioValue
     }
 
+    // MARK: - Loans Computed
+
+    var visibleLoans: [Loan] {
+        guard let user = UserService.shared.currentUser else { return [] }
+        return loans.filter { $0.isShared || $0.ownerUserId == user.id }
+    }
+
+    /// Total remaining balance across all active loans
+    var totalLoanBalance: Double {
+        visibleLoans.filter { !$0.isFullyPaid }.reduce(0) { $0 + $1.remainingBalance }
+    }
+
+    /// Sum of monthly payments for all active loans
+    var monthlyLoanPayments: Double {
+        visibleLoans.filter { !$0.isFullyPaid }.reduce(0) { $0 + $1.monthlyPayment }
+    }
+
+    /// Loan payments due within the next 30 days (used in safeToSpend deduction)
+    var upcomingLoanPaymentsTotal: Double {
+        let thirtyDays = Calendar.current.date(byAdding: .day, value: 30, to: Date()) ?? Date()
+        return visibleLoans.filter {
+            !$0.isFullyPaid && $0.nextPaymentDate <= thirtyDays
+        }.reduce(0) { $0 + $1.monthlyPayment }
+    }
+
+    /// Monthly loan payments / income (debt service ratio)
+    var debtObligationRatio: Double {
+        let income = effectiveMonthlyIncome
+        guard income > 0 else { return 0 }
+        return monthlyLoanPayments / income
+    }
+
     /// Total of all liability accounts (credit card, loan) — what you owe
     var totalLiabilities: Double {
-        visibleAccounts.filter { $0.isLiability }.reduce(0) { $0 + $1.balance }
+        visibleAccounts.filter { $0.isLiability }.reduce(0) { $0 + $1.balance } + totalLoanBalance
     }
 
     /// Net Worth = Assets − Liabilities (the correct accounting identity)
@@ -378,12 +422,12 @@ final class DataStore: ObservableObject {
         logActivity(.goalUpdated, objectType: "budget", description: "تحديث الميزانية")
     }
 
-    // Bills + BNPL installments = total monthly fixed obligations
+    // Bills + BNPL installments + loans = total monthly fixed obligations
     var fixedObligationRatio: Double {
         let income = effectiveMonthlyIncome
         guard income > 0 else { return 0 }
         return CashFlowEngine.fixedObligationRatio(
-            fixedExpenses: upcomingBillsTotal + monthlyInstallmentPayments,
+            fixedExpenses: upcomingBillsTotal + monthlyInstallmentPayments + monthlyLoanPayments,
             monthlyIncome: income
         )
     }
@@ -611,17 +655,63 @@ final class DataStore: ObservableObject {
         categories.first { $0.id == id }
     }
 
+    // MARK: - Loans CRUD
+
+    func addLoan(_ loan: Loan) {
+        logActivity(.accountCreated, objectType: "loan", description: loan.name)
+        FirestoreService.shared.save(loan, to: "loans", householdId: currentHouseholdId)
+    }
+
+    func updateLoan(_ loan: Loan) {
+        if let idx = loans.firstIndex(where: { $0.id == loan.id }) { loans[idx] = loan }
+        FirestoreService.shared.save(loan, to: "loans", householdId: currentHouseholdId)
+    }
+
+    func deleteLoan(id: UUID) {
+        loans.removeAll { $0.id == id }
+        FirestoreService.shared.delete(id: id, from: "loans", householdId: currentHouseholdId)
+    }
+
+    /// Records a loan payment: decreases remaining balance, creates an expense transaction.
+    func makeLoanPayment(_ loan: Loan, amount: Double) {
+        guard amount > 0 else { return }
+
+        // 1. Reduce loan balance
+        var updated = loan
+        updated.remainingBalance = max(0, updated.remainingBalance - amount)
+        updated.nextPaymentDate = Calendar.current.date(byAdding: .month, value: 1, to: loan.nextPaymentDate) ?? loan.nextPaymentDate
+        updated.updatedAt = Date()
+        updateLoan(updated)
+
+        // 2. Create expense transaction to deduct from liquid account
+        guard let liquidAccount = visibleAccounts.first(where: { $0.isLiquid }) else { return }
+        let loanCatId = categories.first(where: {
+            $0.parentCategory == .financial && $0.type == .expense
+        })?.id ?? categories.first(where: { $0.type == .expense })?.id ?? UUID()
+
+        let tx = Transaction(
+            amount: -amount,
+            categoryId: loanCatId,
+            accountId: liquidAccount.id,
+            merchant: loan.name,
+            note: "سداد قرض: \(loan.loanType.displayNameArabic)",
+            ownerUserId: currentUserId,
+            createdByUserId: currentUserId
+        )
+        addTransaction(tx)
+        logActivity(.transactionCreated, objectType: "loan", description: "سداد: \(loan.name)")
+    }
+
     func reset() {
         guard let user = UserService.shared.currentUser else { return }
         let hid = user.householdId
         let fs = FirestoreService.shared
-        // Delete all collections in Firestore
-        for collection in ["accounts", "transactions", "savingsGoals", "bills", "investments", "installmentPlans", "installments", "activityLog", "budgets"] {
+        for collection in ["accounts", "transactions", "savingsGoals", "bills", "investments",
+                           "installmentPlans", "installments", "activityLog", "budgets", "loans"] {
             fs.collection(collection, householdId: hid).getDocuments { snap, _ in
                 snap?.documents.forEach { $0.reference.delete() }
             }
         }
-        // Clear listeners will update local state to empty via snapshots
     }
 }
 

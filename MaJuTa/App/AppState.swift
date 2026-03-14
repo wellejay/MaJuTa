@@ -93,6 +93,7 @@ enum AppTab: String, CaseIterable {
     case transactions = "transactions"
     case goals        = "goals"
     case investments  = "investments"
+    case loans        = "loans"
     case family       = "family"
     case profile      = "profile"
 
@@ -102,6 +103,7 @@ enum AppTab: String, CaseIterable {
         case .transactions: return "المعاملات"
         case .goals:        return "الأهداف"
         case .investments:  return "الاستثمارات"
+        case .loans:        return "القروض"
         case .family:       return "العائلة"
         case .profile:      return "الحساب"
         }
@@ -113,6 +115,7 @@ enum AppTab: String, CaseIterable {
         case .transactions: return "arrow.left.arrow.right"
         case .goals:        return "target"
         case .investments:  return "chart.line.uptrend.xyaxis"
+        case .loans:        return "creditcard.fill"
         case .family:       return "person.2.fill"
         case .profile:      return "person.fill"
         }

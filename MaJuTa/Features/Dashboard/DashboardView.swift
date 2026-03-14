@@ -20,17 +20,17 @@ struct DashboardView: View {
         return .maJuTaPositive
     }
 
-    // Amount shown in the spending card — budget remaining when limit is set, otherwise safeToSpend
+    // Amount shown in the spending card — budget remaining when limit is set, otherwise income-based net
     var spendingCardAmount: Double {
         let limit = appState.spendingLimit
-        guard limit > 0 else { return dataStore.safeToSpend }
+        guard limit > 0 else { return dataStore.monthlyNetFromIncome }
         return max(0, limit - dataStore.discretionaryExpensesThisMonth)
     }
 
     var spendingCardLabel: String {
         let limit = appState.spendingLimit
         guard limit > 0 else {
-            return dataStore.safeToSpend >= 0 ? "المتاح للإنفاق" : "تجاوزت ميزانيتك"
+            return dataStore.monthlyNetFromIncome >= 0 ? "المتاح للإنفاق" : "تجاوزت ميزانيتك"
         }
         let remaining = limit - dataStore.discretionaryExpensesThisMonth
         return remaining < 0 ? "تجاوزت الحد بـ" : "باقي من ميزانيتك"
@@ -128,13 +128,13 @@ struct DashboardView: View {
 
                 Spacer()
 
-                // Safe To Spend (after all deductions)
+                // Income-based net available (income minus all outflows this month)
                 VStack(spacing: 4) {
-                    Text(dataStore.safeToSpend >= 0 ? "المتاح للإنفاق" : "تجاوزت الميزانية")
+                    Text(dataStore.monthlyNetFromIncome >= 0 ? "المتاح للإنفاق" : "تجاوزت الميزانية")
                         .font(.maJuTaCaption)
                         .foregroundColor(.white.opacity(0.7))
 
-                    SARText.hero(dataStore.safeToSpend, color: .white)
+                    SARText.hero(dataStore.monthlyNetFromIncome, color: .white)
 
                     HStack(spacing: MaJuTaSpacing.sm) {
                         HStack(spacing: 4) {

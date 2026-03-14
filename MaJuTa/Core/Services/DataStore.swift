@@ -209,6 +209,14 @@ final class DataStore: ObservableObject {
                       .reduce(0) { $0 + abs($1.amount) }
     }
 
+    /// Income-based available metric: income minus ALL outflows (expenses + savings + emergency + goals + bill payments).
+    /// This is what the user expects — "what's left from my ﷼35K after everything I've done this month."
+    var monthlyNetFromIncome: Double {
+        let monthly = CashFlowEngine.transactions(from: visibleTransactions, in: Date())
+        let allOutflows = monthly.filter { $0.amount < 0 }.reduce(0) { $0 + abs($1.amount) }
+        return effectiveMonthlyIncome - allOutflows
+    }
+
     // Discretionary spending this month — all negative transactions EXCEPT savings/investment/income categories and emergency deposits.
     // Uses exclusion (not inclusion) so transactions with unrecognized category IDs are still counted as expenses.
     var discretionaryExpensesThisMonth: Double {

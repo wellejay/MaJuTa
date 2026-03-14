@@ -278,6 +278,28 @@ final class DataStore: ObservableObject {
         FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
     }
 
+    func depositToEmergencyFund(amount: Double) {
+        guard amount > 0 else { return }
+        if var account = accounts.first(where: { $0.type == .savings }) {
+            account.balance += amount
+            account.updatedAt = Date()
+            if let idx = accounts.firstIndex(where: { $0.id == account.id }) { accounts[idx] = account }
+            FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
+        } else {
+            // No savings account yet — create one automatically
+            let account = Account(
+                name: "صندوق الطوارئ",
+                type: .savings,
+                balance: amount,
+                ownerUserId: currentUserId,
+                householdId: currentHouseholdId
+            )
+            accounts.append(account)
+            FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
+        }
+        logActivity(.transactionCreated, objectType: "account", description: "إيداع في صندوق الطوارئ")
+    }
+
     func deleteTransaction(_ id: UUID) {
         guard let t = transactions.first(where: { $0.id == id }) else { return }
         // Reverse balance: update account

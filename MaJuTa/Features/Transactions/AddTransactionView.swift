@@ -276,6 +276,7 @@ struct AddTransactionView: View {
     // MARK: - Save
     private func saveTransaction() {
         guard let cat = selectedCategory, let account = selectedAccount else { return }
+        let userId = UserService.shared.currentUser?.id ?? UUID()
         let tx = Transaction(
             amount: amount,
             date: selectedDate,
@@ -284,8 +285,8 @@ struct AddTransactionView: View {
             merchant: merchant,
             paymentMethod: selectedPaymentMethod,
             note: note,
-            ownerUserId: UUID(),
-            createdByUserId: UUID()
+            ownerUserId: userId,
+            createdByUserId: userId
         )
         dataStore.addTransaction(tx)
         dismiss()

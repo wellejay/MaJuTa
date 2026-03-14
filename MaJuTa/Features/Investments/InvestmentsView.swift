@@ -270,6 +270,7 @@ struct AssetDetailView: View {
 
                 // Update Price (Manual MVP)
                 Button {
+                    newPrice = String(format: "%.2f", asset.lastPrice)
                     showUpdatePrice = true
                 } label: {
                     Label("تحديث السعر يدوياً", systemImage: "arrow.clockwise")
@@ -287,6 +288,47 @@ struct AssetDetailView: View {
         .background(Color.maJuTaBackground)
         .navigationTitle(asset.name)
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showUpdatePrice) {
+            NavigationStack {
+                VStack(spacing: MaJuTaSpacing.lg) {
+                    HStack {
+                        TextField("0.00", text: $newPrice)
+                            .keyboardType(.decimalPad)
+                            .font(.maJuTaLargeNumber)
+                            .multilineTextAlignment(.trailing)
+                        Text("﷼")
+                            .font(.maJuTaTitle1)
+                            .foregroundColor(.maJuTaGold)
+                    }
+                    .padding(MaJuTaSpacing.md)
+                    .background(Color.maJuTaCard)
+                    .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
+                    .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
+                    .padding(.top, MaJuTaSpacing.xl)
+                    Spacer()
+                }
+                .background(Color.maJuTaBackground)
+                .navigationTitle("تحديث السعر")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("إلغاء") { showUpdatePrice = false }
+                            .foregroundColor(.maJuTaTextSecondary)
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("حفظ") {
+                            if let price = Double(newPrice), price > 0 {
+                                DataStore.shared.updateInvestmentPrice(assetId: asset.id, newPrice: price)
+                            }
+                            showUpdatePrice = false
+                        }
+                        .foregroundColor(.maJuTaGold)
+                        .font(.maJuTaBodyBold)
+                    }
+                }
+            }
+            .presentationDetents([.medium])
+        }
     }
 
     private func investmentStat(label: String, value: String, color: Color = .maJuTaTextPrimary) -> some View {
@@ -432,8 +474,8 @@ struct AddInvestmentView: View {
             units: Double(units) ?? 0,
             costBasis: Double(costBasis) ?? 0,
             lastPrice: Double(lastPrice) ?? 0,
-            ownerUserId: UUID(),
-            householdId: UUID()
+            ownerUserId: UserService.shared.currentUser?.id ?? UUID(),
+            householdId: UserService.shared.currentUser?.householdId ?? UUID()
         )
         dataStore.addInvestment(asset)
         dismiss()

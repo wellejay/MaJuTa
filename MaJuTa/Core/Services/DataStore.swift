@@ -72,7 +72,7 @@ final class DataStore: ObservableObject {
         listeners.append(fs.listen(collection: "activityLog", householdId: hid) { [weak self] (items: [ActivityEntry]) in
             self?.activityLog = items.sorted { $0.timestamp > $1.timestamp }
             if (self?.activityLog.count ?? 0) > 100 {
-                self?.activityLog = Array(self!.activityLog.prefix(100))
+                self?.activityLog = Array((self?.activityLog ?? []).prefix(100))
             }
         })
     }
@@ -364,6 +364,14 @@ final class DataStore: ObservableObject {
     }
 
     func addInvestment(_ asset: InvestmentAsset) {
+        FirestoreService.shared.save(asset, to: "investments", householdId: currentHouseholdId)
+    }
+
+    func updateInvestmentPrice(assetId: UUID, newPrice: Double) {
+        guard var asset = investments.first(where: { $0.id == assetId }) else { return }
+        asset.lastPrice = newPrice
+        asset.lastPriceUpdated = Date()
+        asset.updatedAt = Date()
         FirestoreService.shared.save(asset, to: "investments", householdId: currentHouseholdId)
     }
 

@@ -30,6 +30,10 @@ struct DashboardView: View {
             .background(Color.maJuTaBackground)
             .navigationBarHidden(true)
             .toolbar(.hidden, for: .navigationBar)
+            .sheet(isPresented: $showNotifications) {
+                NotificationsView()
+                    .environmentObject(dataStore)
+            }
         }
     }
 
@@ -405,6 +409,74 @@ struct DashboardView: View {
             .maJuTaCardShadow()
         }
         .buttonStyle(.plain)
+    }
+
+    // MARK: - Notifications Sheet
+    struct NotificationsView: View {
+        @EnvironmentObject var dataStore: DataStore
+        @Environment(\.dismiss) var dismiss
+
+        private var overdueBills: [Bill] {
+            dataStore.visibleBills.filter { $0.isOverdue }
+        }
+        private var dueSoonBills: [Bill] {
+            dataStore.visibleBills.filter { $0.isDueSoon && !$0.isOverdue && $0.status != .paid }
+        }
+
+        var body: some View {
+            NavigationStack {
+                ScrollView {
+                    VStack(spacing: MaJuTaSpacing.md) {
+                        if overdueBills.isEmpty && dueSoonBills.isEmpty {
+                            VStack(spacing: MaJuTaSpacing.md) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 48)).foregroundColor(.maJuTaPositive)
+                                Text("لا توجد إشعارات جديدة")
+                                    .font(.maJuTaBody).foregroundColor(.maJuTaTextSecondary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(MaJuTaSpacing.xxl)
+                        }
+                        if !overdueBills.isEmpty {
+                            notifSection(title: "فواتير متأخرة", color: .maJuTaNegative, bills: overdueBills)
+                        }
+                        if !dueSoonBills.isEmpty {
+                            notifSection(title: "فواتير تستحق قريباً", color: .maJuTaWarning, bills: dueSoonBills)
+                        }
+                    }
+                    .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
+                    .padding(.vertical, MaJuTaSpacing.md)
+                }
+                .background(Color.maJuTaBackground)
+                .navigationTitle("الإشعارات")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("إغلاق") { dismiss() }
+                            .foregroundColor(.maJuTaTextSecondary)
+                    }
+                }
+            }
+        }
+
+        private func notifSection(title: String, color: Color, bills: [Bill]) -> some View {
+            VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
+                Text(title).font(.maJuTaCaption).foregroundColor(color)
+                VStack(spacing: MaJuTaSpacing.xs) {
+                    ForEach(bills) { bill in
+                        HStack {
+                            SARText.bodyBold(bill.amount, color: color)
+                            Spacer()
+                            Text(bill.nameArabic.isEmpty ? bill.name : bill.nameArabic)
+                                .font(.maJuTaBody).foregroundColor(.maJuTaTextPrimary)
+                        }
+                        .padding(MaJuTaSpacing.md)
+                        .background(color.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
+                    }
+                }
+            }
+        }
     }
 
     // MARK: - Empty State

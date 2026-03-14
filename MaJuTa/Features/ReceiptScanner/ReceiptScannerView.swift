@@ -102,7 +102,7 @@ struct ReceiptScannerView: View {
                         .maJuTaCardShadow()
                     }
 
-                    Button("إنشاء معاملة") { dismiss() }
+                    Button("إنشاء معاملة") { createTransaction(from: data) }
                         .font(.maJuTaBodyBold).foregroundColor(.white)
                         .frame(maxWidth: .infinity).frame(height: 56)
                         .background(Color.maJuTaPrimary)
@@ -124,6 +124,28 @@ struct ReceiptScannerView: View {
             Spacer()
             Text(label).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
         }.padding(MaJuTaSpacing.md)
+    }
+
+    private func createTransaction(from data: ExtractedReceiptData) {
+        guard let user = UserService.shared.currentUser,
+              let account = dataStore.visibleAccounts.first,
+              let category = dataStore.categories.first(where: { $0.type == .expense }) else {
+            dismiss()
+            return
+        }
+        let tx = Transaction(
+            amount: -abs(data.total),
+            date: data.date,
+            categoryId: category.id,
+            accountId: account.id,
+            merchant: data.merchant,
+            paymentMethod: .mada,
+            note: "مسح فاتورة",
+            ownerUserId: user.id,
+            createdByUserId: user.id
+        )
+        dataStore.addTransaction(tx)
+        dismiss()
     }
 
     private func simulateOCR() {

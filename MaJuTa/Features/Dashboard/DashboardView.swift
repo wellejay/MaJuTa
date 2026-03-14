@@ -140,8 +140,8 @@ struct DashboardView: View {
                 color: .maJuTaNegative
             )
             cashFlowMiniCard(
-                title: "المدخرات",
-                amount: dataStore.monthlySavingsAllocation,
+                title: "الأهداف",
+                amount: dataStore.plannedSavingsThisMonth,
                 icon: "banknote.fill",
                 color: .maJuTaGold
             )

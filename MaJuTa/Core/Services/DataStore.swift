@@ -294,6 +294,16 @@ final class DataStore: ObservableObject {
         FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
     }
 
+    func withdrawFromEmergencyFund(amount: Double) {
+        guard amount > 0 else { return }
+        guard let idx = accounts.firstIndex(where: { $0.type == .savings }) else { return }
+        let newBalance = max(0, accounts[idx].balance - amount)
+        accounts[idx].balance = newBalance
+        accounts[idx].updatedAt = Date()
+        FirestoreService.shared.save(accounts[idx], to: "accounts", householdId: currentHouseholdId)
+        logActivity(.transactionCreated, objectType: "account", description: "سحب من صندوق الطوارئ")
+    }
+
     func depositToEmergencyFund(amount: Double) {
         guard amount > 0 else { return }
         if var account = accounts.first(where: { $0.type == .savings }) {

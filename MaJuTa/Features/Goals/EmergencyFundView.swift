@@ -3,6 +3,7 @@ import SwiftUI
 struct EmergencyFundView: View {
     @EnvironmentObject var dataStore: DataStore
     @State private var showAddFunds = false
+    @State private var showWithdraw = false
 
     var months: Double { dataStore.emergencyMonths }
     var balance: Double { dataStore.emergencyFundBalance }
@@ -41,17 +42,32 @@ struct EmergencyFundView: View {
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    showAddFunds = true
-                } label: {
-                    Label("أضف مبلغ", systemImage: "plus.circle.fill")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.maJuTaGold)
+                HStack(spacing: MaJuTaSpacing.sm) {
+                    Button {
+                        showWithdraw = true
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundColor(.maJuTaNegative)
+                    }
+                    .disabled(dataStore.emergencyFundBalance <= 0)
+
+                    Button {
+                        showAddFunds = true
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundColor(.maJuTaGold)
+                    }
                 }
             }
         }
         .sheet(isPresented: $showAddFunds) {
-            AddEmergencyFundsSheet()
+            EmergencyFundTransactionSheet(mode: .deposit)
+                .environmentObject(dataStore)
+        }
+        .sheet(isPresented: $showWithdraw) {
+            EmergencyFundTransactionSheet(mode: .withdrawal)
                 .environmentObject(dataStore)
         }
     }
@@ -188,26 +204,36 @@ struct EmergencyFundView: View {
     }
 }
 
-// MARK: - Add Funds Sheet
-private struct AddEmergencyFundsSheet: View {
+// MARK: - Unified Deposit / Withdrawal Sheet
+private struct EmergencyFundTransactionSheet: View {
+    enum Mode { case deposit, withdrawal }
+
+    let mode: Mode
     @EnvironmentObject var dataStore: DataStore
     @Environment(\.dismiss) private var dismiss
     @State private var amountText = ""
     @FocusState private var focused: Bool
 
     var amount: Double { Double(amountText) ?? 0 }
+    var balance: Double { dataStore.emergencyFundBalance }
+
+    var isDeposit: Bool { mode == .deposit }
+    var isValid: Bool {
+        amount > 0 && (isDeposit || amount <= balance)
+    }
 
     var body: some View {
         NavigationStack {
             VStack(spacing: MaJuTaSpacing.xl) {
+
                 VStack(spacing: MaJuTaSpacing.sm) {
-                    Image(systemName: "exclamationmark.shield.fill")
+                    Image(systemName: isDeposit ? "plus.circle.fill" : "minus.circle.fill")
                         .font(.system(size: 48))
-                        .foregroundColor(.maJuTaGold)
-                    Text("إضافة مبلغ لصندوق الطوارئ")
+                        .foregroundColor(isDeposit ? .maJuTaGold : .maJuTaNegative)
+                    Text(isDeposit ? "إضافة مبلغ لصندوق الطوارئ" : "سحب من صندوق الطوارئ")
                         .font(.maJuTaTitle2)
                         .foregroundColor(.maJuTaTextPrimary)
-                    Text("الرصيد الحالي: \(String(format: "%.0f", dataStore.emergencyFundBalance)) ﷼")
+                    Text("الرصيد الحالي: \(String(format: "%.0f", balance)) ﷼")
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaTextSecondary)
                 }
@@ -226,29 +252,45 @@ private struct AddEmergencyFundsSheet: View {
                         .background(Color.maJuTaBackground)
                         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
                         .focused($focused)
+
+                    // Withdrawal warning if amount exceeds balance
+                    if !isDeposit && amount > balance && amount > 0 {
+                        Text("لا يمكن سحب أكثر من الرصيد المتاح")
+                            .font(.maJuTaCaption)
+                            .foregroundColor(.maJuTaNegative)
+                    }
                 }
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
 
                 Button {
-                    guard amount > 0 else { return }
-                    dataStore.depositToEmergencyFund(amount: amount)
+                    guard isValid else { return }
+                    if isDeposit {
+                        dataStore.depositToEmergencyFund(amount: amount)
+                    } else {
+                        dataStore.withdrawFromEmergencyFund(amount: amount)
+                    }
                     dismiss()
                 } label: {
-                    Text("إضافة \(amount > 0 ? String(format: "%.0f ﷼", amount) : "")")
+                    let label = isDeposit
+                        ? "إضافة \(amount > 0 ? String(format: "%.0f ﷼", amount) : "")"
+                        : "سحب \(amount > 0 ? String(format: "%.0f ﷼", amount) : "")"
+                    Text(label)
                         .font(.maJuTaBodyBold)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(MaJuTaSpacing.md)
-                        .background(amount > 0 ? Color.maJuTaGold : Color.maJuTaTextSecondary)
+                        .background(isValid
+                            ? (isDeposit ? Color.maJuTaGold : Color.maJuTaNegative)
+                            : Color.maJuTaTextSecondary)
                         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
                 }
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
-                .disabled(amount <= 0)
+                .disabled(!isValid)
 
                 Spacer()
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("إضافة مبلغ")
+            .navigationTitle(isDeposit ? "إضافة مبلغ" : "سحب مبلغ")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

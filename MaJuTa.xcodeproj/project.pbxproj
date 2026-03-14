@@ -66,6 +66,7 @@
 		EDDD4EE4E6A8AC6007AAF8BA /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 428553479B935134F39F1CA3 /* FirebaseFirestore */; };
 		EF80C4ECFFEF0ADB2ECD37FB /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A2D435B2E123A492E3A382 /* DashboardView.swift */; };
 		F96A8F7754B19B74F9727465 /* FinancialHealthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FCFB50A4AFDF562092EB7A /* FinancialHealthView.swift */; };
+		D5E8A91B2C3F4D7EA5B6C8D9 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A3F72B8C1D4E5F60A3F72B8C /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -139,6 +140,7 @@
 		F598BE42575CC78157DD16C9 /* CashFlowEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CashFlowEngine.swift; sourceTree = "<group>"; };
 		FC3DE5F745967075E631B528 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FEEBEBF16273EC1E2C770C94 /* Investment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Investment.swift; sourceTree = "<group>"; };
+		A3F72B8C1D4E5F60A3F72B8C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -253,6 +255,7 @@
 				FC3DE5F745967075E631B528 /* Assets.xcassets */,
 				4FD399FF5E5A91F337AF1CE9 /* GoogleService-Info.plist */,
 				34473F873A57A7DE2AC94990 /* Info.plist */,
+				A3F72B8C1D4E5F60A3F72B8C /* PrivacyInfo.xcprivacy */,
 				5A5EAE96639320F74F515704 /* MaJuTa.entitlements */,
 				B78290C4DE1249480C40582E /* Fonts */,
 			);
@@ -566,6 +569,7 @@
 				3C07C1ED94CC7486509AF482 /* Assets.xcassets in Resources */,
 				2831D2E900B0BADF093374D9 /* GoogleService-Info.plist in Resources */,
 				10AD8AA6A0644341B05CC79A /* SaudiRiyal.ttf in Resources */,
+				D5E8A91B2C3F4D7EA5B6C8D9 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

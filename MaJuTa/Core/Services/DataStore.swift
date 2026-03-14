@@ -143,6 +143,13 @@ final class DataStore: ObservableObject {
         return CashFlowEngine.totalIncome(from: monthly)
     }
 
+    /// Actual transaction income if available; falls back to the declared salary stored in Keychain.
+    var effectiveMonthlyIncome: Double {
+        let tx = monthlyIncome()
+        if tx > 0 { return tx }
+        return KeychainService.getDouble(for: "monthlyIncome") ?? 0
+    }
+
     func monthlyExpenses(for date: Date = Date()) -> Double {
         let monthly = CashFlowEngine.transactions(from: visibleTransactions, in: date)
         return CashFlowEngine.totalExpenses(from: monthly)
@@ -196,7 +203,7 @@ final class DataStore: ObservableObject {
     }
 
     var emergencyMonthlyContribution: Double {
-        max(0, monthlyIncome() * 0.10)
+        max(0, effectiveMonthlyIncome * 0.10)
     }
 
     var emergencyFundBalance: Double {
@@ -242,7 +249,7 @@ final class DataStore: ObservableObject {
 
     // Bills + BNPL installments = total monthly fixed obligations
     var fixedObligationRatio: Double {
-        let income = monthlyIncome()
+        let income = effectiveMonthlyIncome
         guard income > 0 else { return 0 }
         return CashFlowEngine.fixedObligationRatio(
             fixedExpenses: upcomingBillsTotal + monthlyInstallmentPayments,

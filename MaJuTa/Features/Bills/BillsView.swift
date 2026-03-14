@@ -5,10 +5,10 @@ struct BillsView: View {
     @State private var showAddBill = false
 
     var upcomingBills: [Bill] {
-        dataStore.bills.filter { $0.status == .upcoming }.sorted { $0.dueDate < $1.dueDate }
+        dataStore.visibleBills.filter { $0.status == .upcoming && !$0.isOverdue }.sorted { $0.dueDate < $1.dueDate }
     }
-    var paidBills: [Bill] { dataStore.bills.filter { $0.status == .paid } }
-    var overdueBills: [Bill] { dataStore.bills.filter { $0.isOverdue } }
+    var paidBills: [Bill] { dataStore.visibleBills.filter { $0.status == .paid }.sorted { $0.dueDate > $1.dueDate } }
+    var overdueBills: [Bill] { dataStore.visibleBills.filter { $0.isOverdue }.sorted { $0.dueDate < $1.dueDate } }
 
     var body: some View {
         NavigationStack {
@@ -18,7 +18,7 @@ struct BillsView: View {
                     if !overdueBills.isEmpty { billSection(title: "متأخرة", bills: overdueBills, color: .maJuTaNegative) }
                     if !upcomingBills.isEmpty { billSection(title: "قادمة", bills: upcomingBills, color: .maJuTaGold) }
                     if !paidBills.isEmpty { billSection(title: "مدفوعة", bills: paidBills, color: .maJuTaPositive) }
-                    if dataStore.bills.isEmpty { emptyBillsState }
+                    if dataStore.visibleBills.isEmpty { emptyBillsState }
                 }
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
                 .padding(.vertical, MaJuTaSpacing.md)

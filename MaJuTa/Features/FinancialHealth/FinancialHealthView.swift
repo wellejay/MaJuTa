@@ -6,8 +6,8 @@ struct FinancialHealthView: View {
     var score: FinancialHealthScore {
         FinancialHealthEngine.calculateScore(
             savingsRate: CashFlowEngine.savingsRate(
-                savingsContributions: dataStore.plannedSavingsThisMonth,
-                disposableIncome: dataStore.monthlyIncome()
+                savingsContributions: max(0, dataStore.netCashFlow()),
+                disposableIncome: dataStore.effectiveMonthlyIncome
             ),
             emergencyMonths: dataStore.emergencyMonths,
             debtRatio: dataStore.fixedObligationRatio,
@@ -119,9 +119,19 @@ struct FinancialHealthView: View {
                         ? "لديك \(String(format: "%.1f", dataStore.emergencyMonths)) أشهر من التغطية"
                         : "يُنصح بتوفير \(String(format: "%.1f", max(3 - dataStore.emergencyMonths, 0))) أشهر إضافية"
                 )
-                insightCard(icon: "chart.line.uptrend.xyaxis", color: .maJuTaGold,
-                            title: "زيادة معدل الادخار",
-                            description: "حاول رفع نسبة الادخار إلى 20% من الدخل الشهري")
+                let actualRate = CashFlowEngine.savingsRate(
+                    savingsContributions: max(0, dataStore.netCashFlow()),
+                    disposableIncome: dataStore.effectiveMonthlyIncome
+                )
+                let rateColor: Color = actualRate >= 20 ? .maJuTaPositive : .maJuTaGold
+                insightCard(
+                    icon: "chart.line.uptrend.xyaxis",
+                    color: rateColor,
+                    title: actualRate >= 20 ? "معدل الادخار ممتاز" : "زيادة معدل الادخار",
+                    description: actualRate >= 20
+                        ? "معدل ادخارك الحالي \(Int(actualRate))% — أعلى من الهدف المثالي 20%"
+                        : "معدل ادخارك الحالي \(Int(actualRate))%، حاول رفعه إلى 20% من الدخل الشهري"
+                )
             }
         }
     }

@@ -177,9 +177,9 @@ struct DashboardView: View {
                         .foregroundColor(.maJuTaTextSecondary)
                 }
                 Spacer()
-                Text("يمكنك إنفاق اليوم")
+                Text(dataStore.safeToSpend >= 0 ? "يمكنك إنفاق اليوم" : "تجاوزت ميزانيتك بـ")
                     .font(.maJuTaCaptionMedium)
-                    .foregroundColor(.maJuTaTextSecondary)
+                    .foregroundColor(dataStore.safeToSpend >= 0 ? .maJuTaTextSecondary : .maJuTaNegative)
             }
 
             HStack(alignment: .lastTextBaseline, spacing: 4) {
@@ -248,8 +248,8 @@ struct DashboardView: View {
             metricCard(
                 title: "معدل الادخار",
                 value: String(format: "%.0f", CashFlowEngine.savingsRate(
-                    savingsContributions: dataStore.plannedSavingsThisMonth,
-                    disposableIncome: dataStore.monthlyIncome()
+                    savingsContributions: max(0, dataStore.netCashFlow()),
+                    disposableIncome: dataStore.effectiveMonthlyIncome
                 )),
                 suffix: "%",
                 icon: "percent",
@@ -352,8 +352,8 @@ struct DashboardView: View {
         NavigationLink(destination: FinancialHealthView()) {
             let score = FinancialHealthEngine.calculateScore(
                 savingsRate: CashFlowEngine.savingsRate(
-                    savingsContributions: dataStore.plannedSavingsThisMonth,
-                    disposableIncome: dataStore.monthlyIncome()
+                    savingsContributions: max(0, dataStore.netCashFlow()),
+                    disposableIncome: dataStore.effectiveMonthlyIncome
                 ),
                 emergencyMonths: dataStore.emergencyMonths,
                 debtRatio: dataStore.fixedObligationRatio,

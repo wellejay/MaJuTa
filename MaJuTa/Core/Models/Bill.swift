@@ -59,7 +59,7 @@ struct Bill: Identifiable, Codable {
     }
 
     var isOverdue: Bool { dueDate < Date() && status != .paid }
-    var isDueSoon: Bool { daysUntilDue <= 3 && daysUntilDue >= 0 }
+    var isDueSoon: Bool { daysUntilDue >= 0 && daysUntilDue <= 7 && status != .paid }
 }
 
 enum BillStatus: String, Codable {

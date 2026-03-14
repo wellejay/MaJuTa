@@ -62,11 +62,15 @@ final class FirestoreService {
     }
 
     // MARK: - Invite Codes
-    func saveInviteCode(_ code: String, householdId: UUID) {
-        db.collection("inviteCodes").document(code).setData([
+    func saveInviteCode(_ code: String, householdId: UUID, expiresAt: Date? = nil) {
+        var data: [String: Any] = [
             "householdId": householdId.uuidString,
             "createdAt": FieldValue.serverTimestamp()
-        ], merge: true)
+        ]
+        if let expiry = expiresAt {
+            data["expiresAt"] = Timestamp(date: expiry)
+        }
+        db.collection("inviteCodes").document(code).setData(data, merge: true)
     }
 
     func findHousehold(byCode code: String) async -> RegisteredHousehold? {
@@ -74,7 +78,22 @@ final class FirestoreService {
               doc.exists,
               let idStr = doc.data()?["householdId"] as? String,
               let id = UUID(uuidString: idStr) else { return nil }
+        // S2: Check expiry
+        if let expiresAt = (doc.data()?["expiresAt"] as? Timestamp)?.dateValue(),
+           expiresAt < Date() {
+            return nil   // Code expired
+        }
         return await loadHousehold(id: id)
+    }
+
+    // MARK: - Username Uniqueness (S6)
+    func isUsernameAvailable(_ username: String) async -> Bool {
+        let lower = username.lowercased()
+        let snap = try? await db.collection("users")
+            .whereField("username", isEqualTo: lower)
+            .limit(to: 1)
+            .getDocuments()
+        return snap?.documents.isEmpty ?? true
     }
 
     // MARK: - Generic Collection Operations

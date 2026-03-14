@@ -188,22 +188,35 @@ final class DataStore: ObservableObject {
         visibleGoals.reduce(0) { $0 + $1.currentAmount }
     }
 
-    // Actual goal contributions made this month (creates transactions, so tracked in cashflow)
+    // Actual goal contributions made this month (excludes emergency fund deposits)
     var goalContributionsThisMonth: Double {
         let savingsCatIds = Set(categories.filter { $0.type == .savings }.map { $0.id })
         let monthly = CashFlowEngine.transactions(from: visibleTransactions, in: Date())
-        return monthly.filter { savingsCatIds.contains($0.categoryId) && $0.amount < 0 }
-                      .reduce(0) { $0 + abs($1.amount) }
+        return monthly.filter {
+            savingsCatIds.contains($0.categoryId) && $0.amount < 0 &&
+            $0.merchant != "صندوق الطوارئ"
+        }.reduce(0) { $0 + abs($1.amount) }
+    }
+
+    // Actual emergency fund deposits made this month (tracked via savings transactions)
+    var emergencyDepositsThisMonth: Double {
+        let savingsCatIds = Set(categories.filter { $0.type == .savings }.map { $0.id })
+        let monthly = CashFlowEngine.transactions(from: visibleTransactions, in: Date())
+        return monthly.filter {
+            savingsCatIds.contains($0.categoryId) && $0.amount < 0 &&
+            $0.merchant == "صندوق الطوارئ"
+        }.reduce(0) { $0 + abs($1.amount) }
     }
 
     var safeToSpend: Double {
-        // Subtract only REMAINING planned savings (already-contributed amounts are reflected in liquidCash)
+        // Only reserve what's NOT yet contributed to savings or emergency fund this month
         let remainingPlanned = max(0, plannedSavingsThisMonth - goalContributionsThisMonth)
+        let remainingEmergency = max(0, emergencyMonthlyContribution - emergencyDepositsThisMonth)
         return CashFlowEngine.safeToSpend(
             liquidCash: totalLiquidCash,
             upcomingBills: upcomingBillsTotal,
             plannedSavings: remainingPlanned,
-            emergencyContribution: emergencyMonthlyContribution
+            emergencyContribution: remainingEmergency
         )
     }
 
@@ -398,34 +411,62 @@ final class DataStore: ObservableObject {
 
     func withdrawFromEmergencyFund(amount: Double) {
         guard amount > 0 else { return }
-        guard let idx = accounts.firstIndex(where: { $0.type == .savings }) else { return }
-        let newBalance = max(0, accounts[idx].balance - amount)
-        accounts[idx].balance = newBalance
-        accounts[idx].updatedAt = Date()
-        FirestoreService.shared.save(accounts[idx], to: "accounts", householdId: currentHouseholdId)
+        guard let savingsIdx = accounts.firstIndex(where: { $0.type == .savings }) else { return }
+
+        let actualWithdrawal = min(amount, accounts[savingsIdx].balance)
+        guard actualWithdrawal > 0 else { return }
+
+        // 1. Decrease savings account
+        accounts[savingsIdx].balance -= actualWithdrawal
+        accounts[savingsIdx].updatedAt = Date()
+        FirestoreService.shared.save(accounts[savingsIdx], to: "accounts", householdId: currentHouseholdId)
+
+        // 2. Add back to liquid account (direct balance update — this is a transfer, not income)
+        if var liquid = accounts.first(where: { $0.isLiquid }) {
+            liquid.balance += actualWithdrawal
+            liquid.updatedAt = Date()
+            if let lIdx = accounts.firstIndex(where: { $0.id == liquid.id }) { accounts[lIdx] = liquid }
+            FirestoreService.shared.save(liquid, to: "accounts", householdId: currentHouseholdId)
+        }
+
         logActivity(.transactionCreated, objectType: "account", description: "سحب من صندوق الطوارئ")
     }
 
     func depositToEmergencyFund(amount: Double) {
         guard amount > 0 else { return }
-        if var account = accounts.first(where: { $0.type == .savings }) {
-            account.balance += amount
-            account.updatedAt = Date()
-            if let idx = accounts.firstIndex(where: { $0.id == account.id }) { accounts[idx] = account }
-            FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
+        guard let liquidAccount = visibleAccounts.first(where: { $0.isLiquid }) else { return }
+
+        // 1. Increase savings account balance
+        if var savings = accounts.first(where: { $0.type == .savings }) {
+            savings.balance += amount
+            savings.updatedAt = Date()
+            if let idx = accounts.firstIndex(where: { $0.id == savings.id }) { accounts[idx] = savings }
+            FirestoreService.shared.save(savings, to: "accounts", householdId: currentHouseholdId)
         } else {
-            // No savings account yet — create one automatically
-            let account = Account(
+            // Create savings account automatically
+            let savings = Account(
                 name: "صندوق الطوارئ",
                 type: .savings,
                 balance: amount,
                 ownerUserId: currentUserId,
                 householdId: currentHouseholdId
             )
-            accounts.append(account)
-            FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
+            accounts.append(savings)
+            FirestoreService.shared.save(savings, to: "accounts", householdId: currentHouseholdId)
         }
-        logActivity(.transactionCreated, objectType: "account", description: "إيداع في صندوق الطوارئ")
+
+        // 2. Create savings transaction — deducts liquid account in cashflow
+        let savingsCatId = categories.first(where: { $0.type == .savings })?.id ?? UUID()
+        let tx = Transaction(
+            amount: -amount,
+            categoryId: savingsCatId,
+            accountId: liquidAccount.id,
+            merchant: "صندوق الطوارئ",
+            note: "إيداع في صندوق الطوارئ",
+            ownerUserId: currentUserId,
+            createdByUserId: currentUserId
+        )
+        addTransaction(tx)
     }
 
     func deleteTransaction(_ id: UUID) {

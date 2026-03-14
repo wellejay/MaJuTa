@@ -226,7 +226,7 @@ struct DashboardView: View {
                 Spacer()
                 breakdownItem(label: "فواتير قادمة", amount: dataStore.upcomingBillsTotal, color: .maJuTaWarning)
                 breakdownItem(label: "مدخرات مخططة", amount: dataStore.plannedSavingsThisMonth, color: .maJuTaGold)
-                breakdownItem(label: "طوارئ", amount: dataStore.emergencyMonthlyContribution, color: .maJuTaPositive)
+                emergencyBreakdownItem
             }
             .padding(.top, 4)
         }
@@ -253,6 +253,23 @@ struct DashboardView: View {
             Text(label)
                 .font(.maJuTaLabel)
                 .foregroundColor(.maJuTaTextSecondary)
+        }
+    }
+
+    /// Emergency fund breakdown item — shows actual funded amount this month with status color.
+    private var emergencyBreakdownItem: some View {
+        let deposited = dataStore.emergencyDepositsThisMonth
+        let target = dataStore.emergencyMonthlyContribution
+        let color: Color = deposited >= target && target > 0 ? .maJuTaPositive
+                         : deposited == 0 ? .maJuTaNegative
+                         : .maJuTaWarning
+        let label: String = deposited >= target && target > 0 ? "طوارئ ✓" : "طوارئ"
+
+        return VStack(alignment: .trailing, spacing: 2) {
+            SARText.compact(deposited > 0 ? deposited : target, color: color)
+            Text(label)
+                .font(.maJuTaLabel)
+                .foregroundColor(color)
         }
     }
 

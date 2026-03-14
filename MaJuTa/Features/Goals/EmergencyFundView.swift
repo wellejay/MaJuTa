@@ -24,6 +24,9 @@ struct EmergencyFundView: View {
                 // Hero
                 heroSection
 
+                // Monthly contribution status
+                monthlyStatusCard
+
                 // Coverage Detail
                 coverageDetail
 
@@ -105,6 +108,42 @@ struct EmergencyFundView: View {
         .frame(maxWidth: .infinity)
         .padding(MaJuTaSpacing.xl)
         .background(Color.maJuTaCard)
+        .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
+        .maJuTaCardShadow()
+    }
+
+    // MARK: - Monthly Status
+    private var monthlyStatusCard: some View {
+        let deposited = dataStore.emergencyDepositsThisMonth
+        let target = dataStore.emergencyMonthlyContribution
+        let isCompleted = deposited >= target && target > 0
+        let isNotStarted = deposited == 0
+        let bgColor: Color = isCompleted ? .maJuTaPositive : isNotStarted ? .maJuTaNegative : .maJuTaWarning
+
+        return HStack(spacing: MaJuTaSpacing.md) {
+            VStack(alignment: .trailing, spacing: MaJuTaSpacing.xs) {
+                Text(isCompleted ? "اكتملت مساهمة الشهر ✓" :
+                     isNotStarted ? "لم تُموَّل هذا الشهر بعد" :
+                     "مساهمة جزئية هذا الشهر")
+                    .font(.maJuTaBodyMedium)
+                    .foregroundColor(.white)
+
+                HStack(spacing: 4) {
+                    if deposited > 0 {
+                        SARText.compact(deposited, color: .white)
+                        Text("من").font(.maJuTaCaption).foregroundColor(.white.opacity(0.8))
+                    }
+                    SARText.compact(target, color: .white.opacity(0.85))
+                    Text("المستهدف الشهري").font(.maJuTaCaption).foregroundColor(.white.opacity(0.8))
+                }
+            }
+            Spacer()
+            Image(systemName: isCompleted ? "checkmark.seal.fill" : isNotStarted ? "exclamationmark.circle.fill" : "arrow.up.circle.fill")
+                .font(.system(size: 36))
+                .foregroundColor(.white.opacity(0.85))
+        }
+        .padding(MaJuTaSpacing.lg)
+        .background(bgColor)
         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
         .maJuTaCardShadow()
     }

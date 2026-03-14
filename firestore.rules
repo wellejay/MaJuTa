@@ -1,0 +1,146 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Resolve the authenticated user's household from the authLookup table.
+    function authLookup() {
+      return get(/databases/$(database)/documents/authLookup/$(request.auth.uid)).data;
+    }
+
+    function myHouseholdId() {
+      return authLookup().householdId;
+    }
+
+    function myUserId() {
+      return authLookup().userId;
+    }
+
+    function myRole() {
+      return get(/databases/$(database)/documents/users/$(myUserId())).data.role;
+    }
+
+    function isOwner()    { return myRole() == 'owner'; }
+    function isAdmin()    { return myRole() == 'admin'; }
+    function isMember()   { return myRole() == 'member'; }
+
+    function canWrite()   { return isOwner() || isAdmin(); }
+    function canAddTx()   { return isOwner() || isAdmin() || isMember(); }
+
+    // ── Users ─────────────────────────────────────────────────────────────────
+    match /users/{userId} {
+      // Any signed-in user can read their own profile; household members can
+      // read profiles of people in the same household.
+      allow read: if isSignedIn() &&
+        (userId == myUserId() ||
+         get(/databases/$(database)/documents/users/$(userId)).data.householdId == myHouseholdId());
+      // Only the owner of the profile can write it (or owner/admin for role updates).
+      allow write: if isSignedIn() &&
+        (userId == myUserId() || canWrite());
+    }
+
+    // ── Households ────────────────────────────────────────────────────────────
+    match /households/{householdId} {
+      allow read:  if isSignedIn() && householdId == myHouseholdId();
+      allow write: if isSignedIn() && householdId == myHouseholdId() && isOwner();
+
+      // ── Accounts ────────────────────────────────────────────────────────────
+      match /accounts/{accountId} {
+        allow read: if isSignedIn() && householdId == myHouseholdId();
+        allow create: if isSignedIn() && householdId == myHouseholdId() && canWrite();
+        allow update: if isSignedIn() && householdId == myHouseholdId() &&
+          (canWrite() ||
+           // Members can only update accounts they own
+           (isMember() && resource.data.ownerUserId == myUserId()));
+        allow delete: if isSignedIn() && householdId == myHouseholdId() && isOwner();
+      }
+
+      // ── Transactions ────────────────────────────────────────────────────────
+      match /transactions/{txId} {
+        allow read: if isSignedIn() && householdId == myHouseholdId();
+        allow create: if isSignedIn() && householdId == myHouseholdId() && canAddTx();
+        allow update: if isSignedIn() && householdId == myHouseholdId() &&
+          (canWrite() || resource.data.createdByUserId == myUserId());
+        allow delete: if isSignedIn() && householdId == myHouseholdId() &&
+          (isOwner() || resource.data.createdByUserId == myUserId());
+      }
+
+      // ── Savings Goals ────────────────────────────────────────────────────────
+      match /savingsGoals/{goalId} {
+        allow read: if isSignedIn() && householdId == myHouseholdId();
+        allow write: if isSignedIn() && householdId == myHouseholdId() && canWrite();
+      }
+
+      // ── Bills ────────────────────────────────────────────────────────────────
+      match /bills/{billId} {
+        allow read: if isSignedIn() && householdId == myHouseholdId();
+        allow write: if isSignedIn() && householdId == myHouseholdId() && canAddTx();
+      }
+
+      // ── Investments ──────────────────────────────────────────────────────────
+      match /investments/{investmentId} {
+        allow read: if isSignedIn() && householdId == myHouseholdId();
+        allow write: if isSignedIn() && householdId == myHouseholdId() && canWrite();
+      }
+
+      // ── Installment Plans + Installments ────────────────────────────────────
+      match /installmentPlans/{planId} {
+        allow read: if isSignedIn() && householdId == myHouseholdId();
+        allow write: if isSignedIn() && householdId == myHouseholdId() && canAddTx();
+      }
+
+      match /installments/{installmentId} {
+        allow read: if isSignedIn() && householdId == myHouseholdId();
+        allow write: if isSignedIn() && householdId == myHouseholdId() && canAddTx();
+      }
+
+      // ── Activity Log ─────────────────────────────────────────────────────────
+      match /activityLog/{entryId} {
+        allow read: if isSignedIn() && householdId == myHouseholdId();
+        allow create: if isSignedIn() && householdId == myHouseholdId();
+        allow update, delete: if false;   // Immutable log
+      }
+
+      // ── Budgets ──────────────────────────────────────────────────────────────
+      match /budgets/{budgetId} {
+        allow read: if isSignedIn() && householdId == myHouseholdId();
+        allow write: if isSignedIn() && householdId == myHouseholdId() && canWrite();
+      }
+    }
+
+    // ── Auth Lookup ───────────────────────────────────────────────────────────
+    // Written only during registration; readable by the owning Firebase user only.
+    match /authLookup/{uid} {
+      allow read: if isSignedIn() && uid == request.auth.uid;
+      allow write: if isSignedIn() && uid == request.auth.uid;
+    }
+
+    // ── Invite Codes ─────────────────────────────────────────────────────────
+    // Anyone can read (to validate a code); only authenticated users can create.
+    // Deletion only by household owner.
+    match /inviteCodes/{code} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow delete: if isSignedIn() &&
+        resource.data.householdId == myHouseholdId() && isOwner();
+      allow update: if false;
+    }
+
+    // ── Auth Logs ─────────────────────────────────────────────────────────────
+    // Write-only from the app; readable only by owners for audit purposes.
+    match /authLogs/{logId} {
+      allow create: if isSignedIn();
+      allow read: if false;    // No client-side read — review via Firebase console
+      allow update, delete: if false;
+    }
+
+    // Deny everything else by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

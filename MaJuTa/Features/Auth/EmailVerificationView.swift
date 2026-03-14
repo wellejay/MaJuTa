@@ -127,13 +127,7 @@ struct EmailVerificationView: View {
                     }
                     .disabled(isResending)
 
-                    // Skip
-                    Button("تخطى للآن") {
-                        finishAndProceed()
-                    }
-                    .font(.maJuTaCaption)
-                    .foregroundColor(.white.opacity(0.45))
-                    .padding(.top, 4)
+                    // S4: Skip removed — email verification is required
                 }
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
                 .padding(.bottom, 48)

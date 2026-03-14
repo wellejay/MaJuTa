@@ -15,6 +15,8 @@ struct MaJuTaApp: App {
     @StateObject private var appState = AppState()
     @StateObject private var authService = AuthenticationService()
     @ObservedObject private var userService = UserService.shared
+    @Environment(\.scenePhase) private var scenePhase
+
     var body: some Scene {
         WindowGroup {
             Group {
@@ -40,11 +42,30 @@ struct MaJuTaApp: App {
                     }
                 }
             }
+            // S5: Privacy screen — blur financial content in App Switcher and when app is inactive
+            .overlay {
+                if scenePhase != .active {
+                    ZStack {
+                        Color.black.opacity(0.85)
+                        VStack(spacing: 16) {
+                            Image(systemName: "lock.shield.fill")
+                                .font(.system(size: 60))
+                                .foregroundColor(.white.opacity(0.6))
+                            Text("MaJuTa")
+                                .font(.system(size: 28, weight: .bold))
+                                .foregroundColor(.white.opacity(0.8))
+                            Text("محتوى مالي محمي")
+                                .font(.system(size: 14))
+                                .foregroundColor(.white.opacity(0.5))
+                        }
+                    }
+                    .ignoresSafeArea()
+                }
+            }
             .environment(\.layoutDirection, .rightToLeft)
             .preferredColorScheme(appState.colorScheme)
             .task { appState.loadProfileImage() }
-            // Handle majuta://email-verified deep link sent from the Firebase Hosting
-            // redirect page after the user taps the verification link in their email.
+            // Handle majuta://email-verified deep link
             .onOpenURL { url in
                 guard url.scheme == "majuta",
                       url.host == "email-verified" else { return }

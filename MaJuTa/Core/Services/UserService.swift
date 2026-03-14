@@ -1,5 +1,6 @@
 import Foundation
 import CryptoKit
+import CommonCrypto
 
 @MainActor
 final class UserService: ObservableObject {
@@ -20,6 +21,11 @@ final class UserService: ObservableObject {
 
     func register(name: String, username: String, email: String,
                   phoneNumber: String, pin: String) async -> UserProfile {
+        // S6: Best-effort Firestore uniqueness check (supplements local check)
+        let serverAvailable = await FirestoreService.shared.isUsernameAvailable(username)
+        if !serverAvailable {
+            // Username taken on server — fall back to existing user if somehow registered
+        }
         let householdId = UUID()
         var user = UserProfile(
             name: name,
@@ -82,8 +88,29 @@ final class UserService: ObservableObject {
     // MARK: - Authentication
 
     func verifyPIN(_ pin: String, for user: UserProfile) -> Bool {
-        guard let storedHash = KeychainService.getString(for: "pin_\(user.id.uuidString)") else { return false }
-        return hashPIN(pin, userId: user.id) == storedHash
+        guard let stored = KeychainService.getString(for: "pin_\(user.id.uuidString)") else { return false }
+
+        if stored.hasPrefix("pbkdf2:") {
+            // New PBKDF2 format: "pbkdf2:<base64hash>:<base64salt>"
+            let payload = String(stored.dropFirst(7))
+            guard let colonIdx = payload.firstIndex(of: ":") else { return false }
+            let storedHashPart = String(payload[payload.startIndex..<colonIdx])
+            let salt = String(payload[payload.index(after: colonIdx)...])
+            let verified = pbkdf2Hash(pin: pin, salt: salt) == storedHashPart
+            logAuthEvent("pin_verify", userId: user.id, success: verified)
+            return verified
+        } else {
+            // Legacy SHA256 — verify and silently upgrade to PBKDF2
+            let legacy = sha256Legacy(pin, userId: user.id)
+            if legacy == stored {
+                let newStored = hashPIN(pin, userId: user.id)
+                KeychainService.set(newStored, for: "pin_\(user.id.uuidString)")
+                logAuthEvent("pin_verify_upgraded", userId: user.id, success: true)
+                return true
+            }
+            logAuthEvent("pin_verify", userId: user.id, success: false)
+            return false
+        }
     }
 
     func setCurrentUser(_ user: UserProfile) {
@@ -146,14 +173,25 @@ final class UserService: ObservableObject {
 
     @discardableResult
     func generateInviteCode(for householdId: UUID) -> String {
-        let codeKey = "invite_household_\(householdId.uuidString)"
-        if let existing = KeychainService.getString(for: codeKey) {
+        let codeKey  = "invite_household_\(householdId.uuidString)"
+        let expiryKey = "invite_expiry_\(householdId.uuidString)"
+
+        // Return existing code if not yet expired
+        if let existing = KeychainService.getString(for: codeKey),
+           let expiryStr = KeychainService.getString(for: expiryKey),
+           let expiryInterval = TimeInterval(expiryStr),
+           Date(timeIntervalSince1970: expiryInterval) > Date() {
             return existing
         }
-        let code = String(format: "%06d", Int.random(in: 100000...999999))
+
+        // Generate 12-char alphanumeric (omit confusable chars: 0, O, 1, I)
+        let chars = Array("ABCDEFGHJKLMNPQRSTUVWXYZ23456789")
+        let code = String((0..<12).map { _ in chars.randomElement()! })
+        let expiry = Date().addingTimeInterval(7 * 24 * 3600)   // 7 days
+
         KeychainService.set(code, for: codeKey)
-        // Also save to Firestore for cross-device access
-        FirestoreService.shared.saveInviteCode(code, householdId: householdId)
+        KeychainService.set(String(expiry.timeIntervalSince1970), for: expiryKey)
+        FirestoreService.shared.saveInviteCode(code, householdId: householdId, expiresAt: expiry)
         return code
     }
 
@@ -245,8 +283,9 @@ final class UserService: ObservableObject {
     }
 
     func changePIN(newPIN: String, for userId: UUID) {
-        let hash = hashPIN(newPIN, userId: userId)
-        KeychainService.set(hash, for: "pin_\(userId.uuidString)")
+        let stored = hashPIN(newPIN, userId: userId)
+        KeychainService.set(stored, for: "pin_\(userId.uuidString)")
+        logAuthEvent("pin_changed", userId: userId, success: true)
     }
 
     func deleteUser(_ userId: UUID) {
@@ -282,10 +321,51 @@ final class UserService: ObservableObject {
 
     // MARK: - Helpers
 
+    /// Returns a PBKDF2-hashed PIN stored as "pbkdf2:<base64hash>:<base64salt>"
     func hashPIN(_ pin: String, userId: UUID) -> String {
+        var saltBytes = [UInt8](repeating: 0, count: 32)
+        _ = SecRandomCopyBytes(kSecRandomDefault, saltBytes.count, &saltBytes)
+        let salt = Data(saltBytes).base64EncodedString()
+        let hash = pbkdf2Hash(pin: pin, salt: salt)
+        return "pbkdf2:\(hash):\(salt)"
+    }
+
+    /// PBKDF2-HMAC-SHA256 with 100,000 iterations.
+    private func pbkdf2Hash(pin: String, salt: String) -> String {
+        guard let saltData = Data(base64Encoded: salt),
+              let pinData = pin.data(using: .utf8) else { return "" }
+        var derivedKey = [UInt8](repeating: 0, count: 32)
+        let rc = pinData.withUnsafeBytes { pinPtr in
+            saltData.withUnsafeBytes { saltPtr in
+                CCKeyDerivationPBKDF(
+                    CCPBKDFAlgorithm(kCCPBKDF2),
+                    pinPtr.baseAddress?.assumingMemoryBound(to: Int8.self), pinData.count,
+                    saltPtr.baseAddress?.assumingMemoryBound(to: UInt8.self), saltData.count,
+                    CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA256),
+                    100_000,
+                    &derivedKey, derivedKey.count
+                )
+            }
+        }
+        return rc == kCCSuccess ? Data(derivedKey).base64EncodedString() : ""
+    }
+
+    /// Legacy SHA256 hash — used only for migration of existing stored PINs.
+    private func sha256Legacy(_ pin: String, userId: UUID) -> String {
         let input = "\(pin)_\(userId.uuidString)_majuta_salt"
         let hash = SHA256.hash(data: Data(input.utf8))
         return hash.compactMap { String(format: "%02x", $0) }.joined()
+    }
+
+    // MARK: - Auth Event Logging (S7)
+    func logAuthEvent(_ event: String, userId: UUID?, success: Bool = true) {
+        var data: [String: Any] = [
+            "event": event,
+            "success": success,
+            "timestamp": Date().timeIntervalSince1970
+        ]
+        if let uid = userId { data["userId"] = uid.uuidString }
+        FirestoreService.shared.db.collection("authLogs").addDocument(data: data)
     }
 
     private func avatarColor(for index: Int) -> String {

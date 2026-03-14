@@ -1,0 +1,922 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		02AC576E9A302696D6473949 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FB8178175AA1E7E2A8F479 /* ProfileView.swift */; };
+		041FC5CC88D7FB27FA7FA001 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFAEDCA5DF14DD824A8CE9E /* Transaction.swift */; };
+		05AF66FABB4AA9C071CD6D11 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7D63A1CD3D2BEAA118132B /* AnalyticsView.swift */; };
+		06B35DEC94ACEE5E38FEC95A /* FamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B585913C4A0062BFEDB4C /* FamilyView.swift */; };
+		07870D3A3CE9BBFA2A4395AE /* LockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F9132B3667AD385B9F69F5 /* LockScreenView.swift */; };
+		09907FB348FA9F878E4F5270 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C68BB1FECCC8F499FF657E5 /* AuthenticationService.swift */; };
+		0B4C4A48BC135CFBD665E1F9 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9ACB9ECB564AD572869625 /* KeychainService.swift */; };
+		0EBDE454BD134BBE34D439E6 /* BNPLInstallment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2269B80DC77B06C01C7D5A4B /* BNPLInstallment.swift */; };
+		0F95BD5D2142AF11619B81C2 /* PINPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B056C39C2F69EBE6AD0933DA /* PINPadView.swift */; };
+		1089BAA32F87532EA251E4E7 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B27C5063A982D7AFDE65E5E9 /* FirebaseAuth */; };
+		10AD8AA6A0644341B05CC79A /* SaudiRiyal.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DFED50FE6F3B2CC56410FAAF /* SaudiRiyal.ttf */; };
+		1413240D39E0CDDD651EFE0D /* MaJuTaTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FEEE635D36B5FD711C2E42C /* MaJuTaTypography.swift */; };
+		1AF1639ED4DD92D28B52EDD2 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBA75086BCF9BDCFE274474 /* DataStore.swift */; };
+		2831D2E900B0BADF093374D9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4FD399FF5E5A91F337AF1CE9 /* GoogleService-Info.plist */; };
+		2C17645DAE6315C24FABC00F /* ReceiptScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC963C67979FA52CEEA5760 /* ReceiptScannerView.swift */; };
+		2FB09677ED6A6D1472996879 /* MaJuTaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E8D086892F94F60254095 /* MaJuTaApp.swift */; };
+		3C07C1ED94CC7486509AF482 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC3DE5F745967075E631B528 /* Assets.xcassets */; };
+		43C12AE07A158591AD23C815 /* Bill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C0FAAC21E122275C03071EF /* Bill.swift */; };
+		47F234496E8AD1EEF9BC7D9E /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = F18B004823FD81B88A12DE10 /* FirebaseCore */; };
+		4D29D4084BF9001F560DF530 /* UserModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F348A30974733BF4A6C4D /* UserModels.swift */; };
+		57555822B5229E32F56C4F05 /* Investment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEBEBF16273EC1E2C770C94 /* Investment.swift */; };
+		5E8FE6473EE8B517DFB5719B /* TransactionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1D9D0ECEFEA085BA011F2B /* TransactionRowView.swift */; };
+		5EE3CF3999A82093A2CFCCA1 /* SavingsGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6304A8B3702E24F1633C0E55 /* SavingsGoal.swift */; };
+		60D97CDC4EB15EA0E68AC65E /* CashFlowEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F598BE42575CC78157DD16C9 /* CashFlowEngine.swift */; };
+		63C093F31694217918D5EA31 /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A17498FE7B2FB73B615B533 /* AccountsView.swift */; };
+		65E978777918352820FFA633 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41EE46E5F9C368B3A23630FC /* PersistenceController.swift */; };
+		6BD8A741E91116ECAF7EBE64 /* FinancialHealthEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C6079828C9A5D5AC524E21 /* FinancialHealthEngine.swift */; };
+		702AE07B8A71A00E02753AB0 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36EAD4BAEDD8D4DB43AC85 /* AppState.swift */; };
+		709D63D76D92B162404D9C51 /* NumberFormatter+SAR.swift in Sources */ = {isa = PBXBuildFile; fileRef = D269D99DEA8D72162902E09C /* NumberFormatter+SAR.swift */; };
+		810A09FA50F8E0501868FED2 /* UserPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4604B7E043932F1EFDD8D4D /* UserPickerView.swift */; };
+		87FB98BA4D978E891572B935 /* EmergencyFundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01130465D7A26745A8731778 /* EmergencyFundView.swift */; };
+		8EE364B0ADC4B4372806C38A /* SARText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04944A817F249DD4511DED9F /* SARText.swift */; };
+		917B13102DDC10DE60573F2B /* InstallmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02F31BCDC2869AC65ADF169 /* InstallmentsView.swift */; };
+		91E5DFC7FE90E02420B0E9A4 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E88CED33EB01DE641BD6CC /* RegistrationView.swift */; };
+		5E8ACC3D83B140B89928B8D7C73C6D38 /* EmailVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8563CE577BC54B518E7790A0A20D4D1D /* EmailVerificationView.swift */; };
+		94D1F5AB643379C9B46C47CC /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420604D5F62781D91B3B92CD /* OnboardingView.swift */; };
+		9C7D86E20C7BD6EE34BD9460 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C77902398E294DC55B3DB5F /* MainTabView.swift */; };
+		9CDE8556B91F5DFF0807B2AE /* MaJuTaSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026C23DE3DCC161493837B47 /* MaJuTaSpacing.swift */; };
+		A2B33B64BC1FA5523B8E8C06 /* MaJuTaColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7848E511A92F960CCD5273 /* MaJuTaColors.swift */; };
+		A2FA195C1C2E5E039332572D /* BillsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5C4C84FE6EDE06A83FE18B /* BillsView.swift */; };
+		B0F6B8E1E632FFB789E8BD9F /* InvestmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A510D5F9D64C05D19FE318ED /* InvestmentsView.swift */; };
+		C06E31DF37256958DB96AA1D /* GoalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B2FC65A622A023B9D2B008C /* GoalsView.swift */; };
+		C404B78E090D78B9F0B21EE6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501C3DF00707F64270BB3A7F /* User.swift */; };
+		C48EF8CBC1DCC7BB0EFE6A90 /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8846E7AF83FFF5901A419D3D /* FirebaseAuthService.swift */; };
+		C513B44414004185DC701267 /* TransactionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32732675A418931B51F0770D /* TransactionsListView.swift */; };
+		CDC8D70C315DD332E77F2CB2 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8081C8912652535267533A5C /* FirestoreService.swift */; };
+		D04BEAB644234A82DBDC5437 /* MajuliaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16A3FAE74D4D8614FD6F54 /* MajuliaTests.swift */; };
+		D137F508BA931961AD8FA633 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DC06D07453AA02A8211A2B /* Account.swift */; };
+		D1D9B369C1158C8A76C88B8B /* Household.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B270E3325B5D6AFF568C9E4 /* Household.swift */; };
+		D439B0311DE20932C40DF209 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4654F606F58279CC81E0ABF3 /* UserService.swift */; };
+		D7923BA5107AFA3FA853407A /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD29D39920D382C0C6246E14 /* Category.swift */; };
+		DCB28320BE81546CD1E1A700 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CFD9DA5A074E115B40451F4 /* SettingsView.swift */; };
+		DD0A13B3CA3638B057F2599D /* MaJuTaIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B58C2604CE652F3E17E12F4 /* MaJuTaIcons.swift */; };
+		E143EFA079765BFAA8BCFF4E /* AddTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F6E53667D972FDD18538B1 /* AddTransactionView.swift */; };
+		E64FA02B6B3AAD908B0A34D9 /* GoalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F0401E17FC07625892C627B /* GoalDetailView.swift */; };
+		EC4C7DA826502E8F012EE7D6 /* InvestmentEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23248AE5764EA39721CF35FF /* InvestmentEngine.swift */; };
+		EDDD4EE4E6A8AC6007AAF8BA /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 428553479B935134F39F1CA3 /* FirebaseFirestore */; };
+		EF80C4ECFFEF0ADB2ECD37FB /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A2D435B2E123A492E3A382 /* DashboardView.swift */; };
+		F96A8F7754B19B74F9727465 /* FinancialHealthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FCFB50A4AFDF562092EB7A /* FinancialHealthView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		885E0D6DAC9B30FB2D994023 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 59956CAC7E3349F2CAC5EC38 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 57FF13109C22124E1A88B2C9;
+			remoteInfo = MaJuTa;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		01130465D7A26745A8731778 /* EmergencyFundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyFundView.swift; sourceTree = "<group>"; };
+		026C23DE3DCC161493837B47 /* MaJuTaSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaJuTaSpacing.swift; sourceTree = "<group>"; };
+		04944A817F249DD4511DED9F /* SARText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SARText.swift; sourceTree = "<group>"; };
+		118B585913C4A0062BFEDB4C /* FamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyView.swift; sourceTree = "<group>"; };
+		214BA9DE5075E844C26EB297 /* MaJuTa.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = MaJuTa.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2269B80DC77B06C01C7D5A4B /* BNPLInstallment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BNPLInstallment.swift; sourceTree = "<group>"; };
+		23248AE5764EA39721CF35FF /* InvestmentEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvestmentEngine.swift; sourceTree = "<group>"; };
+		261F348A30974733BF4A6C4D /* UserModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModels.swift; sourceTree = "<group>"; };
+		2EBA75086BCF9BDCFE274474 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
+		32732675A418931B51F0770D /* TransactionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsListView.swift; sourceTree = "<group>"; };
+		34473F873A57A7DE2AC94990 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		3A17498FE7B2FB73B615B533 /* AccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsView.swift; sourceTree = "<group>"; };
+		3C0FAAC21E122275C03071EF /* Bill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bill.swift; sourceTree = "<group>"; };
+		3C77902398E294DC55B3DB5F /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		3CFD9DA5A074E115B40451F4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		3F0401E17FC07625892C627B /* GoalDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalDetailView.swift; sourceTree = "<group>"; };
+		41EE46E5F9C368B3A23630FC /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		420604D5F62781D91B3B92CD /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		4654F606F58279CC81E0ABF3 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		4CC963C67979FA52CEEA5760 /* ReceiptScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScannerView.swift; sourceTree = "<group>"; };
+		4D1D9D0ECEFEA085BA011F2B /* TransactionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionRowView.swift; sourceTree = "<group>"; };
+		4FD399FF5E5A91F337AF1CE9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		501C3DF00707F64270BB3A7F /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		56A2D435B2E123A492E3A382 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		5A5EAE96639320F74F515704 /* MaJuTa.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MaJuTa.entitlements; sourceTree = "<group>"; };
+		5B270E3325B5D6AFF568C9E4 /* Household.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Household.swift; sourceTree = "<group>"; };
+		5FEEE635D36B5FD711C2E42C /* MaJuTaTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaJuTaTypography.swift; sourceTree = "<group>"; };
+		62F6E53667D972FDD18538B1 /* AddTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionView.swift; sourceTree = "<group>"; };
+		6304A8B3702E24F1633C0E55 /* SavingsGoal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsGoal.swift; sourceTree = "<group>"; };
+		6A9ACB9ECB564AD572869625 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		6B5C4C84FE6EDE06A83FE18B /* BillsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillsView.swift; sourceTree = "<group>"; };
+		7B58C2604CE652F3E17E12F4 /* MaJuTaIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaJuTaIcons.swift; sourceTree = "<group>"; };
+		8081C8912652535267533A5C /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
+		8846E7AF83FFF5901A419D3D /* FirebaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
+		8C68BB1FECCC8F499FF657E5 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		93C6079828C9A5D5AC524E21 /* FinancialHealthEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialHealthEngine.swift; sourceTree = "<group>"; };
+		95F9132B3667AD385B9F69F5 /* LockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenView.swift; sourceTree = "<group>"; };
+		95FB8178175AA1E7E2A8F479 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		9B2FC65A622A023B9D2B008C /* GoalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsView.swift; sourceTree = "<group>"; };
+		A4604B7E043932F1EFDD8D4D /* UserPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPickerView.swift; sourceTree = "<group>"; };
+		A510D5F9D64C05D19FE318ED /* InvestmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvestmentsView.swift; sourceTree = "<group>"; };
+		AA16A3FAE74D4D8614FD6F54 /* MajuliaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MajuliaTests.swift; sourceTree = "<group>"; };
+		B056C39C2F69EBE6AD0933DA /* PINPadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PINPadView.swift; sourceTree = "<group>"; };
+		BCFAEDCA5DF14DD824A8CE9E /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		C4E88CED33EB01DE641BD6CC /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
+		8563CE577BC54B518E7790A0A20D4D1D /* EmailVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationView.swift; sourceTree = "<group>"; };
+		D0DC06D07453AA02A8211A2B /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		D269D99DEA8D72162902E09C /* NumberFormatter+SAR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+SAR.swift"; sourceTree = "<group>"; };
+		D56B62C900FB7AA0768478DC /* MaJuTaTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = MaJuTaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD29D39920D382C0C6246E14 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		DE1E8D086892F94F60254095 /* MaJuTaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaJuTaApp.swift; sourceTree = "<group>"; };
+		DFED50FE6F3B2CC56410FAAF /* SaudiRiyal.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SaudiRiyal.ttf; sourceTree = "<group>"; };
+		E9FCFB50A4AFDF562092EB7A /* FinancialHealthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialHealthView.swift; sourceTree = "<group>"; };
+		EB36EAD4BAEDD8D4DB43AC85 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		EC7848E511A92F960CCD5273 /* MaJuTaColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaJuTaColors.swift; sourceTree = "<group>"; };
+		EE7D63A1CD3D2BEAA118132B /* AnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsView.swift; sourceTree = "<group>"; };
+		F02F31BCDC2869AC65ADF169 /* InstallmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallmentsView.swift; sourceTree = "<group>"; };
+		F598BE42575CC78157DD16C9 /* CashFlowEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CashFlowEngine.swift; sourceTree = "<group>"; };
+		FC3DE5F745967075E631B528 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FEEBEBF16273EC1E2C770C94 /* Investment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Investment.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1E5771DD126935210B522437 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				47F234496E8AD1EEF9BC7D9E /* FirebaseCore in Frameworks */,
+				1089BAA32F87532EA251E4E7 /* FirebaseAuth in Frameworks */,
+				EDDD4EE4E6A8AC6007AAF8BA /* FirebaseFirestore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		02A5A9C10553EA51D98B38FD /* App */ = {
+			isa = PBXGroup;
+			children = (
+				EB36EAD4BAEDD8D4DB43AC85 /* AppState.swift */,
+				DE1E8D086892F94F60254095 /* MaJuTaApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		099817DA0A0CE4DE9A4BFB77 /* Accounts */ = {
+			isa = PBXGroup;
+			children = (
+				3A17498FE7B2FB73B615B533 /* AccountsView.swift */,
+			);
+			path = Accounts;
+			sourceTree = "<group>";
+		};
+		0C36D4F23ED9205BEAD53422 /* Installments */ = {
+			isa = PBXGroup;
+			children = (
+				F02F31BCDC2869AC65ADF169 /* InstallmentsView.swift */,
+			);
+			path = Installments;
+			sourceTree = "<group>";
+		};
+		18A143757CD20ADB1DE960D2 /* Transactions */ = {
+			isa = PBXGroup;
+			children = (
+				62F6E53667D972FDD18538B1 /* AddTransactionView.swift */,
+				32732675A418931B51F0770D /* TransactionsListView.swift */,
+			);
+			path = Transactions;
+			sourceTree = "<group>";
+		};
+		288909B9D2F18AFD97649CAD /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				420604D5F62781D91B3B92CD /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		2E4AEC5B0908E75CD961A862 /* Engines */ = {
+			isa = PBXGroup;
+			children = (
+				F598BE42575CC78157DD16C9 /* CashFlowEngine.swift */,
+				93C6079828C9A5D5AC524E21 /* FinancialHealthEngine.swift */,
+				23248AE5764EA39721CF35FF /* InvestmentEngine.swift */,
+			);
+			path = Engines;
+			sourceTree = "<group>";
+		};
+		366E1F89B470AD0021823707 /* Cards */ = {
+			isa = PBXGroup;
+			children = (
+				4D1D9D0ECEFEA085BA011F2B /* TransactionRowView.swift */,
+			);
+			path = Cards;
+			sourceTree = "<group>";
+		};
+		3964E514FBBF8F122E603602 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				099817DA0A0CE4DE9A4BFB77 /* Accounts */,
+				DFE0381CC038EB8536D52D2A /* Analytics */,
+				ACA9AB4D7C47069FBC78176B /* Auth */,
+				866E04B3D2D877F1F0EABB33 /* Bills */,
+				EE46870B6B2A5188550B0060 /* Dashboard */,
+				ABCDAF0791CFFCB39BF24FFB /* Family */,
+				F63B32B2E23239B1FBA19831 /* FinancialHealth */,
+				7238F01699442B21EDEE0027 /* Goals */,
+				0C36D4F23ED9205BEAD53422 /* Installments */,
+				D81C8226C6A0C27994AE0C85 /* Investments */,
+				288909B9D2F18AFD97649CAD /* Onboarding */,
+				E7A1FB69B3E1FA9DDF5E78C5 /* ReceiptScanner */,
+				B854D995F5BEA9625591A707 /* Settings */,
+				18A143757CD20ADB1DE960D2 /* Transactions */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		472A43F0F55E7A25360E8A12 /* Tokens */ = {
+			isa = PBXGroup;
+			children = (
+				EC7848E511A92F960CCD5273 /* MaJuTaColors.swift */,
+				7B58C2604CE652F3E17E12F4 /* MaJuTaIcons.swift */,
+				026C23DE3DCC161493837B47 /* MaJuTaSpacing.swift */,
+				5FEEE635D36B5FD711C2E42C /* MaJuTaTypography.swift */,
+			);
+			path = Tokens;
+			sourceTree = "<group>";
+		};
+		554978529AA32190ABD896C7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FC3DE5F745967075E631B528 /* Assets.xcassets */,
+				4FD399FF5E5A91F337AF1CE9 /* GoogleService-Info.plist */,
+				34473F873A57A7DE2AC94990 /* Info.plist */,
+				5A5EAE96639320F74F515704 /* MaJuTa.entitlements */,
+				B78290C4DE1249480C40582E /* Fonts */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		556A85ADA2396C95C5202023 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				41EE46E5F9C368B3A23630FC /* PersistenceController.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		6B9835208AD9BE935BF910BA /* MaJuTaTests */ = {
+			isa = PBXGroup;
+			children = (
+				AA16A3FAE74D4D8614FD6F54 /* MajuliaTests.swift */,
+			);
+			path = MaJuTaTests;
+			sourceTree = "<group>";
+		};
+		7238F01699442B21EDEE0027 /* Goals */ = {
+			isa = PBXGroup;
+			children = (
+				01130465D7A26745A8731778 /* EmergencyFundView.swift */,
+				3F0401E17FC07625892C627B /* GoalDetailView.swift */,
+				9B2FC65A622A023B9D2B008C /* GoalsView.swift */,
+			);
+			path = Goals;
+			sourceTree = "<group>";
+		};
+		75A656EC561F64A2ADA70726 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D0DC06D07453AA02A8211A2B /* Account.swift */,
+				3C0FAAC21E122275C03071EF /* Bill.swift */,
+				2269B80DC77B06C01C7D5A4B /* BNPLInstallment.swift */,
+				DD29D39920D382C0C6246E14 /* Category.swift */,
+				5B270E3325B5D6AFF568C9E4 /* Household.swift */,
+				FEEBEBF16273EC1E2C770C94 /* Investment.swift */,
+				6304A8B3702E24F1633C0E55 /* SavingsGoal.swift */,
+				BCFAEDCA5DF14DD824A8CE9E /* Transaction.swift */,
+				501C3DF00707F64270BB3A7F /* User.swift */,
+				261F348A30974733BF4A6C4D /* UserModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		785A6C8704D5D373E881AC98 /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				6A9ACB9ECB564AD572869625 /* KeychainService.swift */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		7BFAC4CF26EC0DD9F454D39E /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				8C68BB1FECCC8F499FF657E5 /* AuthenticationService.swift */,
+				2EBA75086BCF9BDCFE274474 /* DataStore.swift */,
+				8846E7AF83FFF5901A419D3D /* FirebaseAuthService.swift */,
+				8081C8912652535267533A5C /* FirestoreService.swift */,
+				4654F606F58279CC81E0ABF3 /* UserService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		7FDC5470BCFB5AF483C36B34 /* MaJuTa */ = {
+			isa = PBXGroup;
+			children = (
+				02A5A9C10553EA51D98B38FD /* App */,
+				FEC8CA4A8AD5ABFD4D002239 /* Core */,
+				E9D802613AB7C182AE75690F /* DesignSystem */,
+				3964E514FBBF8F122E603602 /* Features */,
+				554978529AA32190ABD896C7 /* Resources */,
+			);
+			path = MaJuTa;
+			sourceTree = "<group>";
+		};
+		866E04B3D2D877F1F0EABB33 /* Bills */ = {
+			isa = PBXGroup;
+			children = (
+				6B5C4C84FE6EDE06A83FE18B /* BillsView.swift */,
+			);
+			path = Bills;
+			sourceTree = "<group>";
+		};
+		ABCDAF0791CFFCB39BF24FFB /* Family */ = {
+			isa = PBXGroup;
+			children = (
+				118B585913C4A0062BFEDB4C /* FamilyView.swift */,
+			);
+			path = Family;
+			sourceTree = "<group>";
+		};
+		ACA9AB4D7C47069FBC78176B /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				B056C39C2F69EBE6AD0933DA /* PINPadView.swift */,
+				C4E88CED33EB01DE641BD6CC /* RegistrationView.swift */,
+				8563CE577BC54B518E7790A0A20D4D1D /* EmailVerificationView.swift */,
+				A4604B7E043932F1EFDD8D4D /* UserPickerView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		B29DA9BADF4726D68215DC99 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				D269D99DEA8D72162902E09C /* NumberFormatter+SAR.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		B78290C4DE1249480C40582E /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				DFED50FE6F3B2CC56410FAAF /* SaudiRiyal.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		B854D995F5BEA9625591A707 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				95FB8178175AA1E7E2A8F479 /* ProfileView.swift */,
+				3CFD9DA5A074E115B40451F4 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		D81C8226C6A0C27994AE0C85 /* Investments */ = {
+			isa = PBXGroup;
+			children = (
+				A510D5F9D64C05D19FE318ED /* InvestmentsView.swift */,
+			);
+			path = Investments;
+			sourceTree = "<group>";
+		};
+		DFE0381CC038EB8536D52D2A /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				EE7D63A1CD3D2BEAA118132B /* AnalyticsView.swift */,
+			);
+			path = Analytics;
+			sourceTree = "<group>";
+		};
+		E0438F5946D30133B56F7B17 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				214BA9DE5075E844C26EB297 /* MaJuTa.app */,
+				D56B62C900FB7AA0768478DC /* MaJuTaTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E7852A7DCDF8BC2951B8C6E6 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				04944A817F249DD4511DED9F /* SARText.swift */,
+				366E1F89B470AD0021823707 /* Cards */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E7A1FB69B3E1FA9DDF5E78C5 /* ReceiptScanner */ = {
+			isa = PBXGroup;
+			children = (
+				4CC963C67979FA52CEEA5760 /* ReceiptScannerView.swift */,
+			);
+			path = ReceiptScanner;
+			sourceTree = "<group>";
+		};
+		E9D802613AB7C182AE75690F /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				E7852A7DCDF8BC2951B8C6E6 /* Components */,
+				472A43F0F55E7A25360E8A12 /* Tokens */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		EE46870B6B2A5188550B0060 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				56A2D435B2E123A492E3A382 /* DashboardView.swift */,
+				95F9132B3667AD385B9F69F5 /* LockScreenView.swift */,
+				3C77902398E294DC55B3DB5F /* MainTabView.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		F63B32B2E23239B1FBA19831 /* FinancialHealth */ = {
+			isa = PBXGroup;
+			children = (
+				E9FCFB50A4AFDF562092EB7A /* FinancialHealthView.swift */,
+			);
+			path = FinancialHealth;
+			sourceTree = "<group>";
+		};
+		F6F894DBD51C41D7D19CB400 = {
+			isa = PBXGroup;
+			children = (
+				7FDC5470BCFB5AF483C36B34 /* MaJuTa */,
+				6B9835208AD9BE935BF910BA /* MaJuTaTests */,
+				E0438F5946D30133B56F7B17 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FEC8CA4A8AD5ABFD4D002239 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				2E4AEC5B0908E75CD961A862 /* Engines */,
+				B29DA9BADF4726D68215DC99 /* Extensions */,
+				75A656EC561F64A2ADA70726 /* Models */,
+				556A85ADA2396C95C5202023 /* Persistence */,
+				785A6C8704D5D373E881AC98 /* Security */,
+				7BFAC4CF26EC0DD9F454D39E /* Services */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3D2365281540B29143115899 /* MaJuTaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7BC8694A0E2D52A1C50DF618 /* Build configuration list for PBXNativeTarget "MaJuTaTests" */;
+			buildPhases = (
+				5874B7AB4D63E1BF1749C6FA /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3554F46B024864F0F5971AA6 /* PBXTargetDependency */,
+			);
+			name = MaJuTaTests;
+			packageProductDependencies = (
+			);
+			productName = MaJuTaTests;
+			productReference = D56B62C900FB7AA0768478DC /* MaJuTaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		57FF13109C22124E1A88B2C9 /* MaJuTa */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6132C0892EACBB9D0F91FD2 /* Build configuration list for PBXNativeTarget "MaJuTa" */;
+			buildPhases = (
+				F217D728217C66BBF0A28B0E /* Sources */,
+				A00063569CFD363452C63C13 /* Resources */,
+				1E5771DD126935210B522437 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MaJuTa;
+			packageProductDependencies = (
+				F18B004823FD81B88A12DE10 /* FirebaseCore */,
+				B27C5063A982D7AFDE65E5E9 /* FirebaseAuth */,
+				428553479B935134F39F1CA3 /* FirebaseFirestore */,
+			);
+			productName = MaJuTa;
+			productReference = 214BA9DE5075E844C26EB297 /* MaJuTa.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		59956CAC7E3349F2CAC5EC38 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					57FF13109C22124E1A88B2C9 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = B54F871459B33729A7AB12EB /* Build configuration list for PBXProject "MaJuTa" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = ar;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				ar,
+			);
+			mainGroup = F6F894DBD51C41D7D19CB400;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				ADC3712FDD92D4C6FC86A3F2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				57FF13109C22124E1A88B2C9 /* MaJuTa */,
+				3D2365281540B29143115899 /* MaJuTaTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A00063569CFD363452C63C13 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3C07C1ED94CC7486509AF482 /* Assets.xcassets in Resources */,
+				2831D2E900B0BADF093374D9 /* GoogleService-Info.plist in Resources */,
+				10AD8AA6A0644341B05CC79A /* SaudiRiyal.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5874B7AB4D63E1BF1749C6FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D04BEAB644234A82DBDC5437 /* MajuliaTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F217D728217C66BBF0A28B0E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D137F508BA931961AD8FA633 /* Account.swift in Sources */,
+				63C093F31694217918D5EA31 /* AccountsView.swift in Sources */,
+				E143EFA079765BFAA8BCFF4E /* AddTransactionView.swift in Sources */,
+				05AF66FABB4AA9C071CD6D11 /* AnalyticsView.swift in Sources */,
+				702AE07B8A71A00E02753AB0 /* AppState.swift in Sources */,
+				09907FB348FA9F878E4F5270 /* AuthenticationService.swift in Sources */,
+				0EBDE454BD134BBE34D439E6 /* BNPLInstallment.swift in Sources */,
+				43C12AE07A158591AD23C815 /* Bill.swift in Sources */,
+				A2FA195C1C2E5E039332572D /* BillsView.swift in Sources */,
+				60D97CDC4EB15EA0E68AC65E /* CashFlowEngine.swift in Sources */,
+				D7923BA5107AFA3FA853407A /* Category.swift in Sources */,
+				EF80C4ECFFEF0ADB2ECD37FB /* DashboardView.swift in Sources */,
+				1AF1639ED4DD92D28B52EDD2 /* DataStore.swift in Sources */,
+				87FB98BA4D978E891572B935 /* EmergencyFundView.swift in Sources */,
+				06B35DEC94ACEE5E38FEC95A /* FamilyView.swift in Sources */,
+				6BD8A741E91116ECAF7EBE64 /* FinancialHealthEngine.swift in Sources */,
+				F96A8F7754B19B74F9727465 /* FinancialHealthView.swift in Sources */,
+				C48EF8CBC1DCC7BB0EFE6A90 /* FirebaseAuthService.swift in Sources */,
+				CDC8D70C315DD332E77F2CB2 /* FirestoreService.swift in Sources */,
+				E64FA02B6B3AAD908B0A34D9 /* GoalDetailView.swift in Sources */,
+				C06E31DF37256958DB96AA1D /* GoalsView.swift in Sources */,
+				D1D9B369C1158C8A76C88B8B /* Household.swift in Sources */,
+				917B13102DDC10DE60573F2B /* InstallmentsView.swift in Sources */,
+				57555822B5229E32F56C4F05 /* Investment.swift in Sources */,
+				EC4C7DA826502E8F012EE7D6 /* InvestmentEngine.swift in Sources */,
+				B0F6B8E1E632FFB789E8BD9F /* InvestmentsView.swift in Sources */,
+				0B4C4A48BC135CFBD665E1F9 /* KeychainService.swift in Sources */,
+				07870D3A3CE9BBFA2A4395AE /* LockScreenView.swift in Sources */,
+				2FB09677ED6A6D1472996879 /* MaJuTaApp.swift in Sources */,
+				A2B33B64BC1FA5523B8E8C06 /* MaJuTaColors.swift in Sources */,
+				DD0A13B3CA3638B057F2599D /* MaJuTaIcons.swift in Sources */,
+				9CDE8556B91F5DFF0807B2AE /* MaJuTaSpacing.swift in Sources */,
+				1413240D39E0CDDD651EFE0D /* MaJuTaTypography.swift in Sources */,
+				9C7D86E20C7BD6EE34BD9460 /* MainTabView.swift in Sources */,
+				709D63D76D92B162404D9C51 /* NumberFormatter+SAR.swift in Sources */,
+				94D1F5AB643379C9B46C47CC /* OnboardingView.swift in Sources */,
+				0F95BD5D2142AF11619B81C2 /* PINPadView.swift in Sources */,
+				65E978777918352820FFA633 /* PersistenceController.swift in Sources */,
+				02AC576E9A302696D6473949 /* ProfileView.swift in Sources */,
+				2C17645DAE6315C24FABC00F /* ReceiptScannerView.swift in Sources */,
+				91E5DFC7FE90E02420B0E9A4 /* RegistrationView.swift in Sources */,
+				5E8ACC3D83B140B89928B8D7C73C6D38 /* EmailVerificationView.swift in Sources */,
+				8EE364B0ADC4B4372806C38A /* SARText.swift in Sources */,
+				5EE3CF3999A82093A2CFCCA1 /* SavingsGoal.swift in Sources */,
+				DCB28320BE81546CD1E1A700 /* SettingsView.swift in Sources */,
+				041FC5CC88D7FB27FA7FA001 /* Transaction.swift in Sources */,
+				5E8FE6473EE8B517DFB5719B /* TransactionRowView.swift in Sources */,
+				C513B44414004185DC701267 /* TransactionsListView.swift in Sources */,
+				C404B78E090D78B9F0B21EE6 /* User.swift in Sources */,
+				4D29D4084BF9001F560DF530 /* UserModels.swift in Sources */,
+				810A09FA50F8E0501868FED2 /* UserPickerView.swift in Sources */,
+				D439B0311DE20932C40DF209 /* UserService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3554F46B024864F0F5971AA6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 57FF13109C22124E1A88B2C9 /* MaJuTa */;
+			targetProxy = 885E0D6DAC9B30FB2D994023 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		00F940CDF7A4C40687D6BADC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.majuta.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MaJuTa.app/MaJuTa";
+			};
+			name = Debug;
+		};
+		17AD434F08A04E63473B43CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MaJuTa/Resources/MaJuTa.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = MaJuTa/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.majuta.app;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		2EE9A20400CCA91143258D96 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		6576D003E36ABBCF3B8233D1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MaJuTa/Resources/MaJuTa.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = MaJuTa/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.majuta.app;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		D3D5F65D155EF49D2CF3BB2C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.majuta.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MaJuTa.app/MaJuTa";
+			};
+			name = Release;
+		};
+		DE0B92D50BDA63FD76F64D18 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7BC8694A0E2D52A1C50DF618 /* Build configuration list for PBXNativeTarget "MaJuTaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00F940CDF7A4C40687D6BADC /* Debug */,
+				D3D5F65D155EF49D2CF3BB2C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A6132C0892EACBB9D0F91FD2 /* Build configuration list for PBXNativeTarget "MaJuTa" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6576D003E36ABBCF3B8233D1 /* Debug */,
+				17AD434F08A04E63473B43CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B54F871459B33729A7AB12EB /* Build configuration list for PBXProject "MaJuTa" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2EE9A20400CCA91143258D96 /* Debug */,
+				DE0B92D50BDA63FD76F64D18 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		ADC3712FDD92D4C6FC86A3F2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		428553479B935134F39F1CA3 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ADC3712FDD92D4C6FC86A3F2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		B27C5063A982D7AFDE65E5E9 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ADC3712FDD92D4C6FC86A3F2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		F18B004823FD81B88A12DE10 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ADC3712FDD92D4C6FC86A3F2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 59956CAC7E3349F2CAC5EC38 /* Project object */;
+}

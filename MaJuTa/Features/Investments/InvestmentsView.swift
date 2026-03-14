@@ -142,7 +142,7 @@ struct InvestmentsView: View {
     private var assetList: some View {
         VStack(spacing: 1) {
             ForEach(dataStore.investments) { asset in
-                NavigationLink(destination: AssetDetailView(asset: asset)) {
+                NavigationLink(destination: AssetDetailView(assetId: asset.id).environmentObject(dataStore)) {
                     AssetRowView(asset: asset)
                 }
                 .buttonStyle(.plain)
@@ -227,11 +227,29 @@ struct AssetRowView: View {
 
 // MARK: - Asset Detail
 struct AssetDetailView: View {
-    let asset: InvestmentAsset
+    let assetId: UUID
+    @EnvironmentObject var dataStore: DataStore
     @State private var showUpdatePrice = false
     @State private var newPrice = ""
 
+    // Always read live from DataStore so price updates reflect immediately
+    private var asset: InvestmentAsset? {
+        dataStore.investments.first(where: { $0.id == assetId })
+    }
+
     var body: some View {
+        Group {
+            if let asset = asset {
+                liveView(asset: asset)
+            } else {
+                Text("الأصل غير موجود").foregroundColor(.maJuTaTextSecondary)
+            }
+        }
+        .background(Color.maJuTaBackground)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func liveView(asset: InvestmentAsset) -> some View {
         ScrollView {
             VStack(spacing: MaJuTaSpacing.lg) {
                 // Hero
@@ -262,13 +280,10 @@ struct AssetDetailView: View {
                     investmentStat(label: "الوحدات", value: String(format: "%.0f", asset.units))
                     investmentStat(label: "متوسط السعر", value: asset.averagePrice.sarFormattedDecimal)
                     investmentStat(label: "السعر الحالي", value: asset.lastPrice.sarFormattedDecimal)
-                    investmentStat(
-                        label: "الربح / الخسارة",
-                        amount: asset.unrealizedProfitLoss
-                    )
+                    investmentStat(label: "الربح / الخسارة", amount: asset.unrealizedProfitLoss)
                 }
 
-                // Update Price (Manual MVP)
+                // Update Price
                 Button {
                     newPrice = String(format: "%.2f", asset.lastPrice)
                     showUpdatePrice = true
@@ -285,9 +300,7 @@ struct AssetDetailView: View {
             .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
             .padding(.vertical, MaJuTaSpacing.lg)
         }
-        .background(Color.maJuTaBackground)
         .navigationTitle(asset.name)
-        .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showUpdatePrice) {
             NavigationStack {
                 VStack(spacing: MaJuTaSpacing.lg) {
@@ -370,7 +383,7 @@ struct AddInvestmentView: View {
     @State private var symbol = ""
     @State private var name = ""
     @State private var units = ""
-    @State private var costBasis = ""
+    @State private var purchasePricePerUnit = ""   // price per unit at purchase
     @State private var lastPrice = ""
     @State private var selectedType: AssetType = .stock
     @State private var selectedMarket: InvestmentMarket = .tadawul
@@ -418,9 +431,9 @@ struct AddInvestmentView: View {
                         Divider()
                         addField(label: "عدد الوحدات", text: $units, keyboard: .decimalPad)
                         Divider()
-                        addField(label: "تكلفة الشراء الإجمالية (﷼)", text: $costBasis, keyboard: .decimalPad)
+                        addField(label: "سعر الشراء للوحدة (﷼)", text: $purchasePricePerUnit, keyboard: .decimalPad)
                         Divider()
-                        addField(label: "السعر الحالي (﷼)", text: $lastPrice, keyboard: .decimalPad)
+                        addField(label: "السعر الحالي للوحدة (﷼)", text: $lastPrice, keyboard: .decimalPad)
                     }
                     .background(Color.maJuTaCard)
                     .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
@@ -466,14 +479,17 @@ struct AddInvestmentView: View {
     }
 
     private func saveAsset() {
+        let unitsVal = Double(units) ?? 0
+        let pricePerUnit = Double(purchasePricePerUnit) ?? 0
+        let currentPrice = Double(lastPrice) ?? pricePerUnit
         let asset = InvestmentAsset(
             symbol: symbol,
             name: name,
             market: selectedMarket,
             assetType: selectedType,
-            units: Double(units) ?? 0,
-            costBasis: Double(costBasis) ?? 0,
-            lastPrice: Double(lastPrice) ?? 0,
+            units: unitsVal,
+            costBasis: unitsVal * pricePerUnit,   // total cost = units × price per unit
+            lastPrice: currentPrice,
             ownerUserId: UserService.shared.currentUser?.id ?? UUID(),
             householdId: UserService.shared.currentUser?.householdId ?? UUID()
         )

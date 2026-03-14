@@ -409,6 +409,7 @@ final class DataStore: ObservableObject {
     }
 
     func addInvestment(_ asset: InvestmentAsset) {
+        investments.append(asset)
         FirestoreService.shared.save(asset, to: "investments", householdId: currentHouseholdId)
     }
 
@@ -417,6 +418,10 @@ final class DataStore: ObservableObject {
         asset.lastPrice = newPrice
         asset.lastPriceUpdated = Date()
         asset.updatedAt = Date()
+        // Optimistic local update so detail view refreshes immediately
+        if let idx = investments.firstIndex(where: { $0.id == assetId }) {
+            investments[idx] = asset
+        }
         FirestoreService.shared.save(asset, to: "investments", householdId: currentHouseholdId)
     }
 

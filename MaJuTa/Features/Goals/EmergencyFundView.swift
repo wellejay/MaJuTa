@@ -205,7 +205,7 @@ private struct AddEmergencyFundsSheet: View {
                         .font(.system(size: 48))
                         .foregroundColor(.maJuTaGold)
                     Text("إضافة مبلغ لصندوق الطوارئ")
-                        .font(.maJuTaTitle)
+                        .font(.maJuTaTitle2)
                         .foregroundColor(.maJuTaTextPrimary)
                     Text("الرصيد الحالي: \(String(format: "%.0f", dataStore.emergencyFundBalance)) ﷼")
                         .font(.maJuTaCaption)

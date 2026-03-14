@@ -50,6 +50,8 @@
 	<string>نحتاج الكاميرا لمسح الفواتير والإيصالات</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>استخدام Face ID لحماية بياناتك المالية</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>اختيار صورة شخصية لملفك في التطبيق</string>
 	<key>UIUserInterfaceStyle</key>
 	<string>Automatic</string>
 	<key>UIAppFonts</key>

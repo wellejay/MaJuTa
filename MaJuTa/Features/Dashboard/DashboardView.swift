@@ -111,13 +111,13 @@ struct DashboardView: View {
 
                 Spacer()
 
-                // Net Cash Flow
+                // Safe To Spend (after all deductions)
                 VStack(spacing: 4) {
-                    Text("صافي التدفق النقدي")
+                    Text("المتاح للإنفاق")
                         .font(.maJuTaCaption)
                         .foregroundColor(.white.opacity(0.7))
 
-                    SARText.hero(dataStore.netCashFlow(), color: .white)
+                    SARText.hero(dataStore.safeToSpend, color: .white)
 
                     HStack(spacing: MaJuTaSpacing.sm) {
                         HStack(spacing: 4) {
@@ -153,8 +153,8 @@ struct DashboardView: View {
                 color: .maJuTaNegative
             )
             cashFlowMiniCard(
-                title: "الأهداف",
-                amount: dataStore.goalContributionsThisMonth,
+                title: "الأهداف المحفوظة",
+                amount: dataStore.totalGoalsSaved,
                 icon: "banknote.fill",
                 color: .maJuTaGold
             )
@@ -200,9 +200,16 @@ struct DashboardView: View {
                     }
                 }
                 Spacer()
-                Text(dataStore.safeToSpend >= 0 ? "يمكنك إنفاق اليوم" : "تجاوزت ميزانيتك بـ")
-                    .font(.maJuTaCaptionMedium)
-                    .foregroundColor(dataStore.safeToSpend >= 0 ? .maJuTaTextSecondary : .maJuTaNegative)
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(dataStore.safeToSpend >= 0 ? "يمكنك إنفاق اليوم" : "تجاوزت ميزانيتك بـ")
+                        .font(.maJuTaCaptionMedium)
+                        .foregroundColor(dataStore.safeToSpend >= 0 ? .maJuTaTextSecondary : .maJuTaNegative)
+                    if appState.spendingLimit > 0 {
+                        Text("الحد: \(String(format: "%.0f", appState.spendingLimit)) ﷼")
+                            .font(.maJuTaLabel)
+                            .foregroundColor(spendingLimitColor)
+                    }
+                }
             }
 
             HStack(alignment: .lastTextBaseline, spacing: 4) {

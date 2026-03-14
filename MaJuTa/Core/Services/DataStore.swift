@@ -179,6 +179,11 @@ final class DataStore: ObservableObject {
         }.reduce(0) { $0 + $1.amount }
     }
 
+    // Total amount saved across all active goals (running balance)
+    var totalGoalsSaved: Double {
+        visibleGoals.reduce(0) { $0 + $1.currentAmount }
+    }
+
     // Actual goal contributions made this month (creates transactions, so tracked in cashflow)
     var goalContributionsThisMonth: Double {
         let savingsCatIds = Set(categories.filter { $0.type == .savings }.map { $0.id })

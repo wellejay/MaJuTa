@@ -141,7 +141,7 @@ struct DashboardView: View {
             )
             cashFlowMiniCard(
                 title: "المدخرات",
-                amount: dataStore.plannedSavingsThisMonth,
+                amount: dataStore.monthlySavingsAllocation,
                 icon: "banknote.fill",
                 color: .maJuTaGold
             )
@@ -247,13 +247,10 @@ struct DashboardView: View {
             )
             metricCard(
                 title: "معدل الادخار",
-                value: String(format: "%.0f", CashFlowEngine.savingsRate(
-                    savingsContributions: max(0, dataStore.netCashFlow()),
-                    disposableIncome: dataStore.effectiveMonthlyIncome
-                )),
+                value: String(format: "%.0f", dataStore.actualSavingsRate),
                 suffix: "%",
                 icon: "percent",
-                color: .maJuTaPositive
+                color: dataStore.actualSavingsRate >= 20 ? .maJuTaPositive : .maJuTaGold
             )
         }
     }

@@ -5,10 +5,7 @@ struct FinancialHealthView: View {
 
     var score: FinancialHealthScore {
         FinancialHealthEngine.calculateScore(
-            savingsRate: CashFlowEngine.savingsRate(
-                savingsContributions: max(0, dataStore.netCashFlow()),
-                disposableIncome: dataStore.effectiveMonthlyIncome
-            ),
+            savingsRate: dataStore.actualSavingsRate,
             emergencyMonths: dataStore.emergencyMonths,
             debtRatio: dataStore.fixedObligationRatio,
             spendingStability: dataStore.spendingStability,
@@ -119,10 +116,7 @@ struct FinancialHealthView: View {
                         ? "لديك \(String(format: "%.1f", dataStore.emergencyMonths)) أشهر من التغطية"
                         : "يُنصح بتوفير \(String(format: "%.1f", max(3 - dataStore.emergencyMonths, 0))) أشهر إضافية"
                 )
-                let actualRate = CashFlowEngine.savingsRate(
-                    savingsContributions: max(0, dataStore.netCashFlow()),
-                    disposableIncome: dataStore.effectiveMonthlyIncome
-                )
+                let actualRate = dataStore.actualSavingsRate
                 let rateColor: Color = actualRate >= 20 ? .maJuTaPositive : .maJuTaGold
                 insightCard(
                     icon: "chart.line.uptrend.xyaxis",

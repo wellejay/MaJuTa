@@ -203,7 +203,23 @@ final class DataStore: ObservableObject {
     }
 
     var emergencyMonthlyContribution: Double {
-        max(0, effectiveMonthlyIncome * 0.10)
+        // Only contribute if below 6-month target
+        let remaining = max(0, (avgMonthlyEssentialExpenses * 6) - emergencyFundBalance)
+        guard remaining > 0 else { return 0 }
+        return min(effectiveMonthlyIncome * 0.10, remaining)
+    }
+
+    // Total monthly savings being set aside: goals + emergency fund
+    var monthlySavingsAllocation: Double {
+        plannedSavingsThisMonth + emergencyMonthlyContribution
+    }
+
+    // Actual savings rate based on planned allocations (not unspent income)
+    var actualSavingsRate: Double {
+        CashFlowEngine.savingsRate(
+            savingsContributions: monthlySavingsAllocation,
+            disposableIncome: effectiveMonthlyIncome
+        )
     }
 
     var emergencyFundBalance: Double {

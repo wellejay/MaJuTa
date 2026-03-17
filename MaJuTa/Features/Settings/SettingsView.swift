@@ -130,7 +130,7 @@ struct SettingsView: View {
                 }
 
                 settingsSection(title: "عن التطبيق") {
-                    settingsRow(label: "MaJuTa — الإصدار 1.1.0", icon: "info.circle.fill", color: "#6B7280") {
+                    settingsRow(label: "MaJuTa — الإصدار 1.2.0", icon: "info.circle.fill", color: "#6B7280") {
                         EmptyView()
                     }
                     Divider()

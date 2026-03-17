@@ -270,8 +270,42 @@ final class UserService: ObservableObject {
 
     // MARK: - Update
 
-    func updateUserName(_ name: String, for userId: UUID) {
+    func updatePhoneNumber(_ phone: String, for userId: UUID) {
         guard let idx = registeredUsers.firstIndex(where: { $0.id == userId }) else { return }
+        registeredUsers[idx].phoneNumber = phone
+        if currentUser?.id == userId { currentUser = registeredUsers[idx] }
+        saveUsersToKeychain()
+        FirestoreService.shared.saveUser(registeredUsers[idx])
+    }
+
+    // MARK: - Guest Mode
+
+    /// Creates a local-only guest user (not stored in Firestore or Keychain).
+    func setupGuestUser() {
+        let guestId = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+        let householdId = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
+        currentUser = UserProfile(
+            id: guestId,
+            name: "ضيف",
+            username: "guest",
+            email: "",
+            phoneNumber: "",
+            householdId: householdId,
+            role: .owner,
+            avatarColorHex: "#F2AE2E"
+        )
+    }
+
+    func clearGuestUser() {
+        if currentUser?.username == "guest" { currentUser = nil }
+    }
+
+    func updateUserName(_ name: String, for userId: UUID) {
+        guard let idx = registeredUsers.firstIndex(where: { $0.id == userId }) else {
+            // Guest user: just update currentUser directly
+            if currentUser?.id == userId { currentUser?.name = name }
+            return
+        }
         registeredUsers[idx].name = name
         if currentUser?.id == userId { currentUser = registeredUsers[idx] }
         if let hIdx = registeredHouseholds.firstIndex(where: { $0.ownerUserId == userId }) {

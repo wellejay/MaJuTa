@@ -5,6 +5,7 @@ import Combine
 final class AppState: ObservableObject {
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
     @AppStorage("preferredColorScheme") private var storedColorScheme: String = "system"
+    @AppStorage("isGuestMode") var isGuestMode: Bool = false
 
     // MARK: - Current User (delegates to UserService)
     var currentUser: UserProfile? { UserService.shared.currentUser }
@@ -75,6 +76,19 @@ final class AppState: ObservableObject {
     }
 
     func resetAll() {
+        // Exit guest mode cleanly
+        if isGuestMode {
+            isGuestMode = false
+            DataStore.shared.isGuestMode = false
+            UserService.shared.clearGuestUser()
+            hasCompletedOnboarding = false
+            KeychainService.delete(for: "monthlyIncome")
+            KeychainService.delete(for: "spendingLimit")
+            deleteProfileImage()
+            DataStore.shared.clearAll()
+            objectWillChange.send()
+            return
+        }
         hasCompletedOnboarding = false
         KeychainService.delete(for: "monthlyIncome")
         KeychainService.delete(for: "spendingLimit")

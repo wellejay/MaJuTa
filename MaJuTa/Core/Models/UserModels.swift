@@ -185,3 +185,131 @@ struct UserInvitation: Codable, Identifiable {
         case pending, accepted, expired
     }
 }
+
+// MARK: - Country Phone Code
+
+struct CountryPhoneCode: Identifiable, Hashable {
+    let id: String          // ISO 3166-1 alpha-2
+    let name: String        // Arabic display name
+    let dialCode: String    // e.g., "+1"
+    let placeholder: String // local number format using X for each digit
+    let digitCount: Int     // expected local digit count
+
+    var flag: String {
+        id.unicodeScalars.reduce("") { $0 + String(UnicodeScalar(127397 + $1.value)!) }
+    }
+
+    /// Formats a string of digits using the given pattern (X = digit, other chars = separator).
+    static func formatPhoneNumber(_ digits: String, pattern: String) -> String {
+        var result = ""
+        var dIdx = digits.startIndex
+        for char in pattern {
+            guard dIdx < digits.endIndex else { break }
+            if char == "X" {
+                result.append(digits[dIdx])
+                dIdx = digits.index(after: dIdx)
+            } else {
+                result.append(char)
+            }
+        }
+        return result
+    }
+
+    static let defaultCountry = CountryPhoneCode(
+        id: "SA", name: "المملكة العربية السعودية", dialCode: "+966", placeholder: "XX XXX XXXX", digitCount: 9
+    )
+
+    static let all: [CountryPhoneCode] = [
+        // Arabian Peninsula
+        CountryPhoneCode(id: "SA", name: "المملكة العربية السعودية", dialCode: "+966", placeholder: "XX XXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "AE", name: "الإمارات العربية المتحدة", dialCode: "+971", placeholder: "XX XXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "KW", name: "الكويت",                   dialCode: "+965", placeholder: "XXXX XXXX",   digitCount: 8),
+        CountryPhoneCode(id: "QA", name: "قطر",                      dialCode: "+974", placeholder: "XXXX XXXX",   digitCount: 8),
+        CountryPhoneCode(id: "BH", name: "البحرين",                  dialCode: "+973", placeholder: "XXXX XXXX",   digitCount: 8),
+        CountryPhoneCode(id: "OM", name: "عُمان",                    dialCode: "+968", placeholder: "XXXX XXXX",   digitCount: 8),
+        // Levant & Arab World
+        CountryPhoneCode(id: "JO", name: "الأردن",                   dialCode: "+962", placeholder: "X XXXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "LB", name: "لبنان",                    dialCode: "+961", placeholder: "XX XXX XXX",  digitCount: 8),
+        CountryPhoneCode(id: "EG", name: "مصر",                      dialCode: "+20",  placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "IQ", name: "العراق",                   dialCode: "+964", placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "SY", name: "سوريا",                    dialCode: "+963", placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "YE", name: "اليمن",                    dialCode: "+967", placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "PS", name: "فلسطين",                   dialCode: "+970", placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "LY", name: "ليبيا",                    dialCode: "+218", placeholder: "XX XXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "TN", name: "تونس",                     dialCode: "+216", placeholder: "XX XXX XXX",  digitCount: 8),
+        CountryPhoneCode(id: "DZ", name: "الجزائر",                  dialCode: "+213", placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "MA", name: "المغرب",                   dialCode: "+212", placeholder: "XX XXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "SD", name: "السودان",                  dialCode: "+249", placeholder: "XX XXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "SO", name: "الصومال",                  dialCode: "+252", placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "MR", name: "موريتانيا",                dialCode: "+222", placeholder: "XX XX XXXX",  digitCount: 8),
+        // Americas
+        CountryPhoneCode(id: "US", name: "الولايات المتحدة",         dialCode: "+1",   placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "CA", name: "كندا",                     dialCode: "+1",   placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "MX", name: "المكسيك",                  dialCode: "+52",  placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "BR", name: "البرازيل",                 dialCode: "+55",  placeholder: "XX XXXXX XXXX",digitCount: 11),
+        CountryPhoneCode(id: "AR", name: "الأرجنتين",                dialCode: "+54",  placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "CO", name: "كولومبيا",                 dialCode: "+57",  placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "CL", name: "تشيلي",                    dialCode: "+56",  placeholder: "X XXXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "PE", name: "بيرو",                     dialCode: "+51",  placeholder: "XXX XXX XXX", digitCount: 9),
+        // Europe
+        CountryPhoneCode(id: "GB", name: "المملكة المتحدة",          dialCode: "+44",  placeholder: "XXXX XXXXXX", digitCount: 10),
+        CountryPhoneCode(id: "DE", name: "ألمانيا",                  dialCode: "+49",  placeholder: "XXX XXXXXXX", digitCount: 10),
+        CountryPhoneCode(id: "FR", name: "فرنسا",                    dialCode: "+33",  placeholder: "X XX XX XX XX",digitCount: 9),
+        CountryPhoneCode(id: "IT", name: "إيطاليا",                  dialCode: "+39",  placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "ES", name: "إسبانيا",                  dialCode: "+34",  placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "NL", name: "هولندا",                   dialCode: "+31",  placeholder: "XX XXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "BE", name: "بلجيكا",                   dialCode: "+32",  placeholder: "XXX XX XX XX",digitCount: 9),
+        CountryPhoneCode(id: "CH", name: "سويسرا",                   dialCode: "+41",  placeholder: "XX XXX XX XX",digitCount: 9),
+        CountryPhoneCode(id: "AT", name: "النمسا",                   dialCode: "+43",  placeholder: "XXX XXXXXXX", digitCount: 10),
+        CountryPhoneCode(id: "SE", name: "السويد",                   dialCode: "+46",  placeholder: "XX XXX XX XX",digitCount: 9),
+        CountryPhoneCode(id: "NO", name: "النرويج",                  dialCode: "+47",  placeholder: "XXX XX XXX",  digitCount: 8),
+        CountryPhoneCode(id: "DK", name: "الدنمارك",                 dialCode: "+45",  placeholder: "XXXX XXXX",   digitCount: 8),
+        CountryPhoneCode(id: "FI", name: "فنلندا",                   dialCode: "+358", placeholder: "XX XXXXXXX",  digitCount: 9),
+        CountryPhoneCode(id: "PL", name: "بولندا",                   dialCode: "+48",  placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "PT", name: "البرتغال",                 dialCode: "+351", placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "GR", name: "اليونان",                  dialCode: "+30",  placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "TR", name: "تركيا",                    dialCode: "+90",  placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "RU", name: "روسيا",                    dialCode: "+7",   placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "UA", name: "أوكرانيا",                 dialCode: "+380", placeholder: "XX XXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "RO", name: "رومانيا",                  dialCode: "+40",  placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "CZ", name: "التشيك",                   dialCode: "+420", placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "HU", name: "المجر",                    dialCode: "+36",  placeholder: "XX XXX XXXX", digitCount: 9),
+        // Asia
+        CountryPhoneCode(id: "IN", name: "الهند",                    dialCode: "+91",  placeholder: "XXXXX XXXXX", digitCount: 10),
+        CountryPhoneCode(id: "CN", name: "الصين",                    dialCode: "+86",  placeholder: "XXX XXXX XXXX",digitCount: 11),
+        CountryPhoneCode(id: "JP", name: "اليابان",                  dialCode: "+81",  placeholder: "XX XXXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "KR", name: "كوريا الجنوبية",           dialCode: "+82",  placeholder: "XX XXXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "PK", name: "باكستان",                  dialCode: "+92",  placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "BD", name: "بنغلاديش",                 dialCode: "+880", placeholder: "XXXX XXXXXX", digitCount: 10),
+        CountryPhoneCode(id: "ID", name: "إندونيسيا",                dialCode: "+62",  placeholder: "XXX XXXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "MY", name: "ماليزيا",                  dialCode: "+60",  placeholder: "XX XXXX XXXX",digitCount: 9),
+        CountryPhoneCode(id: "SG", name: "سنغافورة",                 dialCode: "+65",  placeholder: "XXXX XXXX",   digitCount: 8),
+        CountryPhoneCode(id: "TH", name: "تايلاند",                  dialCode: "+66",  placeholder: "X XXXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "PH", name: "الفلبين",                  dialCode: "+63",  placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "VN", name: "فيتنام",                   dialCode: "+84",  placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "AF", name: "أفغانستان",                dialCode: "+93",  placeholder: "XX XXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "IR", name: "إيران",                    dialCode: "+98",  placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "UZ", name: "أوزبكستان",                dialCode: "+998", placeholder: "XX XXX XXXX", digitCount: 9),
+        // Africa
+        CountryPhoneCode(id: "NG", name: "نيجيريا",                  dialCode: "+234", placeholder: "XXX XXX XXXX",digitCount: 10),
+        CountryPhoneCode(id: "ZA", name: "جنوب أفريقيا",             dialCode: "+27",  placeholder: "XX XXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "KE", name: "كينيا",                    dialCode: "+254", placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "ET", name: "إثيوبيا",                  dialCode: "+251", placeholder: "XX XXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "GH", name: "غانا",                     dialCode: "+233", placeholder: "XX XXX XXXX", digitCount: 9),
+        CountryPhoneCode(id: "TZ", name: "تنزانيا",                  dialCode: "+255", placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "UG", name: "أوغندا",                   dialCode: "+256", placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "SN", name: "السنغال",                  dialCode: "+221", placeholder: "XX XXX XXXX", digitCount: 9),
+        // Oceania
+        CountryPhoneCode(id: "AU", name: "أستراليا",                 dialCode: "+61",  placeholder: "XXX XXX XXX", digitCount: 9),
+        CountryPhoneCode(id: "NZ", name: "نيوزيلندا",                dialCode: "+64",  placeholder: "XX XXX XXXX", digitCount: 9),
+    ]
+
+    static func search(_ query: String) -> [CountryPhoneCode] {
+        let list = all.sorted { $0.name < $1.name }
+        guard !query.isEmpty else { return list }
+        let q = query.lowercased()
+        return list.filter {
+            $0.name.contains(query) || $0.dialCode.contains(q) || $0.id.lowercased().contains(q)
+        }
+    }
+}

@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var dataStore: DataStore
+    @ObservedObject private var userService = UserService.shared
     @State private var selectedScheme: String = "system"
     @State private var notificationsEnabled = true
     @State private var biometricEnabled = true
@@ -10,6 +11,12 @@ struct SettingsView: View {
     @State private var showDeleteAccountAlert = false
     @State private var showIncomeEdit = false
     @State private var incomeText: String = ""
+    // Phone editing
+    @State private var showPhoneEdit = false
+    @State private var showCountryPicker = false
+    @State private var selectedCountry = CountryPhoneCode.defaultCountry
+    @State private var phoneInput = ""
+    @State private var countrySearch = ""
 
     var body: some View {
         ScrollView {
@@ -67,6 +74,21 @@ struct SettingsView: View {
                     .presentationDetents([.medium])
                 }
 
+                settingsSection(title: "معلومات الاتصال") {
+                    settingsRow(label: "رقم الهاتف", icon: "phone.fill", color: "#22C55E") {
+                        Button {
+                            initPhoneEdit()
+                            showPhoneEdit = true
+                        } label: {
+                            let phone = userService.currentUser?.phoneNumber ?? ""
+                            Text(phone.isEmpty ? "إضافة" : phone)
+                                .font(.maJuTaCaption)
+                                .foregroundColor(phone.isEmpty ? .maJuTaTextSecondary : .maJuTaGold)
+                        }
+                    }
+                }
+                .sheet(isPresented: $showPhoneEdit) { phoneEditSheet }
+
                 settingsSection(title: "المظهر") {
                     settingsRow(label: "وضع العرض", icon: "moon.fill", color: "#0C2031") {
                         Picker("", selection: $selectedScheme) {
@@ -108,7 +130,7 @@ struct SettingsView: View {
                 }
 
                 settingsSection(title: "عن التطبيق") {
-                    settingsRow(label: "MaJuTa — الإصدار 1.0.0", icon: "info.circle.fill", color: "#6B7280") {
+                    settingsRow(label: "MaJuTa — الإصدار 1.1.0", icon: "info.circle.fill", color: "#6B7280") {
                         EmptyView()
                     }
                     Divider()
@@ -160,6 +182,166 @@ struct SettingsView: View {
         .navigationTitle("الإعدادات")
         .navigationBarTitleDisplayMode(.large)
     }
+
+    // MARK: - Phone Edit Sheet
+
+    private var phoneEditSheet: some View {
+        NavigationStack {
+            VStack(spacing: MaJuTaSpacing.lg) {
+                // Country picker button
+                Button { showCountryPicker = true } label: {
+                    HStack(spacing: MaJuTaSpacing.md) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 12))
+                            .foregroundColor(.maJuTaTextSecondary)
+                        Spacer()
+                        VStack(alignment: .trailing, spacing: 2) {
+                            Text(selectedCountry.flag + "  " + selectedCountry.name)
+                                .font(.maJuTaBody)
+                                .foregroundColor(.maJuTaTextPrimary)
+                            Text(selectedCountry.dialCode)
+                                .font(.maJuTaCaption)
+                                .foregroundColor(.maJuTaGold)
+                        }
+                        ZStack {
+                            RoundedRectangle(cornerRadius: MaJuTaRadius.small)
+                                .fill(Color.maJuTaGold.opacity(0.1))
+                                .frame(width: 36, height: 36)
+                            Image(systemName: "globe")
+                                .font(.system(size: 16))
+                                .foregroundColor(.maJuTaGold)
+                        }
+                    }
+                    .padding(MaJuTaSpacing.md)
+                    .background(Color.maJuTaCard)
+                    .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
+                    .maJuTaCardShadow()
+                }
+                .buttonStyle(.plain)
+
+                // Phone number field
+                HStack(spacing: MaJuTaSpacing.sm) {
+                    TextField(selectedCountry.placeholder, text: $phoneInput)
+                        .keyboardType(.phonePad)
+                        .font(.maJuTaBody)
+                        .foregroundColor(.maJuTaTextPrimary)
+                        .multilineTextAlignment(.trailing)
+                        .onChange(of: phoneInput) { _, newValue in
+                            let digits = newValue.filter { $0.isNumber }
+                            let limited = String(digits.prefix(selectedCountry.digitCount))
+                            let formatted = CountryPhoneCode.formatPhoneNumber(limited, pattern: selectedCountry.placeholder)
+                            if formatted != newValue { phoneInput = formatted }
+                        }
+                    Text(selectedCountry.dialCode)
+                        .font(.maJuTaBodyBold)
+                        .foregroundColor(.maJuTaGold)
+                }
+                .padding(MaJuTaSpacing.md)
+                .background(Color.maJuTaCard)
+                .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
+                .maJuTaCardShadow()
+
+                Text("اختياري — رقم الهاتف ليس مطلوباً لاستخدام التطبيق")
+                    .font(.maJuTaCaption)
+                    .foregroundColor(.maJuTaTextSecondary)
+                    .multilineTextAlignment(.center)
+
+                if !(userService.currentUser?.phoneNumber ?? "").isEmpty {
+                    Button {
+                        if let user = userService.currentUser {
+                            UserService.shared.updatePhoneNumber("", for: user.id)
+                        }
+                        showPhoneEdit = false
+                    } label: {
+                        Text("حذف رقم الهاتف")
+                            .font(.maJuTaCaption)
+                            .foregroundColor(.maJuTaNegative)
+                    }
+                }
+
+                Spacer()
+            }
+            .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
+            .padding(.top, MaJuTaSpacing.md)
+            .background(Color.maJuTaBackground)
+            .navigationTitle("رقم الهاتف")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("إلغاء") { showPhoneEdit = false }
+                        .foregroundColor(.maJuTaTextSecondary)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("حفظ") { savePhone() }
+                        .foregroundColor(.maJuTaGold)
+                        .font(.maJuTaBodyBold)
+                }
+            }
+            .sheet(isPresented: $showCountryPicker) { countryPickerSheet }
+        }
+        .presentationDetents([.medium, .large])
+    }
+
+    private var countryPickerSheet: some View {
+        NavigationStack {
+            List(CountryPhoneCode.search(countrySearch)) { country in
+                Button {
+                    selectedCountry = country
+                    phoneInput = ""
+                    showCountryPicker = false
+                } label: {
+                    HStack {
+                        Text(country.flag + "  " + country.name)
+                            .font(.maJuTaBody)
+                            .foregroundColor(.maJuTaTextPrimary)
+                        Spacer()
+                        Text(country.dialCode)
+                            .font(.maJuTaCaption)
+                            .foregroundColor(.maJuTaGold)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+            .listStyle(.plain)
+            .searchable(text: $countrySearch, prompt: "ابحث عن دولة...")
+            .navigationTitle("اختر الدولة")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("إغلاق") { showCountryPicker = false }
+                        .foregroundColor(.maJuTaTextSecondary)
+                }
+            }
+        }
+    }
+
+    private func initPhoneEdit() {
+        countrySearch = ""
+        let existing = userService.currentUser?.phoneNumber ?? ""
+        // Match longest dial code first to avoid e.g. "+1" matching before "+1868"
+        let match = CountryPhoneCode.all
+            .sorted { $0.dialCode.count > $1.dialCode.count }
+            .first { existing.hasPrefix($0.dialCode) }
+        if let country = match {
+            selectedCountry = country
+            let localDigits = String(existing.dropFirst(country.dialCode.count).filter { $0.isNumber })
+            phoneInput = CountryPhoneCode.formatPhoneNumber(localDigits, pattern: country.placeholder)
+        } else {
+            selectedCountry = CountryPhoneCode.defaultCountry
+            phoneInput = ""
+        }
+    }
+
+    private func savePhone() {
+        let digits = phoneInput.filter { $0.isNumber }
+        let fullPhone = digits.isEmpty ? "" : selectedCountry.dialCode + digits
+        if let user = userService.currentUser {
+            UserService.shared.updatePhoneNumber(fullPhone, for: user.id)
+        }
+        showPhoneEdit = false
+    }
+
+    // MARK: - Section / Row builders
 
     private func settingsSection<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {

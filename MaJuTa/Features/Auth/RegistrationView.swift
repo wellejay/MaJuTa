@@ -9,7 +9,6 @@ struct RegistrationView: View {
     @State private var name          = ""
     @State private var username      = ""
     @State private var email         = ""
-    @State private var phone         = ""
     @State private var pin           = ""
     @State private var confirmPin    = ""
     @State private var pinError      = ""
@@ -28,24 +27,23 @@ struct RegistrationView: View {
     @State private var isRegistering = false
 
     enum RegistrationStep {
-        case name, username, email, phone
+        case name, username, email
         case householdChoice, joinCode
         case pin, confirmPin, biometric
     }
 
-    // Total visible steps for progress (name/username/email/phone/pin/confirmPin/biometric = 7)
-    private var totalSteps: Int { 7 }
+    // Total visible steps for progress (name/username/email/pin/confirmPin/biometric = 6)
+    private var totalSteps: Int { 6 }
     private var currentStepIndex: Int {
         switch step {
         case .name:             return 1
         case .username:         return 2
         case .email:            return 3
-        case .phone:            return 4
         case .householdChoice,
-             .joinCode:         return 4   // sub-steps, no progress advance
-        case .pin:              return 5
-        case .confirmPin:       return 6
-        case .biometric:        return 7
+             .joinCode:         return 3   // sub-steps, no progress advance
+        case .pin:              return 4
+        case .confirmPin:       return 5
+        case .biometric:        return 6
         }
     }
 
@@ -94,7 +92,6 @@ struct RegistrationView: View {
                     case .name:          nameStep
                     case .username:      usernameStep
                     case .email:         emailStep
-                    case .phone:         phoneStep
                     case .householdChoice: householdChoiceStep
                     case .joinCode:      joinCodeStep
                     case .pin:           pinInputStep(title: "اختر رمز مرور من 6 أرقام",
@@ -191,38 +188,6 @@ struct RegistrationView: View {
                 } else {
                     fieldError = ""
                     email = cleaned
-                    step = .phone
-                }
-            }
-        }
-    }
-
-    // MARK: - Step 4: Phone
-    private var phoneStep: some View {
-        VStack(spacing: MaJuTaSpacing.lg) {
-            stepTitle("رقم الجوال", subtitle: "أدخل رقمك الكامل مع رمز الدولة")
-            HStack(spacing: MaJuTaSpacing.sm) {
-                Text("+966")
-                    .font(.maJuTaBodyBold)
-                    .foregroundColor(.maJuTaGold)
-                    .padding(.horizontal, MaJuTaSpacing.md)
-                    .padding(.vertical, 14)
-                    .background(Color.white.opacity(0.15))
-                    .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.input))
-                styledField("5X XXX XXXX", text: $phone, keyboardType: .phonePad)
-            }
-            if !fieldError.isEmpty {
-                Text(fieldError).font(.maJuTaCaption).foregroundColor(.maJuTaNegative)
-            }
-            primaryButton("التالي", disabled: phone.filter { $0.isNumber }.count < 9) {
-                let digits = phone.filter { $0.isNumber }
-                if digits.count < 9 {
-                    fieldError = "يرجى إدخال رقم جوال صحيح"
-                } else if !UserService.shared.isPhoneAvailable(digits) {
-                    fieldError = "رقم الجوال مسجّل بالفعل في حساب آخر"
-                } else {
-                    fieldError = ""
-                    phone = digits
                     if !UserService.shared.registeredHouseholds.isEmpty {
                         step = .householdChoice
                     } else {
@@ -432,7 +397,7 @@ struct RegistrationView: View {
                             name: name.trimmingCharacters(in: .whitespaces),
                             username: username,
                             email: email,
-                            phoneNumber: "+966\(phone.filter { $0.isNumber })",
+                            phoneNumber: "",
                             pin: pin,
                             to: hh
                         )
@@ -441,7 +406,7 @@ struct RegistrationView: View {
                             name: name.trimmingCharacters(in: .whitespaces),
                             username: username,
                             email: email,
-                            phoneNumber: "+966\(phone.filter { $0.isNumber })",
+                            phoneNumber: "",
                             pin: pin
                         )
                     }
@@ -475,14 +440,13 @@ struct RegistrationView: View {
         case .name:            break
         case .username:        step = .name
         case .email:           step = .username
-        case .phone:           step = .email
-        case .householdChoice: step = .phone
+        case .householdChoice: step = .email
         case .joinCode:        step = .householdChoice
         case .pin:
             if !UserService.shared.registeredHouseholds.isEmpty {
                 step = .householdChoice
             } else {
-                step = .phone
+                step = .email
             }
         case .confirmPin:
             pin = ""

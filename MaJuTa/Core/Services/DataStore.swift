@@ -20,6 +20,9 @@ final class DataStore: ObservableObject {
     @Published var budgets: [Budget] = []
     @Published var loans: [Loan] = []
 
+    // MARK: - Guest Mode Flag
+    @Published var isGuestMode: Bool = false
+
     // MARK: - Firestore Listeners
     private var listeners: [ListenerRegistration] = []
 
@@ -33,6 +36,60 @@ final class DataStore: ObservableObject {
     }
 
     private init() {}
+
+    // MARK: - Guest Mode
+
+    // MARK: - Guest persistence file URL
+    private static let guestDataURL: URL = {
+        let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return dir.appendingPathComponent("guest_data.json")
+    }()
+
+    func loadGuestMode() {
+        listeners.forEach { $0.remove() }
+        listeners.removeAll()
+        isGuestMode = true
+        // Restore previously saved guest session if available
+        if let data = try? Data(contentsOf: Self.guestDataURL),
+           let snap = try? JSONDecoder().decode(GuestSnapshot.self, from: data) {
+            accounts         = snap.accounts
+            transactions     = snap.transactions
+            savingsGoals     = snap.savingsGoals
+            bills            = snap.bills
+            investments      = snap.investments
+            installmentPlans = snap.installmentPlans
+            installments     = snap.installments
+            budgets          = snap.budgets
+            loans            = snap.loans
+        } else {
+            clearAll()
+        }
+    }
+
+    /// Persists current in-memory guest data to a local JSON file.
+    func saveGuestData() {
+        guard isGuestMode else { return }
+        let snap = GuestSnapshot(
+            accounts: accounts, transactions: transactions, savingsGoals: savingsGoals,
+            bills: bills, investments: investments, installmentPlans: installmentPlans,
+            installments: installments, budgets: budgets, loans: loans
+        )
+        if let encoded = try? JSONEncoder().encode(snap) {
+            try? encoded.write(to: Self.guestDataURL, options: [.atomic, .completeFileProtection])
+        }
+    }
+
+    /// Deletes the guest data file (called when guest converts to full account).
+    func deleteGuestData() {
+        try? FileManager.default.removeItem(at: Self.guestDataURL)
+    }
+
+    func clearAll() {
+        accounts = []; transactions = []; savingsGoals = []
+        bills = []; investments = []; installmentPlans = []
+        installments = []; activityLog = []; budgets = []; loans = []
+    }
 
     // MARK: - Load / Subscribe
 
@@ -88,7 +145,7 @@ final class DataStore: ObservableObject {
     // MARK: - Activity Logging
 
     private func logActivity(_ action: ActivityActionType, objectType: String, description: String) {
-        guard let user = UserService.shared.currentUser else { return }
+        guard let user = UserService.shared.currentUser, !isGuestMode else { return }
         let entry = ActivityEntry(
             householdId: user.householdId,
             userId: user.id,
@@ -426,8 +483,12 @@ final class DataStore: ObservableObject {
         } else {
             budgets.append(budget)
         }
-        FirestoreService.shared.save(budget, to: "budgets", householdId: currentHouseholdId)
-        logActivity(.goalUpdated, objectType: "budget", description: "تحديث الميزانية")
+        if !isGuestMode {
+            FirestoreService.shared.save(budget, to: "budgets", householdId: currentHouseholdId)
+            logActivity(.goalUpdated, objectType: "budget", description: "تحديث الميزانية")
+        } else {
+            saveGuestData()
+        }
     }
 
     // Bills + BNPL installments + loans = total monthly fixed obligations
@@ -458,7 +519,12 @@ final class DataStore: ObservableObject {
 
     func addAccount(_ account: Account) {
         logActivity(.accountCreated, objectType: "account", description: account.name)
-        FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
+        if isGuestMode {
+            accounts.append(account)
+            saveGuestData()
+        } else {
+            FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
+        }
     }
 
     func withdrawFromEmergencyFund(amount: Double) {
@@ -471,17 +537,22 @@ final class DataStore: ObservableObject {
         // 1. Decrease savings account
         accounts[savingsIdx].balance -= actualWithdrawal
         accounts[savingsIdx].updatedAt = Date()
-        FirestoreService.shared.save(accounts[savingsIdx], to: "accounts", householdId: currentHouseholdId)
+        if !isGuestMode {
+            FirestoreService.shared.save(accounts[savingsIdx], to: "accounts", householdId: currentHouseholdId)
+        }
 
-        // 2. Add back to liquid account (direct balance update — this is a transfer, not income)
+        // 2. Add back to liquid account
         if var liquid = accounts.first(where: { $0.isLiquid }) {
             liquid.balance += actualWithdrawal
             liquid.updatedAt = Date()
             if let lIdx = accounts.firstIndex(where: { $0.id == liquid.id }) { accounts[lIdx] = liquid }
-            FirestoreService.shared.save(liquid, to: "accounts", householdId: currentHouseholdId)
+            if !isGuestMode {
+                FirestoreService.shared.save(liquid, to: "accounts", householdId: currentHouseholdId)
+            }
         }
 
         logActivity(.transactionCreated, objectType: "account", description: "سحب من صندوق الطوارئ")
+        if isGuestMode { saveGuestData() }
     }
 
     func depositToEmergencyFund(amount: Double) {
@@ -493,7 +564,9 @@ final class DataStore: ObservableObject {
             savings.balance += amount
             savings.updatedAt = Date()
             if let idx = accounts.firstIndex(where: { $0.id == savings.id }) { accounts[idx] = savings }
-            FirestoreService.shared.save(savings, to: "accounts", householdId: currentHouseholdId)
+            if !isGuestMode {
+                FirestoreService.shared.save(savings, to: "accounts", householdId: currentHouseholdId)
+            }
         } else {
             // Create savings account automatically
             let savings = Account(
@@ -504,7 +577,9 @@ final class DataStore: ObservableObject {
                 householdId: currentHouseholdId
             )
             accounts.append(savings)
-            FirestoreService.shared.save(savings, to: "accounts", householdId: currentHouseholdId)
+            if !isGuestMode {
+                FirestoreService.shared.save(savings, to: "accounts", householdId: currentHouseholdId)
+            }
         }
 
         // 2. Create savings transaction — deducts liquid account in cashflow
@@ -527,10 +602,19 @@ final class DataStore: ObservableObject {
         if var account = accounts.first(where: { $0.id == t.accountId }) {
             account.balance -= t.amount
             account.updatedAt = Date()
-            FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
+            if isGuestMode {
+                if let idx = accounts.firstIndex(where: { $0.id == account.id }) { accounts[idx] = account }
+            } else {
+                FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
+            }
         }
         logActivity(.transactionDeleted, objectType: "transaction", description: t.merchant)
-        FirestoreService.shared.delete(id: id, from: "transactions", householdId: currentHouseholdId)
+        if isGuestMode {
+            transactions.removeAll { $0.id == id }
+            saveGuestData()
+        } else {
+            FirestoreService.shared.delete(id: id, from: "transactions", householdId: currentHouseholdId)
+        }
     }
 
     func addTransaction(_ transaction: Transaction) {
@@ -538,15 +622,29 @@ final class DataStore: ObservableObject {
         if var account = accounts.first(where: { $0.id == transaction.accountId }) {
             account.balance += transaction.amount
             account.updatedAt = Date()
-            FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
+            if isGuestMode {
+                if let idx = accounts.firstIndex(where: { $0.id == account.id }) { accounts[idx] = account }
+            } else {
+                FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
+            }
         }
         logActivity(.transactionCreated, objectType: "transaction", description: transaction.merchant)
-        FirestoreService.shared.save(transaction, to: "transactions", householdId: currentHouseholdId)
+        if isGuestMode {
+            transactions.insert(transaction, at: 0)
+            saveGuestData()
+        } else {
+            FirestoreService.shared.save(transaction, to: "transactions", householdId: currentHouseholdId)
+        }
     }
 
     func addBill(_ bill: Bill) {
         logActivity(.billCreated, objectType: "bill", description: bill.name)
-        FirestoreService.shared.save(bill, to: "bills", householdId: currentHouseholdId)
+        if isGuestMode {
+            bills.append(bill)
+            saveGuestData()
+        } else {
+            FirestoreService.shared.save(bill, to: "bills", householdId: currentHouseholdId)
+        }
     }
 
     func payBill(_ bill: Bill) {
@@ -555,7 +653,10 @@ final class DataStore: ObservableObject {
         updated.updatedAt = Date()
         // Optimistic local update
         if let idx = bills.firstIndex(where: { $0.id == bill.id }) { bills[idx] = updated }
-        FirestoreService.shared.save(updated, to: "bills", householdId: currentHouseholdId)
+        if !isGuestMode {
+            FirestoreService.shared.save(updated, to: "bills", householdId: currentHouseholdId)
+        }
+        // Guest: saveGuestData() will be called by addTransaction below
         // Create expense transaction for this bill payment
         guard let user = UserService.shared.currentUser else { return }
         let tx = Transaction(
@@ -571,7 +672,7 @@ final class DataStore: ObservableObject {
         addTransaction(tx)
         logActivity(.billCreated, objectType: "bill", description: "\(bill.name) — مدفوعة")
         // If recurring, schedule next due date
-        if bill.frequency != .custom {
+        if !isGuestMode && bill.frequency != .custom {
             scheduleNextBill(from: updated)
         }
     }
@@ -602,7 +703,12 @@ final class DataStore: ObservableObject {
 
     func addSavingsGoal(_ goal: SavingsGoal) {
         logActivity(.goalCreated, objectType: "goal", description: goal.name)
-        FirestoreService.shared.save(goal, to: "savingsGoals", householdId: currentHouseholdId)
+        if isGuestMode {
+            savingsGoals.append(goal)
+            saveGuestData()
+        } else {
+            FirestoreService.shared.save(goal, to: "savingsGoals", householdId: currentHouseholdId)
+        }
     }
 
     func contribute(to goal: SavingsGoal, amount: Double) {
@@ -612,7 +718,9 @@ final class DataStore: ObservableObject {
         updated.currentAmount += amount
         updated.updatedAt = Date()
         if let idx = savingsGoals.firstIndex(where: { $0.id == goal.id }) { savingsGoals[idx] = updated }
-        FirestoreService.shared.save(updated, to: "savingsGoals", householdId: currentHouseholdId)
+        if !isGuestMode {
+            FirestoreService.shared.save(updated, to: "savingsGoals", householdId: currentHouseholdId)
+        }
 
         // 2. Create a savings transaction so it shows in cashflow and deducts from account
         let savingsCatId = categories.first(where: { $0.type == .savings })?.id ?? UUID()
@@ -634,7 +742,11 @@ final class DataStore: ObservableObject {
 
     func addInvestment(_ asset: InvestmentAsset) {
         investments.append(asset)
-        FirestoreService.shared.save(asset, to: "investments", householdId: currentHouseholdId)
+        if !isGuestMode {
+            FirestoreService.shared.save(asset, to: "investments", householdId: currentHouseholdId)
+        } else {
+            saveGuestData()
+        }
     }
 
     func updateInvestmentPrice(assetId: UUID, newPrice: Double) {
@@ -642,20 +754,32 @@ final class DataStore: ObservableObject {
         asset.lastPrice = newPrice
         asset.lastPriceUpdated = Date()
         asset.updatedAt = Date()
-        // Optimistic local update so detail view refreshes immediately
         if let idx = investments.firstIndex(where: { $0.id == assetId }) {
             investments[idx] = asset
         }
-        FirestoreService.shared.save(asset, to: "investments", householdId: currentHouseholdId)
+        if !isGuestMode {
+            FirestoreService.shared.save(asset, to: "investments", householdId: currentHouseholdId)
+        } else {
+            saveGuestData()
+        }
     }
 
     func addInstallmentPlan(_ plan: InstallmentPlan) {
-        FirestoreService.shared.save(plan, to: "installmentPlans", householdId: currentHouseholdId)
         let amount = plan.installmentAmount
-        for i in 0..<plan.installmentsCount {
-            let dueDate = Calendar.current.date(byAdding: .month, value: i, to: plan.startDate) ?? plan.startDate
-            let installment = Installment(planId: plan.id, amount: amount, dueDate: dueDate)
-            FirestoreService.shared.save(installment, to: "installments", householdId: currentHouseholdId)
+        if isGuestMode {
+            installmentPlans.append(plan)
+            for i in 0..<plan.installmentsCount {
+                let dueDate = Calendar.current.date(byAdding: .month, value: i, to: plan.startDate) ?? plan.startDate
+                installments.append(Installment(planId: plan.id, amount: amount, dueDate: dueDate))
+            }
+            saveGuestData()
+        } else {
+            FirestoreService.shared.save(plan, to: "installmentPlans", householdId: currentHouseholdId)
+            for i in 0..<plan.installmentsCount {
+                let dueDate = Calendar.current.date(byAdding: .month, value: i, to: plan.startDate) ?? plan.startDate
+                let installment = Installment(planId: plan.id, amount: amount, dueDate: dueDate)
+                FirestoreService.shared.save(installment, to: "installments", householdId: currentHouseholdId)
+            }
         }
     }
 
@@ -667,17 +791,31 @@ final class DataStore: ObservableObject {
 
     func addLoan(_ loan: Loan) {
         logActivity(.accountCreated, objectType: "loan", description: loan.name)
-        FirestoreService.shared.save(loan, to: "loans", householdId: currentHouseholdId)
+        if isGuestMode {
+            loans.append(loan)
+            loans.sort { $0.nextPaymentDate < $1.nextPaymentDate }
+            saveGuestData()
+        } else {
+            FirestoreService.shared.save(loan, to: "loans", householdId: currentHouseholdId)
+        }
     }
 
     func updateLoan(_ loan: Loan) {
         if let idx = loans.firstIndex(where: { $0.id == loan.id }) { loans[idx] = loan }
-        FirestoreService.shared.save(loan, to: "loans", householdId: currentHouseholdId)
+        if !isGuestMode {
+            FirestoreService.shared.save(loan, to: "loans", householdId: currentHouseholdId)
+        } else {
+            saveGuestData()
+        }
     }
 
     func deleteLoan(id: UUID) {
         loans.removeAll { $0.id == id }
-        FirestoreService.shared.delete(id: id, from: "loans", householdId: currentHouseholdId)
+        if !isGuestMode {
+            FirestoreService.shared.delete(id: id, from: "loans", householdId: currentHouseholdId)
+        } else {
+            saveGuestData()
+        }
     }
 
     /// Records a loan payment: decreases remaining balance, creates an expense transaction.
@@ -711,6 +849,11 @@ final class DataStore: ObservableObject {
     }
 
     func reset() {
+        if isGuestMode {
+            clearAll()
+            try? FileManager.default.removeItem(at: Self.guestDataURL)
+            return
+        }
         guard let user = UserService.shared.currentUser else { return }
         let hid = user.householdId
         let fs = FirestoreService.shared
@@ -721,6 +864,20 @@ final class DataStore: ObservableObject {
             }
         }
     }
+}
+
+// MARK: - Guest Data Persistence
+
+private struct GuestSnapshot: Codable {
+    var accounts: [Account]
+    var transactions: [Transaction]
+    var savingsGoals: [SavingsGoal]
+    var bills: [Bill]
+    var investments: [InvestmentAsset]
+    var installmentPlans: [InstallmentPlan]
+    var installments: [Installment]
+    var budgets: [Budget]
+    var loans: [Loan]
 }
 
 // MARK: - Date Helper

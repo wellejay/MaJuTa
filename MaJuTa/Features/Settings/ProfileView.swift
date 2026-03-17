@@ -37,7 +37,11 @@ struct ProfileView: View {
                                  destination: AnyView(SettingsView().environmentObject(appState).environmentObject(dataStore))),
                     ])
                     Button {
-                        authService.lock()
+                        if appState.isGuestMode {
+                            appState.resetAll()
+                        } else {
+                            authService.lock()
+                        }
                     } label: {
                         HStack {
                             Spacer()

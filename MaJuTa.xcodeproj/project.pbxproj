@@ -14,6 +14,7 @@
 		07870D3A3CE9BBFA2A4395AE /* LockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F9132B3667AD385B9F69F5 /* LockScreenView.swift */; };
 		09907FB348FA9F878E4F5270 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C68BB1FECCC8F499FF657E5 /* AuthenticationService.swift */; };
 		0B4C4A48BC135CFBD665E1F9 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9ACB9ECB564AD572869625 /* KeychainService.swift */; };
+		AA112233445566778899AABB /* L.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB112233445566778899AABB /* L.swift */; };
 		0EBDE454BD134BBE34D439E6 /* BNPLInstallment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2269B80DC77B06C01C7D5A4B /* BNPLInstallment.swift */; };
 		0F95BD5D2142AF11619B81C2 /* PINPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B056C39C2F69EBE6AD0933DA /* PINPadView.swift */; };
 		1020615405DB4CB3B7CBBDBA /* ZakatEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B53BC5294714B0BB4015949 /* ZakatEngine.swift */; };
@@ -87,6 +88,7 @@
 
 /* Begin PBXFileReference section */
 		01130465D7A26745A8731778 /* EmergencyFundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyFundView.swift; sourceTree = "<group>"; };
+		BB112233445566778899AABB /* L.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L.swift; sourceTree = "<group>"; };
 		026C23DE3DCC161493837B47 /* MaJuTaSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaJuTaSpacing.swift; sourceTree = "<group>"; };
 		04944A817F249DD4511DED9F /* SARText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SARText.swift; sourceTree = "<group>"; };
 		118B585913C4A0062BFEDB4C /* FamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyView.swift; sourceTree = "<group>"; };
@@ -499,12 +501,21 @@
 			children = (
 				2E4AEC5B0908E75CD961A862 /* Engines */,
 				B29DA9BADF4726D68215DC99 /* Extensions */,
+				CC112233445566778899AABB /* Localization */,
 				75A656EC561F64A2ADA70726 /* Models */,
 				556A85ADA2396C95C5202023 /* Persistence */,
 				785A6C8704D5D373E881AC98 /* Security */,
 				7BFAC4CF26EC0DD9F454D39E /* Services */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		CC112233445566778899AABB /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				BB112233445566778899AABB /* L.swift */,
+			);
+			path = Localization;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -653,6 +664,7 @@
 				1020615405DB4CB3B7CBBDBA /* ZakatEngine.swift in Sources */,
 				B0F6B8E1E632FFB789E8BD9F /* InvestmentsView.swift in Sources */,
 				0B4C4A48BC135CFBD665E1F9 /* KeychainService.swift in Sources */,
+				AA112233445566778899AABB /* L.swift in Sources */,
 				07870D3A3CE9BBFA2A4395AE /* LockScreenView.swift in Sources */,
 				2FB09677ED6A6D1472996879 /* MaJuTaApp.swift in Sources */,
 				A2B33B64BC1FA5523B8E8C06 /* MaJuTaColors.swift in Sources */,

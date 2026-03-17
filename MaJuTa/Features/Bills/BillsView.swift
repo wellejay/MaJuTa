@@ -15,9 +15,9 @@ struct BillsView: View {
             ScrollView {
                 VStack(spacing: MaJuTaSpacing.md) {
                     billsSummaryCard
-                    if !overdueBills.isEmpty { billSection(title: "متأخرة", bills: overdueBills, color: .maJuTaNegative) }
-                    if !upcomingBills.isEmpty { billSection(title: "قادمة", bills: upcomingBills, color: .maJuTaGold) }
-                    if !paidBills.isEmpty { billSection(title: "مدفوعة", bills: paidBills, color: .maJuTaPositive) }
+                    if !overdueBills.isEmpty { billSection(title: L("متأخرة"), bills: overdueBills, color: .maJuTaNegative) }
+                    if !upcomingBills.isEmpty { billSection(title: L("قادمة"), bills: upcomingBills, color: .maJuTaGold) }
+                    if !paidBills.isEmpty { billSection(title: L("مدفوعة"), bills: paidBills, color: .maJuTaPositive) }
                     if dataStore.visibleBills.isEmpty { emptyBillsState }
                 }
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
@@ -25,7 +25,7 @@ struct BillsView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("الفواتير والالتزامات")
+            .navigationTitle(L("الفواتير والالتزامات"))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -42,9 +42,9 @@ struct BillsView: View {
 
     private var billsSummaryCard: some View {
         HStack(spacing: MaJuTaSpacing.sm) {
-            summaryItem(amount: upcomingBills.reduce(0) { $0 + $1.amount }, label: "إجمالي قادم", color: .maJuTaGold)
-            summaryItem(value: "\(overdueBills.count)", label: "متأخرة", color: .maJuTaNegative)
-            summaryItem(value: "\(upcomingBills.count)", label: "قادمة", color: .maJuTaTextPrimary)
+            summaryItem(amount: upcomingBills.reduce(0) { $0 + $1.amount }, label: L("إجمالي قادم"), color: .maJuTaGold)
+            summaryItem(value: "\(overdueBills.count)", label: L("متأخرة"), color: .maJuTaNegative)
+            summaryItem(value: "\(upcomingBills.count)", label: L("قادمة"), color: .maJuTaTextPrimary)
         }
     }
 
@@ -89,8 +89,8 @@ struct BillsView: View {
         VStack(spacing: MaJuTaSpacing.md) {
             Image(systemName: "calendar.badge.checkmark")
                 .font(.system(size: 48)).foregroundColor(.maJuTaPositive.opacity(0.6))
-            Text("لا توجد فواتير").font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextSecondary)
-            Text("أضف فواتيرك الشهرية لتتبعها")
+            Text(L("لا توجد فواتير")).font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextSecondary)
+            Text(L("أضف فواتيرك الشهرية لتتبعها"))
                 .font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary.opacity(0.7))
         }
         .frame(maxWidth: .infinity).padding(MaJuTaSpacing.xxl)
@@ -113,24 +113,24 @@ struct AddBillView: View {
             ScrollView {
                 VStack(spacing: MaJuTaSpacing.md) {
                     VStack(spacing: 1) {
-                        fieldRow(label: "اسم الفاتورة") {
-                            TextField("مثال: كهرباء، إنترنت", text: $name).multilineTextAlignment(.trailing)
+                        fieldRow(label: L("اسم الفاتورة")) {
+                            TextField(L("مثال: كهرباء، إنترنت"), text: $name).multilineTextAlignment(.trailing)
                         }
                         Divider()
-                        fieldRow(label: "المبلغ (﷼)") {
+                        fieldRow(label: L("المبلغ (﷼)")) {
                             TextField("0", text: $amount).keyboardType(.decimalPad).multilineTextAlignment(.trailing)
                         }
                         Divider()
-                        fieldRow(label: "الجهة المزودة") {
-                            TextField("مثال: STC، SEC", text: $provider).multilineTextAlignment(.trailing)
+                        fieldRow(label: L("الجهة المزودة")) {
+                            TextField(L("مثال: STC، SEC"), text: $provider).multilineTextAlignment(.trailing)
                         }
                         Divider()
-                        fieldRow(label: "تاريخ الاستحقاق") {
+                        fieldRow(label: L("تاريخ الاستحقاق")) {
                             DatePicker("", selection: $dueDate, displayedComponents: .date)
                                 .datePickerStyle(.compact).labelsHidden()
                         }
                         Divider()
-                        fieldRow(label: "التكرار") {
+                        fieldRow(label: L("التكرار")) {
                             Menu {
                                 ForEach(RecurringFrequency.allCases, id: \.self) { f in
                                     Button(f.displayName) { frequency = f }
@@ -147,7 +147,7 @@ struct AddBillView: View {
                     .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
                     .maJuTaCardShadow()
 
-                    Button("حفظ الفاتورة") { saveBill() }
+                    Button(L("حفظ الفاتورة")) { saveBill() }
                         .font(.maJuTaBodyBold).foregroundColor(.white)
                         .frame(maxWidth: .infinity).frame(height: 56)
                         .background(name.isEmpty ? Color.maJuTaTextSecondary.opacity(0.3) : Color.maJuTaPrimary)
@@ -157,10 +157,10 @@ struct AddBillView: View {
                 .padding(MaJuTaSpacing.horizontalPadding).padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("فاتورة جديدة").navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(L("فاتورة جديدة")).navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("إلغاء") { dismiss() }.foregroundColor(.maJuTaTextSecondary)
+                    Button(L("إلغاء")) { dismiss() }.foregroundColor(.maJuTaTextSecondary)
                 }
             }
         }

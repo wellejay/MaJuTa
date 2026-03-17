@@ -19,51 +19,51 @@ struct MainTabView: View {
             TabView(selection: $appState.selectedTab) {
                 DashboardView()
                     .tabItem {
-                        Label(AppTab.dashboard.title, systemImage: AppTab.dashboard.icon)
+                        Label(LocalizedStringKey(AppTab.dashboard.title), systemImage: AppTab.dashboard.icon)
                     }
                     .tag(AppTab.dashboard)
 
                 TransactionsListView()
                     .tabItem {
-                        Label(AppTab.transactions.title, systemImage: AppTab.transactions.icon)
+                        Label(LocalizedStringKey(AppTab.transactions.title), systemImage: AppTab.transactions.icon)
                     }
                     .tag(AppTab.transactions)
 
                 GoalsView()
                     .tabItem {
-                        Label(AppTab.goals.title, systemImage: AppTab.goals.icon)
+                        Label(LocalizedStringKey(AppTab.goals.title), systemImage: AppTab.goals.icon)
                     }
                     .tag(AppTab.goals)
 
                 InvestmentsView()
                     .tabItem {
-                        Label(AppTab.investments.title, systemImage: AppTab.investments.icon)
+                        Label(LocalizedStringKey(AppTab.investments.title), systemImage: AppTab.investments.icon)
                     }
                     .tag(AppTab.investments)
 
                 LoansView()
                     .tabItem {
-                        Label(AppTab.loans.title, systemImage: AppTab.loans.icon)
+                        Label(LocalizedStringKey(AppTab.loans.title), systemImage: AppTab.loans.icon)
                     }
                     .tag(AppTab.loans)
 
                 if appState.isGuestMode {
                     GuestFamilyPlaceholder()
                         .tabItem {
-                            Label(AppTab.family.title, systemImage: AppTab.family.icon)
+                            Label(LocalizedStringKey(AppTab.family.title), systemImage: AppTab.family.icon)
                         }
                         .tag(AppTab.family)
                 } else {
                     FamilyView()
                         .tabItem {
-                            Label(AppTab.family.title, systemImage: AppTab.family.icon)
+                            Label(LocalizedStringKey(AppTab.family.title), systemImage: AppTab.family.icon)
                         }
                         .tag(AppTab.family)
                 }
 
                 ProfileView()
                     .tabItem {
-                        Label(AppTab.profile.title, systemImage: AppTab.profile.icon)
+                        Label(LocalizedStringKey(AppTab.profile.title), systemImage: AppTab.profile.icon)
                     }
                     .tag(AppTab.profile)
             }
@@ -88,7 +88,7 @@ private struct GuestModeBanner: View {
                 Image(systemName: "person.crop.circle.badge.plus")
                     .font(.system(size: 16))
                     .foregroundColor(.maJuTaGold)
-                Text("أنت في وضع الضيف — انقر لإنشاء حساب والاحتفاظ ببياناتك")
+                Text(L("أنت في وضع الضيف — انقر لإنشاء حساب والاحتفاظ ببياناتك"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextPrimary)
                     .multilineTextAlignment(.trailing)
@@ -115,16 +115,16 @@ private struct GuestFamilyPlaceholder: View {
                 Image(systemName: "person.2.fill")
                     .font(.system(size: 48))
                     .foregroundColor(.maJuTaGold.opacity(0.5))
-                Text("ميزة العائلة")
+                Text(L("ميزة العائلة"))
                     .font(.maJuTaTitle2)
                     .foregroundColor(.maJuTaTextPrimary)
-                Text("تتطلب حساباً مسجلاً لمشاركة البيانات مع أفراد عائلتك")
+                Text(L("تتطلب حساباً مسجلاً لمشاركة البيانات مع أفراد عائلتك"))
                     .font(.maJuTaBody)
                     .foregroundColor(.maJuTaTextSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, MaJuTaSpacing.xl)
             }
         }
-        .navigationTitle(AppTab.family.title)
+        .navigationTitle(LocalizedStringKey(AppTab.family.title))
     }
 }

@@ -53,13 +53,19 @@ struct RegistrationView: View {
             VStack(spacing: 0) {
                 // Top bar: back button + logo
                 ZStack(alignment: .leading) {
-                    // Back button (hidden on first step and biometric)
-                    if step != .name && step != .biometric {
-                        Button(action: previousStep) {
+                    // Back button: goes to previous step, or cancels registration on first step
+                    if step != .biometric {
+                        Button(action: {
+                            if step == .name {
+                                authService.showRegistration = false
+                            } else {
+                                previousStep()
+                            }
+                        }) {
                             HStack(spacing: 6) {
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14, weight: .semibold))
-                                Text("رجوع")
+                                Text(step == .name ? L("إلغاء") : L("رجوع"))
                                     .font(.maJuTaCaptionMedium)
                             }
                             .foregroundColor(.white.opacity(0.8))
@@ -94,10 +100,10 @@ struct RegistrationView: View {
                     case .email:         emailStep
                     case .householdChoice: householdChoiceStep
                     case .joinCode:      joinCodeStep
-                    case .pin:           pinInputStep(title: "اختر رمز مرور من 6 أرقام",
-                                                     subtitle: "سيُستخدم لتأمين حسابك", binding: $pin)
-                    case .confirmPin:    pinInputStep(title: "تأكيد رمز المرور",
-                                                     subtitle: "أعد إدخال الرقم السري", binding: $confirmPin)
+                    case .pin:           pinInputStep(title: L("اختر رمز مرور من 6 أرقام"),
+                                                     subtitle: L("سيُستخدم لتأمين حسابك"), binding: $pin)
+                    case .confirmPin:    pinInputStep(title: L("تأكيد رمز المرور"),
+                                                     subtitle: L("أعد إدخال الرقم السري"), binding: $confirmPin)
                     case .biometric:     biometricStep
                     }
 
@@ -136,9 +142,9 @@ struct RegistrationView: View {
     // MARK: - Step 1: Name
     private var nameStep: some View {
         VStack(spacing: MaJuTaSpacing.lg) {
-            stepTitle("ما اسمك الكامل؟", subtitle: "سيظهر هذا للأعضاء الآخرين")
-            styledField("الاسم الكامل", text: $name, keyboardType: .default)
-            primaryButton("التالي", disabled: name.trimmingCharacters(in: .whitespaces).count < 2) {
+            stepTitle(L("ما اسمك الكامل؟"), subtitle: L("سيظهر هذا للأعضاء الآخرين"))
+            styledField(L("الاسم الكامل"), text: $name, keyboardType: .default)
+            primaryButton(L("التالي"), disabled: name.trimmingCharacters(in: .whitespaces).count < 2) {
                 fieldError = ""
                 step = .username
             }
@@ -148,20 +154,20 @@ struct RegistrationView: View {
     // MARK: - Step 2: Username
     private var usernameStep: some View {
         VStack(spacing: MaJuTaSpacing.lg) {
-            stepTitle("اختر اسم المستخدم", subtitle: "يجب أن يكون فريداً · حروف وأرقام فقط")
+            stepTitle(L("اختر اسم المستخدم"), subtitle: L("يجب أن يكون فريداً · حروف وأرقام فقط"))
             HStack {
-                styledField("مثال: waleed_99", text: $username, keyboardType: .asciiCapable)
+                styledField(L("مثال: waleed_99"), text: $username, keyboardType: .asciiCapable)
                 Text("@").font(.maJuTaTitle2).foregroundColor(.maJuTaGold)
             }
             if !fieldError.isEmpty {
                 Text(fieldError).font(.maJuTaCaption).foregroundColor(.maJuTaNegative)
             }
-            primaryButton("التالي", disabled: username.count < 3) {
+            primaryButton(L("التالي"), disabled: username.count < 3) {
                 let trimmed = cleanString(username)
                 if !isValidUsername(trimmed) {
-                    fieldError = "يجب أن يحتوي على 3–20 حرفاً (a-z 0-9 _) فقط"
+                    fieldError = L("يجب أن يحتوي على 3–20 حرفاً (a-z 0-9 _) فقط")
                 } else if !UserService.shared.isUsernameAvailable(trimmed) {
-                    fieldError = "اسم المستخدم مستخدم بالفعل، اختر آخر"
+                    fieldError = L("اسم المستخدم مستخدم بالفعل، اختر آخر")
                 } else {
                     fieldError = ""
                     username = trimmed
@@ -174,17 +180,17 @@ struct RegistrationView: View {
     // MARK: - Step 3: Email
     private var emailStep: some View {
         VStack(spacing: MaJuTaSpacing.lg) {
-            stepTitle("بريدك الإلكتروني", subtitle: "مطلوب بريد إلكتروني حقيقي")
+            stepTitle(L("بريدك الإلكتروني"), subtitle: L("مطلوب بريد إلكتروني حقيقي"))
             styledField("example@email.com", text: $email, keyboardType: .emailAddress)
             if !fieldError.isEmpty {
                 Text(fieldError).font(.maJuTaCaption).foregroundColor(.maJuTaNegative)
             }
-            primaryButton("التالي", disabled: email.count < 5) {
+            primaryButton(L("التالي"), disabled: email.count < 5) {
                 let cleaned = cleanString(email)
                 if !isValidEmail(cleaned) {
-                    fieldError = "يرجى إدخال بريد إلكتروني حقيقي (مثال: name@gmail.com)"
+                    fieldError = L("يرجى إدخال بريد إلكتروني حقيقي (مثال: name@gmail.com)")
                 } else if !UserService.shared.isEmailAvailable(cleaned) {
-                    fieldError = "هذا البريد الإلكتروني مسجّل بالفعل في حساب آخر"
+                    fieldError = L("هذا البريد الإلكتروني مسجّل بالفعل في حساب آخر")
                 } else {
                     fieldError = ""
                     email = cleaned
@@ -201,7 +207,7 @@ struct RegistrationView: View {
     // MARK: - Household Choice (conditional)
     private var householdChoiceStep: some View {
         VStack(spacing: MaJuTaSpacing.lg) {
-            stepTitle("هل تنضم لعائلة موجودة؟", subtitle: nil)
+            stepTitle(L("هل تنضم لعائلة موجودة؟"), subtitle: nil)
             VStack(spacing: MaJuTaSpacing.md) {
                 Button {
                     joiningHousehold = nil
@@ -211,9 +217,9 @@ struct RegistrationView: View {
                 } label: {
                     HStack(spacing: MaJuTaSpacing.md) {
                         VStack(alignment: .trailing, spacing: 3) {
-                            Text("انضم لعائلة موجودة")
+                            Text(L("انضم لعائلة موجودة"))
                                 .font(.maJuTaBodyBold).foregroundColor(.maJuTaPrimary)
-                            Text("لديك كود دعوة من أحد أفراد العائلة")
+                            Text(L("لديك كود دعوة من أحد أفراد العائلة"))
                                 .font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
                         }
                         Spacer()
@@ -230,9 +236,9 @@ struct RegistrationView: View {
                 } label: {
                     HStack(spacing: MaJuTaSpacing.md) {
                         VStack(alignment: .trailing, spacing: 3) {
-                            Text("أنشئ عائلة جديدة")
+                            Text(L("أنشئ عائلة جديدة"))
                                 .font(.maJuTaBodyBold).foregroundColor(.white)
-                            Text("ابدأ حساباً منزلياً مستقلاً")
+                            Text(L("ابدأ حساباً منزلياً مستقلاً"))
                                 .font(.maJuTaCaption).foregroundColor(.white.opacity(0.7))
                         }
                         Spacer()
@@ -250,7 +256,7 @@ struct RegistrationView: View {
     // MARK: - Join Code (conditional)
     private var joinCodeStep: some View {
         VStack(spacing: MaJuTaSpacing.lg) {
-            stepTitle("أدخل كود الدعوة", subtitle: "اطلب الكود من صاحب الحساب المنزلي")
+            stepTitle(L("أدخل كود الدعوة"), subtitle: L("اطلب الكود من صاحب الحساب المنزلي"))
             TextField("000000", text: $joinCodeInput)
                 .keyboardType(.numberPad)
                 .font(.system(size: 44, weight: .bold, design: .monospaced))
@@ -266,7 +272,7 @@ struct RegistrationView: View {
             if !joinCodeError.isEmpty {
                 Text(joinCodeError).font(.maJuTaCaption).foregroundColor(.maJuTaNegative)
             }
-            primaryButton("تأكيد", disabled: joinCodeInput.count != 6) {
+            primaryButton(L("تأكيد"), disabled: joinCodeInput.count != 6) {
                 // Try local lookup first, then remote
                 if let hh = UserService.shared.findHousehold(byCode: joinCodeInput) {
                     joiningHousehold = hh
@@ -280,12 +286,12 @@ struct RegistrationView: View {
                             joinCodeError = ""
                             step = .pin
                         } else {
-                            joinCodeError = "كود الدعوة غير صحيح، تحقق وأعد المحاولة"
+                            joinCodeError = L("كود الدعوة غير صحيح، تحقق وأعد المحاولة")
                         }
                     }
                 }
             }
-            Button("رجوع") { step = .householdChoice }
+            Button(L("رجوع")) { step = .householdChoice }
                 .font(.maJuTaCaption).foregroundColor(.white.opacity(0.7))
         }
     }
@@ -295,7 +301,7 @@ struct RegistrationView: View {
         VStack(spacing: MaJuTaSpacing.lg) {
             VStack(spacing: MaJuTaSpacing.sm) {
                 if let hh = joiningHousehold, step == .pin {
-                    Text("الانضمام إلى: \(hh.name)")
+                    Text(L("الانضمام إلى: \(hh.name)"))
                         .font(.maJuTaLabel).foregroundColor(.maJuTaGold)
                 }
                 Text(title).font(.maJuTaTitle2).foregroundColor(.white)
@@ -326,19 +332,19 @@ struct RegistrationView: View {
                     .foregroundColor(.maJuTaGold)
             }
             VStack(spacing: MaJuTaSpacing.sm) {
-                Text("تفعيل \(biometricLabel)")
+                Text(L("تفعيل \(biometricLabel)"))
                     .font(.maJuTaTitle2).foregroundColor(.white)
-                Text("استخدم \(biometricLabel) لتسجيل الدخول بسرعة وأمان بدلاً من رمز المرور في كل مرة")
+                Text(L("استخدم \(biometricLabel) لتسجيل الدخول بسرعة وأمان بدلاً من رمز المرور في كل مرة"))
                     .font(.maJuTaCaption).foregroundColor(.white.opacity(0.7))
                     .multilineTextAlignment(.center)
             }
             if !biometricError.isEmpty {
                 Text(biometricError).font(.maJuTaCaption).foregroundColor(.maJuTaNegative)
             }
-            primaryButton("تفعيل \(biometricLabel)", disabled: false) {
+            primaryButton(L("تفعيل \(biometricLabel)"), disabled: false) {
                 Task { await enrollBiometric() }
             }
-            Button("تخطى") { finishRegistration() }
+            Button(L("تخطى")) { finishRegistration() }
                 .font(.maJuTaCaptionMedium).foregroundColor(.white.opacity(0.6))
         }
     }
@@ -360,20 +366,20 @@ struct RegistrationView: View {
         let ctx = LAContext()
         var error: NSError?
         guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
-            biometricError = "الجهاز لا يدعم \(biometricLabel)"
+            biometricError = L("الجهاز لا يدعم \(biometricLabel)")
             return
         }
         do {
             let ok = try await ctx.evaluatePolicy(
                 .deviceOwnerAuthenticationWithBiometrics,
-                localizedReason: "تحقق من هويتك لتفعيل الدخول بـ \(biometricLabel)"
+                localizedReason: L("تحقق من هويتك لتفعيل الدخول بـ \(biometricLabel)")
             )
             if ok, let user = pendingUser {
                 UserService.shared.setBiometricEnabled(for: user.id)
             }
             finishRegistration()
         } catch {
-            biometricError = "فشل تفعيل \(biometricLabel)، يمكنك تخطي هذه الخطوة"
+            biometricError = L("فشل تفعيل \(biometricLabel)، يمكنك تخطي هذه الخطوة")
         }
     }
 
@@ -423,7 +429,7 @@ struct RegistrationView: View {
                     }
                 }
             } else {
-                pinError = "الرمز غير متطابق، حاول مجدداً"
+                pinError = L("الرمز غير متطابق، حاول مجدداً")
                 confirmPin = ""
                 pin = ""
                 step = .pin

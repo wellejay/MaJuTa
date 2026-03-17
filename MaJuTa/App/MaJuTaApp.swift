@@ -72,7 +72,7 @@ struct MaJuTaApp: App {
                             Text("MaJuTa")
                                 .font(.system(size: 28, weight: .bold))
                                 .foregroundColor(.white.opacity(0.8))
-                            Text("محتوى مالي محمي")
+                            Text(L("محتوى مالي محمي"))
                                 .font(.system(size: 14))
                                 .foregroundColor(.white.opacity(0.5))
                         }
@@ -80,6 +80,8 @@ struct MaJuTaApp: App {
                     .ignoresSafeArea()
                 }
             }
+            .id(appState.appLanguage)
+            .environment(\.locale, Locale(identifier: appState.appLanguage))
             .environment(\.layoutDirection, appState.layoutDirection)
             .preferredColorScheme(appState.colorScheme)
             .task { appState.loadProfileImage() }
@@ -149,7 +151,7 @@ struct WelcomeGateView: View {
                     Text("MaJuTa")
                         .font(.system(size: 36, weight: .bold))
                         .foregroundColor(.maJuTaTextPrimary)
-                    Text("مدير ميزانيتك الشخصية")
+                    Text(L("مدير ميزانيتك الشخصية"))
                         .font(.maJuTaBody)
                         .foregroundColor(.maJuTaTextSecondary)
                     Text("Your Personal Budget Manager")
@@ -166,7 +168,7 @@ struct WelcomeGateView: View {
                         authService.showRegistration = true
                     } label: {
                         VStack(spacing: 2) {
-                            Text("إنشاء حساب جديد")
+                            Text(L("إنشاء حساب جديد"))
                                 .font(.maJuTaBodyBold)
                             Text("Create Account")
                                 .font(.system(size: 12))
@@ -189,7 +191,7 @@ struct WelcomeGateView: View {
                             Image(systemName: "person.fill.questionmark")
                                 .font(.system(size: 16))
                             VStack(spacing: 2) {
-                                Text("تصفح كضيف — بدون حساب")
+                                Text(L("تصفح كضيف — بدون حساب"))
                                     .font(.maJuTaBody)
                                 Text("Browse as Guest — No account needed")
                                     .font(.system(size: 12))
@@ -209,7 +211,7 @@ struct WelcomeGateView: View {
                 }
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
 
-                Text("بياناتك في وضع الضيف تُحفظ على جهازك فقط\nGuest data is stored locally on your device only")
+                Text(L("بياناتك في وضع الضيف تُحفظ على جهازك فقط") + "\nGuest data is stored locally on your device only")
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary.opacity(0.7))
                     .multilineTextAlignment(.center)
@@ -230,9 +232,9 @@ struct LanguagePickerSheet: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) var dismiss
 
-    private let languages: [(code: String, flag: String, name: String, subtitle: String)] = [
-        ("ar", "🇸🇦", "العربية", "Arabic"),
-        ("en", "🇬🇧", "English", "الإنجليزية"),
+    private let languages: [(code: String, name: String, subtitle: String)] = [
+        ("ar", "العربية", "Arabic"),
+        ("en", "English", "الإنجليزية"),
     ]
 
     var body: some View {
@@ -244,7 +246,16 @@ struct LanguagePickerSheet: View {
                         dismiss()
                     } label: {
                         HStack(spacing: MaJuTaSpacing.md) {
-                            Text(lang.flag).font(.system(size: 28))
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(lang.code == "ar"
+                                          ? Color(red: 0.0, green: 0.55, blue: 0.18)
+                                          : Color(red: 0.0, green: 0.28, blue: 0.65))
+                                    .frame(width: 48, height: 32)
+                                Text(lang.code == "ar" ? "عر" : "EN")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(.white)
+                            }
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(lang.name)
                                     .font(.body)
@@ -270,7 +281,7 @@ struct LanguagePickerSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { dismiss() }
+                    Button(L("تم")) { dismiss() }
                         .fontWeight(.semibold)
                 }
             }

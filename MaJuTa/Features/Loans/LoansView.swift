@@ -21,10 +21,10 @@ struct LoansView: View {
                 VStack(spacing: MaJuTaSpacing.md) {
                     summaryCard
                     if !activeLoans.isEmpty {
-                        loanSection(title: "القروض النشطة", loans: activeLoans)
+                        loanSection(title: L("القروض النشطة"), loans: activeLoans)
                     }
                     if !paidLoans.isEmpty {
-                        loanSection(title: "مسددة بالكامل", loans: paidLoans)
+                        loanSection(title: L("مسددة بالكامل"), loans: paidLoans)
                     }
                     if dataStore.visibleLoans.isEmpty {
                         emptyState
@@ -35,7 +35,7 @@ struct LoansView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("القروض")
+            .navigationTitle(L("القروض"))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -59,12 +59,12 @@ struct LoansView: View {
     private var summaryCard: some View {
         VStack(spacing: MaJuTaSpacing.sm) {
             HStack(spacing: MaJuTaSpacing.sm) {
-                summaryBox(label: "إجمالي المديونية", amount: dataStore.totalLoanBalance, color: .maJuTaNegative)
-                summaryBox(label: "الدفع الشهري", amount: dataStore.monthlyLoanPayments, color: .maJuTaGold)
+                summaryBox(label: L("إجمالي المديونية"), amount: dataStore.totalLoanBalance, color: .maJuTaNegative)
+                summaryBox(label: L("الدفع الشهري"), amount: dataStore.monthlyLoanPayments, color: .maJuTaGold)
             }
             HStack(spacing: MaJuTaSpacing.sm) {
-                summaryCountBox(label: "قروض نشطة", count: activeLoans.count, color: .maJuTaTextPrimary)
-                summaryCountBox(label: "ديون التزامات / دخل", value: String(format: "%.0f%%", dataStore.debtObligationRatio * 100), color: dataStore.debtObligationRatio > 0.4 ? .maJuTaNegative : .maJuTaPositive)
+                summaryCountBox(label: L("قروض نشطة"), count: activeLoans.count, color: .maJuTaTextPrimary)
+                summaryCountBox(label: L("ديون التزامات / دخل"), value: String(format: "%.0f%%", dataStore.debtObligationRatio * 100), color: dataStore.debtObligationRatio > 0.4 ? .maJuTaNegative : .maJuTaPositive)
             }
         }
         .padding(MaJuTaSpacing.md)
@@ -137,10 +137,10 @@ struct LoansView: View {
             Image(systemName: "creditcard.fill")
                 .font(.system(size: 52))
                 .foregroundColor(.maJuTaTextSecondary.opacity(0.4))
-            Text("لا توجد قروض مسجلة")
+            Text(L("لا توجد قروض مسجلة"))
                 .font(.maJuTaSectionTitle)
                 .foregroundColor(.maJuTaTextSecondary)
-            Text("أضف قروضك لتتبع الأرصدة والدفعات الشهرية")
+            Text(L("أضف قروضك لتتبع الأرصدة والدفعات الشهرية"))
                 .font(.maJuTaCaption)
                 .foregroundColor(.maJuTaTextSecondary.opacity(0.7))
                 .multilineTextAlignment(.center)
@@ -162,7 +162,7 @@ struct LoanRowView: View {
             // Amount + progress
             VStack(alignment: .trailing, spacing: 4) {
                 SARText.bodyBold(loan.remainingBalance, color: loan.isFullyPaid ? .maJuTaPositive : .maJuTaNegative)
-                Text(loan.isFullyPaid ? "مسدد بالكامل" : "\(Int(loan.percentagePaid))% مسدد")
+                Text(loan.isFullyPaid ? L("مسدد بالكامل") : "\(Int(loan.percentagePaid))% " + L("مسدد"))
                     .font(.maJuTaLabel)
                     .foregroundColor(loan.percentagePaid >= 50 ? .maJuTaPositive : .maJuTaGold)
             }
@@ -175,7 +175,7 @@ struct LoanRowView: View {
                     .font(.maJuTaBodyMedium)
                     .foregroundColor(.maJuTaTextPrimary)
                 if !loan.isFullyPaid {
-                    Text(loan.isPaymentOverdue ? "متأخر" : (loan.isPaymentDueSoon ? "قريباً" : "\(loan.monthsRemaining) شهر متبقي"))
+                    Text(loan.isPaymentOverdue ? L("متأخر") : (loan.isPaymentDueSoon ? L("قريباً") : "\(loan.monthsRemaining) " + L("شهر متبقي")))
                         .font(.maJuTaLabel)
                         .foregroundColor(loan.isPaymentOverdue ? .maJuTaNegative : .maJuTaTextSecondary)
                 }
@@ -225,42 +225,42 @@ struct AddLoanView: View {
 
                     // Fields
                     VStack(spacing: 0) {
-                        fieldRow(label: "اسم القرض") {
-                            TextField("مثال: قرض البنك الأهلي", text: $name)
+                        fieldRow(label: L("اسم القرض")) {
+                            TextField(L("مثال: قرض البنك الأهلي"), text: $name)
                                 .multilineTextAlignment(.trailing)
                         }
                         divider()
-                        fieldRow(label: "المبلغ الأصلي (﷼)") {
+                        fieldRow(label: L("المبلغ الأصلي (﷼)")) {
                             TextField("0", text: $principalText)
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
                         }
                         divider()
-                        fieldRow(label: "الرصيد المتبقي (﷼)") {
+                        fieldRow(label: L("الرصيد المتبقي (﷼)")) {
                             TextField("0", text: $remainingText)
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
                         }
                         divider()
-                        fieldRow(label: "الدفعة الشهرية (﷼)") {
+                        fieldRow(label: L("الدفعة الشهرية (﷼)")) {
                             TextField("0", text: $monthlyText)
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
                         }
                         divider()
-                        fieldRow(label: "نسبة الفائدة السنوية (%)") {
+                        fieldRow(label: L("نسبة الفائدة السنوية (%)")) {
                             TextField("0", text: $interestText)
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
                         }
                         divider()
-                        fieldRow(label: "تاريخ بداية القرض") {
+                        fieldRow(label: L("تاريخ بداية القرض")) {
                             DatePicker("", selection: $startDate, displayedComponents: .date)
                                 .datePickerStyle(.compact)
                                 .labelsHidden()
                         }
                         divider()
-                        fieldRow(label: "تاريخ الدفعة القادمة") {
+                        fieldRow(label: L("تاريخ الدفعة القادمة")) {
                             DatePicker("", selection: $nextPaymentDate, displayedComponents: .date)
                                 .datePickerStyle(.compact)
                                 .labelsHidden()
@@ -274,7 +274,7 @@ struct AddLoanView: View {
                     Button {
                         saveLoan()
                     } label: {
-                        Text("حفظ القرض")
+                        Text(L("حفظ القرض"))
                             .font(.maJuTaBodyBold)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
@@ -289,11 +289,11 @@ struct AddLoanView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("قرض جديد")
+            .navigationTitle(L("قرض جديد"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("إلغاء") { dismiss() }
+                    Button(L("إلغاء")) { dismiss() }
                         .foregroundColor(.maJuTaTextSecondary)
                 }
             }
@@ -302,7 +302,7 @@ struct AddLoanView: View {
 
     private var typeSelector: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-            Text("نوع القرض")
+            Text(L("نوع القرض"))
                 .font(.maJuTaCaption)
                 .foregroundColor(.maJuTaTextSecondary)
             HStack(spacing: MaJuTaSpacing.sm) {
@@ -387,7 +387,7 @@ struct LoanDetailView: View {
             if let loan = loan {
                 content(loan: loan)
             } else {
-                Text("القرض غير موجود").foregroundColor(.maJuTaTextSecondary)
+                Text(L("القرض غير موجود")).foregroundColor(.maJuTaTextSecondary)
             }
         }
         .background(Color.maJuTaBackground)
@@ -412,7 +412,7 @@ struct LoanDetailView: View {
                 Button {
                     showDeleteAlert = true
                 } label: {
-                    Text("حذف القرض")
+                    Text(L("حذف القرض"))
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaNegative.opacity(0.7))
                 }
@@ -423,13 +423,13 @@ struct LoanDetailView: View {
             .padding(.bottom, MaJuTaSpacing.xxxl)
         }
         .navigationTitle(loan.name)
-        .alert("حذف القرض", isPresented: $showDeleteAlert) {
-            Button("إلغاء", role: .cancel) {}
-            Button("حذف", role: .destructive) {
+        .alert(L("حذف القرض"), isPresented: $showDeleteAlert) {
+            Button(L("إلغاء"), role: .cancel) {}
+            Button(L("حذف"), role: .destructive) {
                 dataStore.deleteLoan(id: loanId)
             }
         } message: {
-            Text("سيتم حذف هذا القرض نهائياً.")
+            Text(L("سيتم حذف هذا القرض نهائياً."))
         }
         .sheet(isPresented: $showPaySheet) {
             paymentSheet(loan: loan)
@@ -439,12 +439,12 @@ struct LoanDetailView: View {
     private func headerCard(loan: Loan) -> some View {
         HStack(spacing: MaJuTaSpacing.md) {
             VStack(alignment: .trailing, spacing: MaJuTaSpacing.xs) {
-                Text(loan.isFullyPaid ? "مسدد بالكامل ✓" : "الرصيد المتبقي")
+                Text(loan.isFullyPaid ? L("مسدد بالكامل ✓") : L("الرصيد المتبقي"))
                     .font(.maJuTaCaption)
                     .foregroundColor(loan.isFullyPaid ? .maJuTaPositive : .maJuTaTextSecondary)
                 SARText.hero(loan.remainingBalance,
                              color: loan.isFullyPaid ? .maJuTaPositive : .maJuTaNegative)
-                Text("من أصل \(Int(loan.principalAmount).formatted()) ﷼")
+                Text(L("من أصل") + " \(Int(loan.principalAmount).formatted()) ﷼")
                     .font(.maJuTaLabel)
                     .foregroundColor(.maJuTaTextSecondary)
             }
@@ -467,7 +467,7 @@ struct LoanDetailView: View {
     private func progressCard(loan: Loan) -> some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
             HStack {
-                Text(String(format: "%.1f%%", loan.percentagePaid) + " مسدد")
+                Text(String(format: "%.1f%%", loan.percentagePaid) + " " + L("مسدد"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
                 Spacer()
@@ -490,15 +490,15 @@ struct LoanDetailView: View {
 
     private func statsGrid(loan: Loan) -> some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: MaJuTaSpacing.sm) {
-            statCell(label: "الدفعة الشهرية", amount: loan.monthlyPayment)
-            statCell(label: "نسبة الفائدة", text: String(format: "%.1f%%", loan.interestRate))
-            statCell(label: "أشهر متبقية", text: "\(loan.monthsRemaining) شهر")
-            statCell(label: "تاريخ الإنهاء المتوقع",
+            statCell(label: L("الدفعة الشهرية"), amount: loan.monthlyPayment)
+            statCell(label: L("نسبة الفائدة"), text: String(format: "%.1f%%", loan.interestRate))
+            statCell(label: L("أشهر متبقية"), text: "\(loan.monthsRemaining) " + L("شهر"))
+            statCell(label: L("تاريخ الإنهاء المتوقع"),
                      text: loan.isFullyPaid ? "—" : loan.estimatedPayoffDate.formatted(date: .abbreviated, time: .omitted))
-            statCell(label: "تاريخ الدفعة القادمة",
+            statCell(label: L("تاريخ الدفعة القادمة"),
                      text: loan.isFullyPaid ? "—" : loan.nextPaymentDate.formatted(date: .abbreviated, time: .omitted),
                      color: loan.isPaymentOverdue ? .maJuTaNegative : loan.isPaymentDueSoon ? .maJuTaWarning : .maJuTaTextPrimary)
-            statCell(label: "نوع القرض", text: loan.loanType.displayNameArabic)
+            statCell(label: L("نوع القرض"), text: loan.loanType.displayNameArabic)
         }
     }
 
@@ -531,7 +531,7 @@ struct LoanDetailView: View {
             paymentText = String(format: "%.0f", loan.monthlyPayment)
             showPaySheet = true
         } label: {
-            Label(loan.isPaymentOverdue ? "سداد (متأخر)" : "سداد الدفعة",
+            Label(loan.isPaymentOverdue ? L("سداد (متأخر)") : L("سداد الدفعة"),
                   systemImage: "checkmark.circle.fill")
                 .font(.maJuTaBodyMedium)
                 .foregroundColor(loan.isPaymentOverdue ? .maJuTaNegative : .maJuTaPositive)
@@ -546,7 +546,7 @@ struct LoanDetailView: View {
         NavigationStack {
             VStack(spacing: MaJuTaSpacing.lg) {
                 VStack(spacing: MaJuTaSpacing.xs) {
-                    Text("مبلغ السداد")
+                    Text(L("مبلغ السداد"))
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaTextSecondary)
                     HStack {
@@ -565,22 +565,24 @@ struct LoanDetailView: View {
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
                 .padding(.top, MaJuTaSpacing.xl)
 
-                Text("الرصيد المتبقي بعد السداد: \(max(0, loan.remainingBalance - (Double(paymentText) ?? 0)), specifier: "%.0f") ﷼")
+                let remaining = max(0, loan.remainingBalance - (Double(paymentText) ?? 0))
+                let remainingStr = String(format: "%.0f", remaining)
+                Text(L("الرصيد المتبقي بعد السداد:") + " \(remainingStr) ﷼")
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
 
                 Spacer()
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("سداد: \(loan.name)")
+            .navigationTitle(L("سداد:") + " \(loan.name)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("إلغاء") { showPaySheet = false }
+                    Button(L("إلغاء")) { showPaySheet = false }
                         .foregroundColor(.maJuTaTextSecondary)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("تأكيد") {
+                    Button(L("تأكيد")) {
                         if let amount = Double(paymentText), amount > 0 {
                             dataStore.makeLoanPayment(loan, amount: amount)
                         }

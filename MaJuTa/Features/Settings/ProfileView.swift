@@ -20,20 +20,20 @@ struct ProfileView: View {
                     }
                     profileHeader
                     quickStats
-                    menuSection(title: "الإدارة", items: [
-                        MenuItem(title: "الحسابات", icon: "creditcard.fill", color: "#0C2031",
+                    menuSection(title: L("الإدارة"), items: [
+                        MenuItem(title: L("الحسابات"), icon: "creditcard.fill", color: "#0C2031",
                                  destination: AnyView(AccountsView().environmentObject(dataStore))),
-                        MenuItem(title: "العائلة والمشاركة", icon: "person.2.fill", color: "#06B6D4",
+                        MenuItem(title: L("العائلة والمشاركة"), icon: "person.2.fill", color: "#06B6D4",
                                  destination: AnyView(FamilyView().environmentObject(dataStore))),
-                        MenuItem(title: "الأقساط BNPL", icon: "calendar.badge.plus", color: "#F27F1B",
+                        MenuItem(title: L("الأقساط BNPL"), icon: "calendar.badge.plus", color: "#F27F1B",
                                  destination: AnyView(InstallmentsView().environmentObject(dataStore))),
-                        MenuItem(title: "التحليلات", icon: "chart.bar.xaxis", color: "#22C55E",
+                        MenuItem(title: L("التحليلات"), icon: "chart.bar.xaxis", color: "#22C55E",
                                  destination: AnyView(AnalyticsView().environmentObject(dataStore))),
-                        MenuItem(title: "الصحة المالية", icon: "heart.text.square.fill", color: "#EF4444",
+                        MenuItem(title: L("الصحة المالية"), icon: "heart.text.square.fill", color: "#EF4444",
                                  destination: AnyView(FinancialHealthView().environmentObject(dataStore))),
                     ])
-                    menuSection(title: "الإعدادات", items: [
-                        MenuItem(title: "الإعدادات العامة", icon: "gearshape.fill", color: "#6B7280",
+                    menuSection(title: L("الإعدادات"), items: [
+                        MenuItem(title: L("الإعدادات العامة"), icon: "gearshape.fill", color: "#6B7280",
                                  destination: AnyView(SettingsView().environmentObject(appState).environmentObject(dataStore))),
                     ])
                     Button {
@@ -45,7 +45,7 @@ struct ProfileView: View {
                     } label: {
                         HStack {
                             Spacer()
-                            Label("تسجيل الخروج", systemImage: "lock.fill")
+                            Label(L("تسجيل الخروج"), systemImage: "lock.fill")
                                 .font(.maJuTaBodyMedium).foregroundColor(.maJuTaNegative)
                             Spacer()
                         }
@@ -59,7 +59,7 @@ struct ProfileView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("الحساب")
+            .navigationTitle(L("الحساب"))
             .navigationBarTitleDisplayMode(.large)
         }
     }
@@ -67,10 +67,10 @@ struct ProfileView: View {
     private var profileHeader: some View {
         HStack(spacing: MaJuTaSpacing.md) {
             VStack(alignment: .trailing, spacing: MaJuTaSpacing.xs) {
-                Text(appState.userName.isEmpty ? "المستخدم" : appState.userName)
+                Text(appState.userName.isEmpty ? L("المستخدم") : appState.userName)
                     .font(.maJuTaTitle2).foregroundColor(.maJuTaTextPrimary)
                 let uname = UserService.shared.currentUser?.username ?? ""
-                Text(uname.isEmpty ? "عضو MaJuTa" : "@\(uname)")
+                Text(uname.isEmpty ? L("عضو MaJuTa") : "@\(uname)")
                     .font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
             }
             Spacer()
@@ -95,16 +95,16 @@ struct ProfileView: View {
             .contextMenu {
                 if appState.profileImage != nil {
                     Button(role: .destructive) { showRemoveAlert = true } label: {
-                        Label("حذف الصورة", systemImage: "trash")
+                        Label(L("حذف الصورة"), systemImage: "trash")
                     }
                 }
             }
         }
         .padding(MaJuTaSpacing.lg).background(Color.maJuTaCard)
         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card)).maJuTaCardShadow()
-        .alert("حذف صورة الملف الشخصي؟", isPresented: $showRemoveAlert) {
-            Button("حذف", role: .destructive) { appState.deleteProfileImage() }
-            Button("إلغاء", role: .cancel) {}
+        .alert(L("حذف صورة الملف الشخصي؟"), isPresented: $showRemoveAlert) {
+            Button(L("حذف"), role: .destructive) { appState.deleteProfileImage() }
+            Button(L("إلغاء"), role: .cancel) {}
         }
     }
 
@@ -112,9 +112,9 @@ struct ProfileView: View {
     private var emailVerificationBanner: some View {
         HStack(spacing: MaJuTaSpacing.md) {
             VStack(alignment: .trailing, spacing: 4) {
-                Text("لم يتم التحقق من بريدك الإلكتروني")
+                Text(L("لم يتم التحقق من بريدك الإلكتروني"))
                     .font(.maJuTaBodyBold).foregroundColor(.white)
-                Text("تحقق من صندوق الوارد وانقر على الرابط")
+                Text(L("تحقق من صندوق الوارد وانقر على الرابط"))
                     .font(.maJuTaCaption).foregroundColor(.white.opacity(0.8))
             }
             Spacer()
@@ -124,7 +124,7 @@ struct ProfileView: View {
                         await firebaseAuth.reloadVerificationStatus()
                     }
                 } label: {
-                    Text("تحديث")
+                    Text(L("تحديث"))
                         .font(.maJuTaCaption).foregroundColor(.white)
                         .padding(.horizontal, 10).padding(.vertical, 5)
                         .background(Color.white.opacity(0.25))
@@ -138,7 +138,7 @@ struct ProfileView: View {
                         } catch {}
                     }
                 } label: {
-                    Text("إعادة الإرسال")
+                    Text(L("إعادة الإرسال"))
                         .font(.maJuTaCaption).foregroundColor(.white.opacity(0.8))
                 }
             }
@@ -146,10 +146,10 @@ struct ProfileView: View {
         .padding(MaJuTaSpacing.md)
         .background(Color.orange)
         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
-        .alert("تم إرسال رابط التحقق", isPresented: $resentEmailConfirm) {
-            Button("حسناً", role: .cancel) {}
+        .alert(L("تم إرسال رابط التحقق"), isPresented: $resentEmailConfirm) {
+            Button(L("حسناً"), role: .cancel) {}
         } message: {
-            Text("تحقق من بريدك الإلكتروني وانقر على الرابط")
+            Text(L("تحقق من بريدك الإلكتروني وانقر على الرابط"))
         }
     }
 
@@ -176,12 +176,12 @@ struct ProfileView: View {
         HStack(spacing: MaJuTaSpacing.sm) {
             VStack(spacing: 4) {
                 SARText.compact(dataStore.netWorth)
-                Text("صافي الثروة").font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
+                Text(L("صافي الثروة")).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
             }
             .frame(maxWidth: .infinity).padding(MaJuTaSpacing.md)
             .background(Color.maJuTaCard).clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card)).maJuTaCardShadow()
-            statCard(value: "\(dataStore.savingsGoals.count)", label: "أهداف")
-            statCard(value: "\(dataStore.accounts.count)", label: "حسابات")
+            statCard(value: "\(dataStore.savingsGoals.count)", label: L("أهداف"))
+            statCard(value: "\(dataStore.accounts.count)", label: L("حسابات"))
         }
     }
 

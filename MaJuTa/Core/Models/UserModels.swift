@@ -8,11 +8,12 @@ enum UserRole: String, Codable, CaseIterable {
     case viewOnly = "view_only"
 
     var displayName: String {
+        let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
         switch self {
-        case .owner:    return "المالك"
-        case .admin:    return "مدير"
-        case .member:   return "عضو"
-        case .viewOnly: return "مشاهد فقط"
+        case .owner:    return isEn ? "Owner"     : "المالك"
+        case .admin:    return isEn ? "Admin"     : "مدير"
+        case .member:   return isEn ? "Member"    : "عضو"
+        case .viewOnly: return isEn ? "View Only" : "مشاهد فقط"
         }
     }
 
@@ -158,16 +159,17 @@ enum ActivityActionType: String, Codable {
     case pinChanged          = "pin_changed"
 
     var arabicDescription: String {
+        let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
         switch self {
-        case .transactionCreated:  return "أضاف معاملة"
-        case .transactionDeleted:  return "حذف معاملة"
-        case .accountCreated:      return "أنشأ حساباً"
-        case .goalUpdated:         return "حدّث هدفاً"
-        case .goalCreated:         return "أنشأ هدفاً"
-        case .billCreated:         return "أضاف فاتورة"
-        case .memberAdded:         return "أضاف عضواً"
-        case .memberRemoved:       return "أزال عضواً"
-        case .pinChanged:          return "غيّر الرمز السري"
+        case .transactionCreated:  return isEn ? "added a transaction"  : "أضاف معاملة"
+        case .transactionDeleted:  return isEn ? "deleted a transaction" : "حذف معاملة"
+        case .accountCreated:      return isEn ? "created an account"   : "أنشأ حساباً"
+        case .goalUpdated:         return isEn ? "updated a goal"       : "حدّث هدفاً"
+        case .goalCreated:         return isEn ? "created a goal"       : "أنشأ هدفاً"
+        case .billCreated:         return isEn ? "added a bill"         : "أضاف فاتورة"
+        case .memberAdded:         return isEn ? "added a member"       : "أضاف عضواً"
+        case .memberRemoved:       return isEn ? "removed a member"     : "أزال عضواً"
+        case .pinChanged:          return isEn ? "changed the PIN"      : "غيّر الرمز السري"
         }
     }
 }

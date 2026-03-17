@@ -94,11 +94,12 @@ enum LoanType: String, Codable, CaseIterable {
     case other    = "other"
 
     var displayNameArabic: String {
+        let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
         switch self {
-        case .house:    return "قرض مسكن"
-        case .car:      return "قرض سيارة"
-        case .personal: return "قرض شخصي"
-        case .other:    return "قرض آخر"
+        case .house:    return isEn ? "Home Loan"     : "قرض مسكن"
+        case .car:      return isEn ? "Car Loan"      : "قرض سيارة"
+        case .personal: return isEn ? "Personal Loan" : "قرض شخصي"
+        case .other:    return isEn ? "Other Loan"    : "قرض آخر"
         }
     }
 

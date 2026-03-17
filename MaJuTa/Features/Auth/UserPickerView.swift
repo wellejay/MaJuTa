@@ -24,7 +24,7 @@ struct UserPickerView: View {
                         HStack(spacing: 6) {
                             Image(systemName: "globe")
                                 .font(.system(size: 14))
-                            Text("Language / اللغة")
+                            Text(L("Language / اللغة"))
                                 .font(.system(size: 13, weight: .medium))
                         }
                         .foregroundColor(.white.opacity(0.85))
@@ -44,7 +44,7 @@ struct UserPickerView: View {
                     .background(Color.white.opacity(0.95))
                     .clipShape(RoundedRectangle(cornerRadius: 16))
 
-                Text("من يريد الدخول؟")
+                Text(L("من يريد الدخول؟"))
                     .font(.maJuTaTitle2)
                     .foregroundColor(.white)
 
@@ -66,7 +66,7 @@ struct UserPickerView: View {
                                             .font(.system(size: 28))
                                             .foregroundColor(.white)
                                     )
-                                Text("حساب جديد")
+                                Text(L("حساب جديد"))
                                     .font(.maJuTaLabel)
                                     .foregroundColor(.white.opacity(0.7))
                             }
@@ -93,9 +93,9 @@ struct UserPickerView: View {
                         Image(systemName: "person.fill.questionmark")
                             .font(.system(size: 16))
                         VStack(alignment: .trailing, spacing: 2) {
-                            Text("تصفح كضيف")
+                            Text(L("تصفح كضيف"))
                                 .font(.maJuTaBodyBold)
-                            Text("Browse as Guest")
+                            Text(L("Browse as Guest"))
                                 .font(.system(size: 12))
                                 .opacity(0.75)
                         }
@@ -183,7 +183,7 @@ struct UserPickerView: View {
             DataStore.shared.loadForCurrentUser()
             authService.isAuthenticated = true
         } else {
-            pinError = "رمز PIN غير صحيح"
+            pinError = L("رمز PIN غير صحيح")
             self.pin = ""
         }
     }

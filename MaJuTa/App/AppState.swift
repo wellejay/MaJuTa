@@ -116,13 +116,13 @@ enum AppTab: String, CaseIterable {
 
     var title: String {
         switch self {
-        case .dashboard:    return "الرئيسية"
-        case .transactions: return "المعاملات"
-        case .goals:        return "الأهداف"
-        case .investments:  return "الاستثمارات"
-        case .loans:        return "القروض"
-        case .family:       return "العائلة"
-        case .profile:      return "الحساب"
+        case .dashboard:    return L("الرئيسية")
+        case .transactions: return L("المعاملات")
+        case .goals:        return L("الأهداف")
+        case .investments:  return L("الاستثمارات")
+        case .loans:        return L("القروض")
+        case .family:       return L("العائلة")
+        case .profile:      return L("الحساب")
         }
     }
 

@@ -73,10 +73,11 @@ enum InstallmentStatus: String, Codable {
     case overdue  = "overdue"
 
     var displayName: String {
+        let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
         switch self {
-        case .upcoming: return "قادم"
-        case .paid:     return "مدفوع"
-        case .overdue:  return "متأخر"
+        case .upcoming: return isEn ? "Upcoming" : "قادم"
+        case .paid:     return isEn ? "Paid"     : "مدفوع"
+        case .overdue:  return isEn ? "Overdue"  : "متأخر"
         }
     }
 }
@@ -88,11 +89,12 @@ enum BNPLProvider: String, Codable, CaseIterable {
     case other   = "other"
 
     var displayName: String {
+        let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
         switch self {
-        case .tabby:   return "تابي"
-        case .tamara:  return "تمارا"
-        case .postpay: return "بوست باي"
-        case .other:   return "أخرى"
+        case .tabby:   return "Tabby"
+        case .tamara:  return "Tamara"
+        case .postpay: return "PostPay"
+        case .other:   return isEn ? "Other" : "أخرى"
         }
     }
 

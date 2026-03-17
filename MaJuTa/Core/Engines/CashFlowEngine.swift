@@ -109,9 +109,9 @@ enum ObligationRisk {
 
     var label: String {
         switch self {
-        case .healthy:  return "ممتاز"
-        case .warning:  return "تحذير"
-        case .highRisk: return "خطر"
+        case .healthy:  return L("ممتاز")
+        case .warning:  return L("تحذير")
+        case .highRisk: return L("خطر")
         }
     }
 

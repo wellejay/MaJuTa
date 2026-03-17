@@ -22,10 +22,10 @@ enum HealthGrade {
 
     var label: String {
         switch self {
-        case .excellent: return "ممتاز"
-        case .good:      return "جيد"
-        case .fair:      return "مقبول"
-        case .poor:      return "ضعيف"
+        case .excellent: return L("ممتاز")
+        case .good:      return L("جيد")
+        case .fair:      return L("مقبول")
+        case .poor:      return L("ضعيف")
         }
     }
 
@@ -40,10 +40,10 @@ enum HealthGrade {
 
     var description: String {
         switch self {
-        case .excellent: return "وضعك المالي ممتاز، استمر هكذا!"
-        case .good:      return "وضعك المالي جيد مع مجال للتحسين"
-        case .fair:      return "وضعك المالي مقبول، ابدأ بتحسين مدخراتك"
-        case .poor:      return "وضعك المالي يحتاج إلى اهتمام فوري"
+        case .excellent: return L("وضعك المالي ممتاز، استمر هكذا!")
+        case .good:      return L("وضعك المالي جيد مع مجال للتحسين")
+        case .fair:      return L("وضعك المالي مقبول، ابدأ بتحسين مدخراتك")
+        case .poor:      return L("وضعك المالي يحتاج إلى اهتمام فوري")
         }
     }
 }

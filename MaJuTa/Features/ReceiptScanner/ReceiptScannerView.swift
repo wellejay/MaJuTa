@@ -17,11 +17,11 @@ struct ReceiptScannerView: View {
                 }
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("مسح الفاتورة")
+            .navigationTitle(L("مسح الفاتورة"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("إلغاء") { dismiss() }.foregroundColor(.maJuTaTextSecondary)
+                    Button(L("إلغاء")) { dismiss() }.foregroundColor(.maJuTaTextSecondary)
                 }
             }
         }
@@ -37,9 +37,9 @@ struct ReceiptScannerView: View {
                 VStack(spacing: MaJuTaSpacing.md) {
                     Image(systemName: "camera.viewfinder")
                         .font(.system(size: 64)).foregroundColor(.maJuTaGold)
-                    Text("وجّه الكاميرا نحو الفاتورة")
+                    Text(L("وجّه الكاميرا نحو الفاتورة"))
                         .font(.maJuTaBodyMedium).foregroundColor(.maJuTaTextPrimary).multilineTextAlignment(.center)
-                    Text("سنستخرج بيانات التاجر والمبلغ وضريبة القيمة المضافة تلقائياً")
+                    Text(L("سنستخرج بيانات التاجر والمبلغ وضريبة القيمة المضافة تلقائياً"))
                         .font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
                         .multilineTextAlignment(.center).padding(.horizontal)
                 }
@@ -49,7 +49,7 @@ struct ReceiptScannerView: View {
                 Button {
                     // Image picker placeholder
                 } label: {
-                    Label("من المكتبة", systemImage: "photo.on.rectangle")
+                    Label(L("من المكتبة"), systemImage: "photo.on.rectangle")
                         .font(.maJuTaBodyMedium).foregroundColor(.maJuTaGold)
                         .frame(maxWidth: .infinity).frame(height: 56)
                         .background(Color.maJuTaGold.opacity(0.1))
@@ -59,7 +59,7 @@ struct ReceiptScannerView: View {
                     withAnimation { capturedImage = UIImage() }
                     simulateOCR()
                 } label: {
-                    Label("التقاط", systemImage: "camera.fill")
+                    Label(L("التقاط"), systemImage: "camera.fill")
                         .font(.maJuTaBodyBold).foregroundColor(.white)
                         .frame(maxWidth: .infinity).frame(height: 56)
                         .background(Color.maJuTaPrimary)
@@ -77,7 +77,7 @@ struct ReceiptScannerView: View {
                 if isProcessing {
                     VStack(spacing: MaJuTaSpacing.md) {
                         ProgressView().scaleEffect(1.5).tint(Color.maJuTaGold)
-                        Text("جاري استخراج البيانات...")
+                        Text(L("جاري استخراج البيانات..."))
                             .font(.maJuTaBody).foregroundColor(.maJuTaTextSecondary)
                     }
                     .frame(maxWidth: .infinity).padding(MaJuTaSpacing.xxl)
@@ -85,30 +85,30 @@ struct ReceiptScannerView: View {
                     .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
                 } else if let data = extractedData {
                     VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
-                        Label("تم استخراج البيانات بنجاح", systemImage: "checkmark.circle.fill")
+                        Label(L("تم استخراج البيانات بنجاح"), systemImage: "checkmark.circle.fill")
                             .foregroundColor(.maJuTaPositive).font(.maJuTaBodyMedium)
 
                         VStack(spacing: 1) {
-                            extractedRow(label: "التاجر", value: data.merchant)
+                            extractedRow(label: L("التاجر"), value: data.merchant)
                             Divider()
-                            extractedRow(label: "الإجمالي", value: data.total.sarFormattedDecimal)
+                            extractedRow(label: L("الإجمالي"), value: data.total.sarFormattedDecimal)
                             Divider()
-                            extractedRow(label: "ضريبة القيمة المضافة", value: data.vatAmount.sarFormattedDecimal)
+                            extractedRow(label: L("ضريبة القيمة المضافة"), value: data.vatAmount.sarFormattedDecimal)
                             Divider()
-                            extractedRow(label: "التاريخ", value: data.date.gregorianFormatted)
+                            extractedRow(label: L("التاريخ"), value: data.date.gregorianFormatted)
                         }
                         .background(Color.maJuTaCard)
                         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
                         .maJuTaCardShadow()
                     }
 
-                    Button("إنشاء معاملة") { createTransaction(from: data) }
+                    Button(L("إنشاء معاملة")) { createTransaction(from: data) }
                         .font(.maJuTaBodyBold).foregroundColor(.white)
                         .frame(maxWidth: .infinity).frame(height: 56)
                         .background(Color.maJuTaPrimary)
                         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
 
-                    Button("مسح فاتورة أخرى") {
+                    Button(L("مسح فاتورة أخرى")) {
                         capturedImage = nil; extractedData = nil
                     }
                     .font(.maJuTaBodyMedium).foregroundColor(.maJuTaTextSecondary)
@@ -140,7 +140,7 @@ struct ReceiptScannerView: View {
             accountId: account.id,
             merchant: data.merchant,
             paymentMethod: .mada,
-            note: "مسح فاتورة",
+            note: L("مسح فاتورة"),
             ownerUserId: user.id,
             createdByUserId: user.id
         )
@@ -151,7 +151,7 @@ struct ReceiptScannerView: View {
     private func simulateOCR() {
         isProcessing = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            extractedData = ExtractedReceiptData(merchant: "هايبر بنده", total: 287.50, vatAmount: 37.50, date: Date())
+            extractedData = ExtractedReceiptData(merchant: L("هايبر بنده"), total: 287.50, vatAmount: 37.50, date: Date())
             isProcessing = false
         }
     }

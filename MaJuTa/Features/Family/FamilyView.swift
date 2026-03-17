@@ -41,7 +41,7 @@ struct FamilyView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("العائلة")
+            .navigationTitle(L("العائلة"))
             .navigationBarTitleDisplayMode(.large)
         }
         .sheet(isPresented: $showInviteSheet) {
@@ -57,10 +57,10 @@ struct FamilyView: View {
     private var householdCard: some View {
         HStack(spacing: MaJuTaSpacing.md) {
             VStack(alignment: .trailing, spacing: 4) {
-                Text(household?.name ?? "المنزل")
+                Text(household?.name ?? L("المنزل"))
                     .font(.maJuTaBodyBold)
                     .foregroundColor(.maJuTaTextPrimary)
-                Text("\(members.count) \(members.count == 1 ? "عضو" : "أعضاء")")
+                Text("\(members.count) \(members.count == 1 ? L("عضو") : L("أعضاء"))")
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
             }
@@ -84,7 +84,7 @@ struct FamilyView: View {
 
     private var membersSection: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-            Text("الأعضاء")
+            Text(L("الأعضاء"))
                 .font(.maJuTaSectionTitle)
                 .foregroundColor(.maJuTaTextPrimary)
 
@@ -125,7 +125,7 @@ struct FamilyView: View {
                 VStack(alignment: .trailing, spacing: 2) {
                     HStack(spacing: 6) {
                         if member.id == currentUser?.id {
-                            Text("أنت")
+                            Text(L("أنت"))
                                 .font(.maJuTaLabel)
                                 .foregroundColor(.maJuTaGold)
                                 .padding(.horizontal, 6).padding(.vertical, 2)
@@ -196,10 +196,10 @@ struct FamilyView: View {
                     .foregroundColor(.maJuTaGold)
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text("دعوة أعضاء العائلة")
+                    Text(L("دعوة أعضاء العائلة"))
                         .font(.maJuTaBodyBold)
                         .foregroundColor(.maJuTaTextPrimary)
-                    Text("شارك كود الدعوة مع أفراد عائلتك")
+                    Text(L("شارك كود الدعوة مع أفراد عائلتك"))
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaTextSecondary)
                 }
@@ -235,10 +235,10 @@ struct FamilyView: View {
                     .foregroundColor(.blue)
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text("الانضمام لعائلة موجودة")
+                    Text(L("الانضمام لعائلة موجودة"))
                         .font(.maJuTaBodyBold)
                         .foregroundColor(.maJuTaTextPrimary)
-                    Text("أدخل كود الدعوة من صاحب الحساب")
+                    Text(L("أدخل كود الدعوة من صاحب الحساب"))
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaTextSecondary)
                 }
@@ -267,10 +267,10 @@ struct FamilyView: View {
                 Image(systemName: "person.2.fill")
                     .font(.system(size: 40))
                     .foregroundColor(.maJuTaGold)
-                Text("كود الدعوة")
+                Text(L("كود الدعوة"))
                     .font(.maJuTaTitle2)
                     .foregroundColor(.maJuTaTextPrimary)
-                Text("شارك هذا الكود مع أفراد عائلتك")
+                Text(L("شارك هذا الكود مع أفراد عائلتك"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
                     .multilineTextAlignment(.center)
@@ -286,7 +286,7 @@ struct FamilyView: View {
                 .background(Color.maJuTaGold.opacity(0.15))
                 .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
 
-            Text("عند التسجيل، يختار العضو \"انضم لعائلة موجودة\" ويدخل هذا الكود\nأو يضغط \"الانضمام لعائلة موجودة\" من صفحة العائلة")
+            Text(L("عند التسجيل، يختار العضو \"انضم لعائلة موجودة\" ويدخل هذا الكود\nأو يضغط \"الانضمام لعائلة موجودة\" من صفحة العائلة"))
                 .font(.maJuTaCaption)
                 .foregroundColor(.maJuTaTextSecondary)
                 .multilineTextAlignment(.center)
@@ -297,7 +297,7 @@ struct FamilyView: View {
                 codeCopied = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) { codeCopied = false }
             } label: {
-                Label(codeCopied ? "تم النسخ ✓" : "نسخ الكود", systemImage: codeCopied ? "checkmark" : "doc.on.doc")
+                Label(codeCopied ? L("تم النسخ ✓") : L("نسخ الكود"), systemImage: codeCopied ? "checkmark" : "doc.on.doc")
                     .font(.maJuTaBodyBold)
                     .foregroundColor(.maJuTaPrimary)
                     .frame(maxWidth: .infinity)
@@ -323,10 +323,10 @@ struct FamilyView: View {
                 Image(systemName: "person.2.badge.key.fill")
                     .font(.system(size: 40))
                     .foregroundColor(.blue)
-                Text("الانضمام لعائلة")
+                Text(L("الانضمام لعائلة"))
                     .font(.maJuTaTitle2)
                     .foregroundColor(.maJuTaTextPrimary)
-                Text("أدخل كود الدعوة المكون من 6 أرقام")
+                Text(L("أدخل كود الدعوة المكون من 6 أرقام"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
                     .multilineTextAlignment(.center)
@@ -366,14 +366,14 @@ struct FamilyView: View {
                     .foregroundColor(.maJuTaNegative)
             } else if let hh = foundHousehold {
                 VStack(spacing: 6) {
-                    Label("تم العثور على العائلة!", systemImage: "checkmark.circle.fill")
+                    Label(L("تم العثور على العائلة!"), systemImage: "checkmark.circle.fill")
                         .font(.maJuTaCaptionMedium)
                         .foregroundColor(.maJuTaPositive)
                     Text(hh.name)
                         .font(.maJuTaBodyBold)
                         .foregroundColor(.maJuTaTextPrimary)
                     let count = userService.householdMembers(for: hh.id).count
-                    Text("\(count) \(count == 1 ? "عضو" : "أعضاء") حالياً")
+                    Text("\(count) \(count == 1 ? L("عضو") : L("أعضاء")) \(L("حالياً"))")
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaTextSecondary)
                 }
@@ -387,7 +387,7 @@ struct FamilyView: View {
                 Button {
                     confirmJoin()
                 } label: {
-                    Text("انضم الآن")
+                    Text(L("انضم الآن"))
                         .font(.maJuTaBodyBold)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -411,14 +411,14 @@ struct FamilyView: View {
         if let hh = userService.findHousehold(byCode: joinCodeInput) {
             // Don't let user join their own household
             if hh.id == household?.id {
-                joinCodeError = "أنت بالفعل عضو في هذه العائلة"
+                joinCodeError = L("أنت بالفعل عضو في هذه العائلة")
                 foundHousehold = nil
             } else {
                 foundHousehold = hh
                 joinCodeError = ""
             }
         } else {
-            joinCodeError = "كود الدعوة غير صحيح، تحقق وأعد المحاولة"
+            joinCodeError = L("كود الدعوة غير صحيح، تحقق وأعد المحاولة")
             foundHousehold = nil
         }
     }
@@ -435,12 +435,12 @@ struct FamilyView: View {
 
     private var activitySection: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-            Text("سجل النشاط")
+            Text(L("سجل النشاط"))
                 .font(.maJuTaSectionTitle)
                 .foregroundColor(.maJuTaTextPrimary)
 
             if dataStore.activityLog.isEmpty {
-                Text("لا يوجد نشاط بعد")
+                Text(L("لا يوجد نشاط بعد"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
                     .frame(maxWidth: .infinity)

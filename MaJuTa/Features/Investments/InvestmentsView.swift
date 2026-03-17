@@ -35,7 +35,7 @@ struct InvestmentsView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("الاستثمارات")
+            .navigationTitle(L("الاستثمارات"))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -59,19 +59,19 @@ struct InvestmentsView: View {
         ZStack {
             LinearGradient.navyGradient
             VStack(spacing: MaJuTaSpacing.md) {
-                Text("إجمالي المحفظة")
+                Text(L("إجمالي المحفظة"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.white.opacity(0.7))
                 SARText.hero(totalValue, color: .white)
 
                 HStack(spacing: MaJuTaSpacing.lg) {
                     plStatSAR(
-                        label: "الربح / الخسارة",
+                        label: L("الربح / الخسارة"),
                         amount: totalPL
                     )
                     Divider().frame(height: 30).background(Color.white.opacity(0.3))
                     plStat(
-                        label: "نسبة العائد",
+                        label: L("نسبة العائد"),
                         value: totalReturn.percentageFormatted,
                         positive: totalReturn >= 0
                     )
@@ -108,7 +108,7 @@ struct InvestmentsView: View {
         let allocation = InvestmentEngine.allocation(assets: dataStore.investments)
 
         return VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
-            Text("توزيع المحفظة")
+            Text(L("توزيع المحفظة"))
                 .font(.maJuTaSectionTitle)
                 .foregroundColor(.maJuTaTextPrimary)
 
@@ -158,10 +158,10 @@ struct InvestmentsView: View {
             Image(systemName: "chart.line.uptrend.xyaxis")
                 .font(.system(size: 48))
                 .foregroundColor(.maJuTaTextSecondary.opacity(0.4))
-            Text("لا توجد استثمارات")
+            Text(L("لا توجد استثمارات"))
                 .font(.maJuTaSectionTitle)
                 .foregroundColor(.maJuTaTextSecondary)
-            Text("أضف استثماراتك لتتبع أداء محفظتك")
+            Text(L("أضف استثماراتك لتتبع أداء محفظتك"))
                 .font(.maJuTaCaption)
                 .foregroundColor(.maJuTaTextSecondary.opacity(0.7))
                 .multilineTextAlignment(.center)
@@ -205,7 +205,7 @@ struct AssetRowView: View {
                 Text(asset.name)
                     .font(.maJuTaBodyMedium)
                     .foregroundColor(.maJuTaTextPrimary)
-                Text("\(asset.units, specifier: "%.0f") وحدة · \(asset.lastPrice.sarFormattedDecimal)")
+                Text("\(asset.units, specifier: "%.0f") \(L("وحدة")) · \(asset.lastPrice.sarFormattedDecimal)")
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
             }
@@ -242,7 +242,7 @@ struct AssetDetailView: View {
             if let asset = asset {
                 liveView(asset: asset)
             } else {
-                Text("الأصل غير موجود").foregroundColor(.maJuTaTextSecondary)
+                Text(L("الأصل غير موجود")).foregroundColor(.maJuTaTextSecondary)
             }
         }
         .background(Color.maJuTaBackground)
@@ -277,10 +277,10 @@ struct AssetDetailView: View {
 
                 // Stats
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: MaJuTaSpacing.sm) {
-                    investmentStat(label: "الوحدات", value: String(format: "%.0f", asset.units))
-                    investmentStat(label: "متوسط السعر", value: asset.averagePrice.sarFormattedDecimal)
-                    investmentStat(label: "السعر الحالي", value: asset.lastPrice.sarFormattedDecimal)
-                    investmentStat(label: "الربح / الخسارة", amount: asset.unrealizedProfitLoss)
+                    investmentStat(label: L("الوحدات"), value: String(format: "%.0f", asset.units))
+                    investmentStat(label: L("متوسط السعر"), value: asset.averagePrice.sarFormattedDecimal)
+                    investmentStat(label: L("السعر الحالي"), value: asset.lastPrice.sarFormattedDecimal)
+                    investmentStat(label: L("الربح / الخسارة"), amount: asset.unrealizedProfitLoss)
                 }
 
                 // Update Price
@@ -288,7 +288,7 @@ struct AssetDetailView: View {
                     newPrice = String(format: "%.2f", asset.lastPrice)
                     showUpdatePrice = true
                 } label: {
-                    Label("تحديث السعر يدوياً", systemImage: "arrow.clockwise")
+                    Label(L("تحديث السعر يدوياً"), systemImage: "arrow.clockwise")
                         .font(.maJuTaBodyMedium)
                         .foregroundColor(.maJuTaGold)
                         .frame(maxWidth: .infinity)
@@ -321,15 +321,15 @@ struct AssetDetailView: View {
                     Spacer()
                 }
                 .background(Color.maJuTaBackground)
-                .navigationTitle("تحديث السعر")
+                .navigationTitle(L("تحديث السعر"))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button("إلغاء") { showUpdatePrice = false }
+                        Button(L("إلغاء")) { showUpdatePrice = false }
                             .foregroundColor(.maJuTaTextSecondary)
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("حفظ") {
+                        Button(L("حفظ")) {
                             if let price = Double(newPrice), price > 0 {
                                 DataStore.shared.updateInvestmentPrice(assetId: asset.id, newPrice: price)
                             }
@@ -394,7 +394,7 @@ struct AddInvestmentView: View {
                 VStack(spacing: MaJuTaSpacing.lg) {
                     // Type Selector
                     VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-                        Text("نوع الأصل")
+                        Text(L("نوع الأصل"))
                             .font(.maJuTaCaption)
                             .foregroundColor(.maJuTaTextSecondary)
                         ScrollView(.horizontal, showsIndicators: false) {
@@ -425,21 +425,21 @@ struct AddInvestmentView: View {
 
                     // Fields
                     VStack(spacing: 1) {
-                        addField(label: "الرمز (مثال: 2222)", text: $symbol)
+                        addField(label: L("الرمز (مثال: 2222)"), text: $symbol)
                         Divider()
-                        addField(label: "اسم الشركة", text: $name)
+                        addField(label: L("اسم الشركة"), text: $name)
                         Divider()
-                        addField(label: "عدد الوحدات", text: $units, keyboard: .decimalPad)
+                        addField(label: L("عدد الوحدات"), text: $units, keyboard: .decimalPad)
                         Divider()
-                        addField(label: "سعر الشراء للوحدة (﷼)", text: $purchasePricePerUnit, keyboard: .decimalPad)
+                        addField(label: L("سعر الشراء للوحدة (﷼)"), text: $purchasePricePerUnit, keyboard: .decimalPad)
                         Divider()
-                        addField(label: "السعر الحالي للوحدة (﷼)", text: $lastPrice, keyboard: .decimalPad)
+                        addField(label: L("السعر الحالي للوحدة (﷼)"), text: $lastPrice, keyboard: .decimalPad)
                     }
                     .background(Color.maJuTaCard)
                     .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
                     .maJuTaCardShadow()
 
-                    Button("إضافة للمحفظة") {
+                    Button(L("إضافة للمحفظة")) {
                         saveAsset()
                     }
                     .font(.maJuTaBodyBold)
@@ -453,11 +453,11 @@ struct AddInvestmentView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("أصل جديد")
+            .navigationTitle(L("أصل جديد"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("إلغاء") { dismiss() }
+                    Button(L("إلغاء")) { dismiss() }
                 }
             }
         }

@@ -557,7 +557,9 @@ final class DataStore: ObservableObject {
 
     func depositToEmergencyFund(amount: Double) {
         guard amount > 0 else { return }
-        guard let liquidAccount = visibleAccounts.first(where: { $0.isLiquid }) else { return }
+        // In guest mode allow deposit even without a liquid account (direct balance update only)
+        let liquidAccount = accounts.first(where: { $0.isLiquid })
+        guard liquidAccount != nil || isGuestMode else { return }
 
         // 1. Increase savings account balance
         if var savings = accounts.first(where: { $0.type == .savings }) {
@@ -582,18 +584,22 @@ final class DataStore: ObservableObject {
             }
         }
 
-        // 2. Create savings transaction — deducts liquid account in cashflow
-        let savingsCatId = categories.first(where: { $0.type == .savings })?.id ?? UUID()
-        let tx = Transaction(
-            amount: -amount,
-            categoryId: savingsCatId,
-            accountId: liquidAccount.id,
-            merchant: "صندوق الطوارئ",
-            note: "إيداع في صندوق الطوارئ",
-            ownerUserId: currentUserId,
-            createdByUserId: currentUserId
-        )
-        addTransaction(tx)
+        // 2. Create savings transaction — deducts liquid account in cashflow (only when liquid account exists)
+        if let liquid = liquidAccount {
+            let savingsCatId = categories.first(where: { $0.type == .savings })?.id ?? UUID()
+            let tx = Transaction(
+                amount: -amount,
+                categoryId: savingsCatId,
+                accountId: liquid.id,
+                merchant: "صندوق الطوارئ",
+                note: "إيداع في صندوق الطوارئ",
+                ownerUserId: currentUserId,
+                createdByUserId: currentUserId
+            )
+            addTransaction(tx)
+        } else if isGuestMode {
+            saveGuestData()
+        }
     }
 
     func deleteTransaction(_ id: UUID) {
@@ -724,18 +730,22 @@ final class DataStore: ObservableObject {
 
         // 2. Create a savings transaction so it shows in cashflow and deducts from account
         let savingsCatId = categories.first(where: { $0.type == .savings })?.id ?? UUID()
-        guard let accountId = visibleAccounts.first(where: { $0.isLiquid })?.id else { return }
-        let userId = currentUserId
-        let tx = Transaction(
-            amount: -amount,   // negative = money leaving spending pool
-            categoryId: savingsCatId,
-            accountId: accountId,
-            merchant: goal.name,
-            note: "تحويل لهدف: \(goal.name)",
-            ownerUserId: userId,
-            createdByUserId: userId
-        )
-        addTransaction(tx)
+        let liquidAccountId = accounts.first(where: { $0.isLiquid })?.id
+        if let accountId = liquidAccountId {
+            let userId = currentUserId
+            let tx = Transaction(
+                amount: -amount,   // negative = money leaving spending pool
+                categoryId: savingsCatId,
+                accountId: accountId,
+                merchant: goal.name,
+                note: "تحويل لهدف: \(goal.name)",
+                ownerUserId: userId,
+                createdByUserId: userId
+            )
+            addTransaction(tx)
+        } else if isGuestMode {
+            saveGuestData()
+        }
 
         logActivity(.goalUpdated, objectType: "goal", description: goal.name)
     }

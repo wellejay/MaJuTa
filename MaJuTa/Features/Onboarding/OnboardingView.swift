@@ -5,7 +5,6 @@ struct OnboardingView: View {
     @State private var currentPage: Int = 0
     @State private var userName: String = ""
     @State private var monthlyIncome: String = ""
-    @State private var selectedLanguage: AppLanguage = .arabic
     @State private var bankName: String = ""
     @State private var ibanNumber: String = ""
 
@@ -24,7 +23,7 @@ struct OnboardingView: View {
                             HStack(spacing: 6) {
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14, weight: .semibold))
-                                Text("رجوع")
+                                Text(L("رجوع"))
                                     .font(.maJuTaCaptionMedium)
                             }
                             .foregroundColor(.white.opacity(0.8))
@@ -37,7 +36,7 @@ struct OnboardingView: View {
 
                     // Page Indicator
                     HStack(spacing: 8) {
-                        ForEach(0..<4) { i in
+                        ForEach(0..<3) { i in
                             Capsule()
                                 .fill(i == currentPage ? Color.maJuTaGold : Color.white.opacity(0.3))
                                 .frame(width: i == currentPage ? 24 : 8, height: 4)
@@ -57,9 +56,8 @@ struct OnboardingView: View {
                 // Page Content
                 switch currentPage {
                 case 0: welcomePage
-                case 1: languagePage
-                case 2: incomePage
-                case 3: accountPage
+                case 1: incomePage
+                case 2: accountPage
                 default: welcomePage
                 }
 
@@ -68,9 +66,9 @@ struct OnboardingView: View {
                 // Navigation Button
                 Button(action: nextPage) {
                     HStack {
-                        Text(currentPage == 3 ? "ابدأ الآن" : "التالي")
+                        Text(currentPage == 2 ? L("ابدأ الآن") : L("التالي"))
                             .font(.maJuTaBodyBold)
-                        Image(systemName: "arrow.left")
+                        Image(systemName: appState.appLanguage == "ar" ? "arrow.left" : "arrow.right")
                     }
                     .foregroundColor(.maJuTaPrimary)
                     .frame(maxWidth: .infinity)
@@ -103,52 +101,17 @@ struct OnboardingView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
 
             VStack(spacing: MaJuTaSpacing.sm) {
-                Text("مركز التحكم المالي لعائلتك")
+                Text(L("مركز التحكم المالي لعائلتك"))
                     .font(.maJuTaBody)
                     .foregroundColor(.white.opacity(0.8))
                     .multilineTextAlignment(.center)
             }
 
             VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-                featureRow(icon: "checkmark.circle.fill", text: "تتبع الدخل والمصاريف")
-                featureRow(icon: "checkmark.circle.fill", text: "إدارة الفواتير والالتزامات")
-                featureRow(icon: "checkmark.circle.fill", text: "أهداف الادخار والاستثمار")
-                featureRow(icon: "checkmark.circle.fill", text: "تحليل الصحة المالية")
-            }
-            .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
-        }
-    }
-
-    private var languagePage: some View {
-        VStack(spacing: MaJuTaSpacing.xl) {
-            Text("اختر اللغة")
-                .font(.maJuTaTitle1)
-                .foregroundColor(.white)
-
-            VStack(spacing: MaJuTaSpacing.md) {
-                ForEach(AppLanguage.allCases, id: \.self) { lang in
-                    Button {
-                        selectedLanguage = lang
-                    } label: {
-                        HStack {
-                            Text(lang.displayName)
-                                .font(.maJuTaBodyBold)
-                                .foregroundColor(selectedLanguage == lang ? .maJuTaPrimary : .white)
-                            Spacer()
-                            if selectedLanguage == lang {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(.maJuTaGold)
-                            }
-                        }
-                        .padding(MaJuTaSpacing.md)
-                        .background(
-                            selectedLanguage == lang
-                                ? Color.maJuTaGold
-                                : Color.white.opacity(0.1)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
-                    }
-                }
+                featureRow(icon: "checkmark.circle.fill", text: L("تتبع الدخل والمصاريف"))
+                featureRow(icon: "checkmark.circle.fill", text: L("إدارة الفواتير والالتزامات"))
+                featureRow(icon: "checkmark.circle.fill", text: L("أهداف الادخار والاستثمار"))
+                featureRow(icon: "checkmark.circle.fill", text: L("تحليل الصحة المالية"))
             }
             .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
         }
@@ -157,10 +120,10 @@ struct OnboardingView: View {
     private var incomePage: some View {
         VStack(spacing: MaJuTaSpacing.xl) {
             VStack(spacing: MaJuTaSpacing.sm) {
-                Text("ما هو راتبك الشهري؟")
+                Text(L("ما هو راتبك الشهري؟"))
                     .font(.maJuTaTitle1)
                     .foregroundColor(.white)
-                Text("نستخدمه لحساب ميزانيتك")
+                Text(L("نستخدمه لحساب ميزانيتك"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.white.opacity(0.7))
             }
@@ -182,7 +145,7 @@ struct OnboardingView: View {
                 .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.input))
 
                 TextField("", text: $userName,
-                    prompt: Text("مثال: محمد الأحمدي").foregroundColor(.white.opacity(0.5)))
+                    prompt: Text(L("مثال: محمد الأحمدي")).foregroundColor(.white.opacity(0.5)))
                     .font(.maJuTaBody)
                     .foregroundColor(.white)
                     .multilineTextAlignment(.trailing)
@@ -197,17 +160,17 @@ struct OnboardingView: View {
     private var accountPage: some View {
         VStack(spacing: MaJuTaSpacing.xl) {
             VStack(spacing: MaJuTaSpacing.sm) {
-                Text("أضف حسابك البنكي")
+                Text(L("أضف حسابك البنكي"))
                     .font(.maJuTaTitle1)
                     .foregroundColor(.white)
-                Text("يمكنك إضافة المزيد لاحقاً")
+                Text(L("يمكنك إضافة المزيد لاحقاً"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.white.opacity(0.7))
             }
 
             VStack(spacing: MaJuTaSpacing.md) {
-                onboardingField(placeholder: "اسم البنك (مثال: البنك الأهلي)", text: $bankName)
-                onboardingField(placeholder: "رقم الآيبان (SA00 0000 0000 0000)", text: $ibanNumber, keyboardType: .asciiCapable)
+                onboardingField(placeholder: L("اسم البنك (مثال: البنك الأهلي)"), text: $bankName)
+                onboardingField(placeholder: L("رقم الآيبان (SA00 0000 0000 0000)"), text: $ibanNumber, keyboardType: .asciiCapable)
             }
             .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
         }
@@ -239,7 +202,7 @@ struct OnboardingView: View {
     }
 
     private func nextPage() {
-        if currentPage < 3 {
+        if currentPage < 2 {
             withAnimation(.spring()) { currentPage += 1 }
         } else {
             completeOnboarding()

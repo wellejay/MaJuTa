@@ -41,7 +41,7 @@ struct EmergencyFundView: View {
             .padding(.bottom, MaJuTaSpacing.xxxl)
         }
         .background(Color.maJuTaBackground)
-        .navigationTitle("صندوق الطوارئ")
+        .navigationTitle(L("صندوق الطوارئ"))
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -93,7 +93,7 @@ struct EmergencyFundView: View {
                     Text(String(format: "%.1f", months))
                         .font(.maJuTaHero)
                         .foregroundColor(.maJuTaTextPrimary)
-                    Text("أشهر")
+                    Text(L("أشهر"))
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaTextSecondary)
                 }
@@ -101,7 +101,7 @@ struct EmergencyFundView: View {
 
             SARText.largeNumber(balance)
 
-            Text("الرصيد الحالي")
+            Text(L("الرصيد الحالي"))
                 .font(.maJuTaCaption)
                 .foregroundColor(.maJuTaTextSecondary)
         }
@@ -122,19 +122,19 @@ struct EmergencyFundView: View {
 
         return HStack(spacing: MaJuTaSpacing.md) {
             VStack(alignment: .trailing, spacing: MaJuTaSpacing.xs) {
-                Text(isCompleted ? "اكتملت مساهمة الشهر ✓" :
-                     isNotStarted ? "لم تُموَّل هذا الشهر بعد" :
-                     "مساهمة جزئية هذا الشهر")
+                Text(isCompleted ? L("اكتملت مساهمة الشهر ✓") :
+                     isNotStarted ? L("لم تُموَّل هذا الشهر بعد") :
+                     L("مساهمة جزئية هذا الشهر"))
                     .font(.maJuTaBodyMedium)
                     .foregroundColor(.white)
 
                 HStack(spacing: 4) {
                     if deposited > 0 {
                         SARText.compact(deposited, color: .white)
-                        Text("من").font(.maJuTaCaption).foregroundColor(.white.opacity(0.8))
+                        Text(L("من")).font(.maJuTaCaption).foregroundColor(.white.opacity(0.8))
                     }
                     SARText.compact(target, color: .white.opacity(0.85))
-                    Text("المستهدف الشهري").font(.maJuTaCaption).foregroundColor(.white.opacity(0.8))
+                    Text(L("المستهدف الشهري")).font(.maJuTaCaption).foregroundColor(.white.opacity(0.8))
                 }
             }
             Spacer()
@@ -152,17 +152,17 @@ struct EmergencyFundView: View {
         HStack(spacing: MaJuTaSpacing.sm) {
             coverageStat(
                 value: String(format: "%.1f", months),
-                label: "أشهر حالياً",
+                label: L("أشهر حالياً"),
                 color: coverageColor
             )
             coverageStat(
                 value: "6",
-                label: "الهدف الموصى به",
+                label: L("الهدف الموصى به"),
                 color: .maJuTaGold
             )
             VStack(spacing: 4) {
                 SARText.compact(targetBalance)
-                Text("المبلغ المستهدف")
+                Text(L("المبلغ المستهدف"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
                     .multilineTextAlignment(.center)
@@ -195,11 +195,11 @@ struct EmergencyFundView: View {
     private var recommendationCard: some View {
         HStack(spacing: MaJuTaSpacing.md) {
             VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-                Text("المساهمة الشهرية الموصى بها")
+                Text(L("المساهمة الشهرية الموصى بها"))
                     .font(.maJuTaBodyMedium)
                     .foregroundColor(.white)
                 SARText.mediumNumber(recommended, color: .white)
-                Text("لتصل إلى 6 أشهر في 6 أشهر")
+                Text(L("لتصل إلى 6 أشهر في 6 أشهر"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.white.opacity(0.8))
             }
@@ -224,13 +224,13 @@ struct EmergencyFundView: View {
 
     private var essentialBreakdown: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
-            Text("المصاريف الأساسية الشهرية")
+            Text(L("المصاريف الأساسية الشهرية"))
                 .font(.maJuTaSectionTitle)
                 .foregroundColor(.maJuTaTextPrimary)
 
             SARText.mediumNumber(monthlyEssentials)
 
-            Text("تشمل: الإيجار، البقالة، المرافق، الاتصالات، الوقود")
+            Text(L("تشمل: الإيجار، البقالة، المرافق، الاتصالات، الوقود"))
                 .font(.maJuTaCaption)
                 .foregroundColor(.maJuTaTextSecondary)
                 .multilineTextAlignment(.trailing)
@@ -269,17 +269,17 @@ private struct EmergencyFundTransactionSheet: View {
                     Image(systemName: isDeposit ? "plus.circle.fill" : "minus.circle.fill")
                         .font(.system(size: 48))
                         .foregroundColor(isDeposit ? .maJuTaGold : .maJuTaNegative)
-                    Text(isDeposit ? "إضافة مبلغ لصندوق الطوارئ" : "سحب من صندوق الطوارئ")
+                    Text(isDeposit ? L("إضافة مبلغ لصندوق الطوارئ") : L("سحب من صندوق الطوارئ"))
                         .font(.maJuTaTitle2)
                         .foregroundColor(.maJuTaTextPrimary)
-                    Text("الرصيد الحالي: \(String(format: "%.0f", balance)) ﷼")
+                    Text(L("الرصيد الحالي") + ": \(String(format: "%.0f", balance)) ﷼")
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaTextSecondary)
                 }
                 .padding(.top, MaJuTaSpacing.xl)
 
                 VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-                    Text("المبلغ (﷼)")
+                    Text(L("المبلغ (﷼)"))
                         .font(.maJuTaBodyMedium)
                         .foregroundColor(.maJuTaTextPrimary)
                     TextField("0", text: $amountText)
@@ -294,7 +294,7 @@ private struct EmergencyFundTransactionSheet: View {
 
                     // Withdrawal warning if amount exceeds balance
                     if !isDeposit && amount > balance && amount > 0 {
-                        Text("لا يمكن سحب أكثر من الرصيد المتاح")
+                        Text(L("لا يمكن سحب أكثر من الرصيد المتاح"))
                             .font(.maJuTaCaption)
                             .foregroundColor(.maJuTaNegative)
                     }
@@ -311,8 +311,8 @@ private struct EmergencyFundTransactionSheet: View {
                     dismiss()
                 } label: {
                     let label = isDeposit
-                        ? "إضافة \(amount > 0 ? String(format: "%.0f ﷼", amount) : "")"
-                        : "سحب \(amount > 0 ? String(format: "%.0f ﷼", amount) : "")"
+                        ? L("إضافة") + " \(amount > 0 ? String(format: "%.0f ﷼", amount) : "")"
+                        : L("سحب") + " \(amount > 0 ? String(format: "%.0f ﷼", amount) : "")"
                     Text(label)
                         .font(.maJuTaBodyBold)
                         .foregroundColor(.white)
@@ -329,11 +329,11 @@ private struct EmergencyFundTransactionSheet: View {
                 Spacer()
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle(isDeposit ? "إضافة مبلغ" : "سحب مبلغ")
+            .navigationTitle(isDeposit ? L("إضافة مبلغ") : L("سحب مبلغ"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("إلغاء") { dismiss() }
+                    Button(L("إلغاء")) { dismiss() }
                         .foregroundColor(.maJuTaTextSecondary)
                 }
             }

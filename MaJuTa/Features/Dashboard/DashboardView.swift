@@ -30,10 +30,10 @@ struct DashboardView: View {
     var spendingCardLabel: String {
         let limit = appState.spendingLimit
         guard limit > 0 else {
-            return dataStore.monthlyNetFromIncome >= 0 ? "المتاح للإنفاق" : "تجاوزت ميزانيتك"
+            return dataStore.monthlyNetFromIncome >= 0 ? L("المتاح للإنفاق") : L("تجاوزت ميزانيتك")
         }
         let remaining = limit - dataStore.discretionaryExpensesThisMonth
-        return remaining < 0 ? "تجاوزت الحد بـ" : "باقي من ميزانيتك"
+        return remaining < 0 ? L("تجاوزت الحد بـ") : L("باقي من ميزانيتك")
     }
 
     var body: some View {
@@ -88,7 +88,7 @@ struct DashboardView: View {
                     Spacer()
 
                     VStack(spacing: 2) {
-                        Text("مرحباً، \(appState.userName.isEmpty ? "بك" : appState.userName)")
+                        Text("\(L("مرحباً،")) \(appState.userName.isEmpty ? L("بك") : appState.userName)")
                             .font(.maJuTaCaption)
                             .foregroundColor(.white.opacity(0.7))
                         Text(Date().monthYearArabic)
@@ -130,7 +130,7 @@ struct DashboardView: View {
 
                 // Income-based net available (income minus all outflows this month)
                 VStack(spacing: 4) {
-                    Text(dataStore.monthlyNetFromIncome >= 0 ? "المتاح للإنفاق" : "تجاوزت الميزانية")
+                    Text(dataStore.monthlyNetFromIncome >= 0 ? L("المتاح للإنفاق") : L("تجاوزت الميزانية"))
                         .font(.maJuTaCaption)
                         .foregroundColor(.white.opacity(0.7))
 
@@ -158,19 +158,19 @@ struct DashboardView: View {
     private var cashFlowRow: some View {
         HStack(spacing: MaJuTaSpacing.sm) {
             cashFlowMiniCard(
-                title: "الدخل",
+                title: L("الدخل"),
                 amount: dataStore.monthlyIncome(),
                 icon: "arrow.down.circle.fill",
                 color: .maJuTaPositive
             )
             cashFlowMiniCard(
-                title: "المصاريف",
+                title: L("المصاريف"),
                 amount: dataStore.discretionaryExpensesThisMonth,
                 icon: "arrow.up.circle.fill",
                 color: .maJuTaNegative
             )
             cashFlowMiniCard(
-                title: "الأهداف المحفوظة",
+                title: L("الأهداف المحفوظة"),
                 amount: dataStore.totalGoalsSaved,
                 icon: "banknote.fill",
                 color: .maJuTaGold
@@ -222,7 +222,7 @@ struct DashboardView: View {
                         .font(.maJuTaCaptionMedium)
                         .foregroundColor(spendingCardAmount >= 0 ? .maJuTaTextSecondary : .maJuTaNegative)
                     if appState.spendingLimit > 0 {
-                        Text("أنفقت: \(String(format: "%.0f", dataStore.discretionaryExpensesThisMonth)) ﷼ من \(String(format: "%.0f", appState.spendingLimit)) ﷼")
+                        Text("\(L("أنفقت:")) \(String(format: "%.0f", dataStore.discretionaryExpensesThisMonth)) ﷼ \(L("من")) \(String(format: "%.0f", appState.spendingLimit)) ﷼")
                             .font(.maJuTaLabel)
                             .foregroundColor(spendingLimitColor)
                     }
@@ -241,8 +241,8 @@ struct DashboardView: View {
             // Breakdown
             HStack(spacing: MaJuTaSpacing.md) {
                 Spacer()
-                breakdownItem(label: "فواتير قادمة", amount: dataStore.upcomingBillsTotal, color: .maJuTaWarning)
-                breakdownItem(label: "مدخرات مخططة", amount: dataStore.plannedSavingsThisMonth, color: .maJuTaGold)
+                breakdownItem(label: L("فواتير قادمة"), amount: dataStore.upcomingBillsTotal, color: .maJuTaWarning)
+                breakdownItem(label: L("مدخرات مخططة"), amount: dataStore.plannedSavingsThisMonth, color: .maJuTaGold)
                 emergencyBreakdownItem
             }
             .padding(.top, 4)
@@ -280,7 +280,7 @@ struct DashboardView: View {
         let color: Color = deposited >= target && target > 0 ? .maJuTaPositive
                          : deposited == 0 ? .maJuTaNegative
                          : .maJuTaWarning
-        let label: String = deposited >= target && target > 0 ? "طوارئ ✓" : "طوارئ"
+        let label: String = deposited >= target && target > 0 ? "\(L("طوارئ")) ✓" : L("طوارئ")
 
         return VStack(alignment: .trailing, spacing: 2) {
             SARText.compact(deposited > 0 ? deposited : target, color: color)
@@ -294,7 +294,7 @@ struct DashboardView: View {
     private var financialMetricsGrid: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: MaJuTaSpacing.sm) {
             metricCard(
-                title: "صندوق الطوارئ",
+                title: L("صندوق الطوارئ"),
                 amount: dataStore.emergencyFundBalance,
                 suffix: "",
                 icon: "exclamationmark.shield.fill",
@@ -303,21 +303,21 @@ struct DashboardView: View {
                      : .maJuTaNegative
             )
             metricCard(
-                title: "صافي الثروة",
+                title: L("صافي الثروة"),
                 amount: dataStore.netWorth,
                 suffix: "",
                 icon: "chart.line.uptrend.xyaxis",
                 color: .maJuTaGold
             )
             metricCard(
-                title: "المحفظة الاستثمارية",
+                title: L("المحفظة الاستثمارية"),
                 amount: dataStore.portfolioValue,
                 suffix: "",
                 icon: "chart.bar.fill",
                 color: .maJuTaOrange
             )
             metricCard(
-                title: "معدل الادخار",
+                title: L("معدل الادخار"),
                 value: String(format: "%.0f", dataStore.actualSavingsRate),
                 suffix: "%",
                 icon: "percent",
@@ -362,12 +362,12 @@ struct DashboardView: View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
             HStack {
                 NavigationLink(destination: BillsView()) {
-                    Text("عرض الكل")
+                    Text(L("عرض الكل"))
                         .font(.maJuTaCaptionMedium)
                         .foregroundColor(.maJuTaGold)
                 }
                 Spacer()
-                Text("الفواتير القادمة")
+                Text(L("الفواتير القادمة"))
                     .font(.maJuTaSectionTitle)
                     .foregroundColor(.maJuTaTextPrimary)
             }
@@ -375,7 +375,7 @@ struct DashboardView: View {
             let upcomingVisible = dataStore.visibleBills.filter { $0.status == .upcoming && !$0.isOverdue }
                 .sorted { $0.dueDate < $1.dueDate }
             if upcomingVisible.isEmpty {
-                emptyStateView(icon: "checkmark.circle.fill", text: "لا توجد فواتير قادمة")
+                emptyStateView(icon: "checkmark.circle.fill", text: L("لا توجد فواتير قادمة"))
             } else {
                 VStack(spacing: MaJuTaSpacing.sm) {
                     ForEach(upcomingVisible.prefix(3)) { bill in
@@ -394,12 +394,12 @@ struct DashboardView: View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
             HStack {
                 NavigationLink(destination: TransactionsListView()) {
-                    Text("عرض الكل")
+                    Text(L("عرض الكل"))
                         .font(.maJuTaCaptionMedium)
                         .foregroundColor(.maJuTaGold)
                 }
                 Spacer()
-                Text("آخر المعاملات")
+                Text(L("آخر المعاملات"))
                     .font(.maJuTaSectionTitle)
                     .foregroundColor(.maJuTaTextPrimary)
             }
@@ -435,7 +435,7 @@ struct DashboardView: View {
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaTextSecondary)
                         .multilineTextAlignment(.leading)
-                    Text("اعرض التقرير الكامل")
+                    Text(L("اعرض التقرير الكامل"))
                         .font(.maJuTaCaptionMedium)
                         .foregroundColor(.maJuTaGold)
                 }
@@ -463,10 +463,10 @@ struct DashboardView: View {
                 }
 
                 VStack(alignment: .trailing, spacing: MaJuTaSpacing.xs) {
-                    Text("الصحة المالية")
+                    Text(L("الصحة المالية"))
                         .font(.maJuTaSectionTitle)
                         .foregroundColor(.maJuTaTextPrimary)
-                    Text("من 100 نقطة")
+                    Text(L("من 100 نقطة"))
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaTextSecondary)
                 }
@@ -499,28 +499,28 @@ struct DashboardView: View {
                             VStack(spacing: MaJuTaSpacing.md) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(.system(size: 48)).foregroundColor(.maJuTaPositive)
-                                Text("لا توجد إشعارات جديدة")
+                                Text(L("لا توجد إشعارات جديدة"))
                                     .font(.maJuTaBody).foregroundColor(.maJuTaTextSecondary)
                             }
                             .frame(maxWidth: .infinity)
                             .padding(MaJuTaSpacing.xxl)
                         }
                         if !overdueBills.isEmpty {
-                            notifSection(title: "فواتير متأخرة", color: .maJuTaNegative, bills: overdueBills)
+                            notifSection(title: L("فواتير متأخرة"), color: .maJuTaNegative, bills: overdueBills)
                         }
                         if !dueSoonBills.isEmpty {
-                            notifSection(title: "فواتير تستحق قريباً", color: .maJuTaWarning, bills: dueSoonBills)
+                            notifSection(title: L("فواتير تستحق قريباً"), color: .maJuTaWarning, bills: dueSoonBills)
                         }
                     }
                     .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
                     .padding(.vertical, MaJuTaSpacing.md)
                 }
                 .background(Color.maJuTaBackground)
-                .navigationTitle("الإشعارات")
+                .navigationTitle(L("الإشعارات"))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button("إغلاق") { dismiss() }
+                        Button(L("إغلاق")) { dismiss() }
                             .foregroundColor(.maJuTaTextSecondary)
                     }
                 }
@@ -583,10 +583,10 @@ private struct SpendingLimitSheet: View {
                     Image(systemName: "slider.horizontal.3")
                         .font(.system(size: 48))
                         .foregroundColor(.maJuTaGold)
-                    Text("حد الإنفاق الشهري")
+                    Text(L("حد الإنفاق الشهري"))
                         .font(.maJuTaTitle2)
                         .foregroundColor(.maJuTaTextPrimary)
-                    Text("يتغير لون البطاقة تبعاً للمتبقي من ميزانيتك")
+                    Text(L("يتغير لون البطاقة تبعاً للمتبقي من ميزانيتك"))
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaTextSecondary)
                         .multilineTextAlignment(.center)
@@ -595,9 +595,9 @@ private struct SpendingLimitSheet: View {
 
                 // Color legend
                 HStack(spacing: MaJuTaSpacing.md) {
-                    legendItem(color: .maJuTaPositive, label: "أكثر من 20%")
+                    legendItem(color: .maJuTaPositive, label: L("أكثر من 20%"))
                     legendItem(color: .maJuTaWarning, label: "5% - 20%")
-                    legendItem(color: .maJuTaNegative, label: "أقل من 5%")
+                    legendItem(color: .maJuTaNegative, label: L("أقل من 5%"))
                 }
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
 
@@ -616,7 +616,7 @@ private struct SpendingLimitSheet: View {
                     onSave(amount)
                     dismiss()
                 } label: {
-                    Text(amount > 0 ? "حفظ \(String(format: "%.0f", amount)) ﷼" : "حفظ")
+                    Text(amount > 0 ? "\(L("حفظ")) \(String(format: "%.0f", amount)) ﷼" : L("حفظ"))
                         .font(.maJuTaBodyBold)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -628,7 +628,7 @@ private struct SpendingLimitSheet: View {
                 .disabled(amount <= 0)
 
                 if limitInput != "" {
-                    Button("إزالة الحد") {
+                    Button(L("إزالة الحد")) {
                         onSave(0)
                         dismiss()
                     }
@@ -639,11 +639,11 @@ private struct SpendingLimitSheet: View {
                 Spacer()
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("حد الإنفاق")
+            .navigationTitle(L("حد الإنفاق"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("إلغاء") { dismiss() }.foregroundColor(.maJuTaTextSecondary)
+                    Button(L("إلغاء")) { dismiss() }.foregroundColor(.maJuTaTextSecondary)
                 }
             }
             .onAppear { focused = true }

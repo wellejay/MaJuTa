@@ -57,7 +57,7 @@ struct TransactionsListView: View {
                 }
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("المعاملات")
+            .navigationTitle(L("المعاملات"))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -84,7 +84,7 @@ struct TransactionsListView: View {
         HStack(spacing: MaJuTaSpacing.sm) {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.maJuTaTextSecondary)
-            TextField("بحث عن معاملة...", text: $searchText)
+            TextField(L("بحث عن معاملة..."), text: $searchText)
                 .font(.maJuTaBody)
                 .multilineTextAlignment(.trailing)
         }
@@ -130,10 +130,10 @@ struct TransactionsListView: View {
             Image(systemName: "tray")
                 .font(.system(size: 48))
                 .foregroundColor(.maJuTaTextSecondary.opacity(0.5))
-            Text("لا توجد معاملات")
+            Text(L("لا توجد معاملات"))
                 .font(.maJuTaSectionTitle)
                 .foregroundColor(.maJuTaTextSecondary)
-            Text("أضف معاملتك الأولى بالضغط على +")
+            Text(L("أضف معاملتك الأولى بالضغط على +"))
                 .font(.maJuTaCaption)
                 .foregroundColor(.maJuTaTextSecondary.opacity(0.7))
             Spacer()
@@ -164,7 +164,7 @@ struct TransactionDetailView: View {
                     }
                     SARText(abs(transaction.amount), size: 40, weight: .bold,
                             color: transaction.amount > 0 ? .maJuTaPositive : .maJuTaTextPrimary)
-                    Text(category?.nameArabic ?? "")
+                    Text(category?.displayName ?? "")
                         .font(.maJuTaBody)
                         .foregroundColor(.maJuTaTextSecondary)
                 }
@@ -172,12 +172,12 @@ struct TransactionDetailView: View {
 
                 // Details
                 VStack(spacing: 1) {
-                    detailRow(label: "التاجر", value: transaction.merchant)
-                    detailRow(label: "التاريخ", value: transaction.date.gregorianFormatted)
-                    detailRow(label: "الميلادي", value: transaction.date.hijriFormatted)
-                    detailRow(label: "طريقة الدفع", value: transaction.paymentMethod.displayName)
+                    detailRow(label: L("التاجر"), value: transaction.merchant)
+                    detailRow(label: L("التاريخ"), value: transaction.date.gregorianFormatted)
+                    detailRow(label: L("الميلادي"), value: transaction.date.hijriFormatted)
+                    detailRow(label: L("طريقة الدفع"), value: transaction.paymentMethod.displayName)
                     if !transaction.note.isEmpty {
-                        detailRow(label: "ملاحظة", value: transaction.note)
+                        detailRow(label: L("ملاحظة"), value: transaction.note)
                     }
                 }
                 .background(Color.maJuTaCard)
@@ -187,7 +187,7 @@ struct TransactionDetailView: View {
             }
         }
         .background(Color.maJuTaBackground)
-        .navigationTitle(transaction.merchant.isEmpty ? "تفاصيل المعاملة" : transaction.merchant)
+        .navigationTitle(transaction.merchant.isEmpty ? L("تفاصيل المعاملة") : transaction.merchant)
         .navigationBarTitleDisplayMode(.inline)
     }
 

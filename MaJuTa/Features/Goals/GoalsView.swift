@@ -39,7 +39,7 @@ struct GoalsView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("الأهداف")
+            .navigationTitle(L("الأهداف"))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -80,12 +80,12 @@ struct GoalsView: View {
             }
 
             VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-                Text("إجمالي الأهداف")
+                Text(L("إجمالي الأهداف"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
                 SARText.mediumNumber(totalSaved)
                 HStack(spacing: 2) {
-                    Text("من").font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
+                    Text(L("من")).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
                     SARText.caption(totalTarget, color: .maJuTaTextSecondary)
                 }
             }
@@ -103,10 +103,10 @@ struct GoalsView: View {
             Image(systemName: "target")
                 .font(.system(size: 48))
                 .foregroundColor(.maJuTaTextSecondary.opacity(0.4))
-            Text("لا توجد أهداف ادخار")
+            Text(L("لا توجد أهداف ادخار"))
                 .font(.maJuTaSectionTitle)
                 .foregroundColor(.maJuTaTextSecondary)
-            Text("أنشئ هدفك الأول لتبدأ رحلة الادخار")
+            Text(L("أنشئ هدفك الأول لتبدأ رحلة الادخار"))
                 .font(.maJuTaCaption)
                 .foregroundColor(.maJuTaTextSecondary.opacity(0.7))
                 .multilineTextAlignment(.center)
@@ -128,7 +128,7 @@ struct GoalCardView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     if goal.isCompleted {
-                        Label("مكتمل", systemImage: "checkmark.circle.fill")
+                        Label(L("مكتمل"), systemImage: "checkmark.circle.fill")
                             .font(.maJuTaLabel)
                             .foregroundColor(.maJuTaPositive)
                     } else if let deadline = goal.deadline {
@@ -179,7 +179,7 @@ struct GoalCardView: View {
                 }
                 .frame(height: 8)
 
-                Text("\(goal.progressPercentage)% مكتمل")
+                Text("\(goal.progressPercentage)% \(L("مكتمل"))")
                     .font(.maJuTaLabel)
                     .foregroundColor(Color(hex: goal.colorHex))
             }
@@ -199,11 +199,11 @@ struct EmergencyFundCardView: View {
     var body: some View {
         HStack(spacing: MaJuTaSpacing.md) {
             VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-                Text("صندوق الطوارئ")
+                Text(L("صندوق الطوارئ"))
                     .font(.maJuTaBodyBold)
                     .foregroundColor(.white)
                 SARText.mediumNumber(balance, color: .white)
-                Text("يكفي \(String(format: "%.1f", months)) أشهر")
+                Text("\(L("يكفي")) \(String(format: "%.1f", months)) \(L("أشهر"))")
                     .font(.maJuTaCaption)
                     .foregroundColor(.white.opacity(0.8))
             }

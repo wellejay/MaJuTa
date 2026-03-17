@@ -10,6 +10,11 @@ struct TransactionCategory: Identifiable, Codable {
     var icon: String
     var colorHex: String
 
+    /// Returns the category name in the currently selected app language.
+    var displayName: String {
+        UserDefaults.standard.string(forKey: "appLanguage") == "en" ? name : nameArabic
+    }
+
     init(
         id: UUID = UUID(),
         name: String,
@@ -44,12 +49,13 @@ enum CategoryGroup: String, Codable, CaseIterable {
     case financial = "financial"
 
     var displayName: String {
+        let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
         switch self {
-        case .income:    return "الدخل"
-        case .essential: return "المصاريف الأساسية"
-        case .lifestyle: return "نمط الحياة"
-        case .family:    return "العائلة"
-        case .financial: return "المالية"
+        case .income:    return isEn ? "Income"             : "الدخل"
+        case .essential: return isEn ? "Essential Expenses" : "المصاريف الأساسية"
+        case .lifestyle: return isEn ? "Lifestyle"          : "نمط الحياة"
+        case .family:    return isEn ? "Family"             : "العائلة"
+        case .financial: return isEn ? "Financial"          : "المالية"
         }
     }
 }

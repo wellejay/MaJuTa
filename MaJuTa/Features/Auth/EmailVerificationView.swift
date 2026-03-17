@@ -51,12 +51,12 @@ struct EmailVerificationView: View {
                 }
 
                 VStack(spacing: MaJuTaSpacing.sm) {
-                    Text("تحقق من بريدك الإلكتروني")
+                    Text(L("تحقق من بريدك الإلكتروني"))
                         .font(.maJuTaTitle2)
                         .foregroundColor(.white)
                         .multilineTextAlignment(.center)
 
-                    Text("أرسلنا رابط التحقق إلى")
+                    Text(L("أرسلنا رابط التحقق إلى"))
                         .font(.maJuTaCaption)
                         .foregroundColor(.white.opacity(0.65))
 
@@ -96,7 +96,7 @@ struct EmailVerificationView: View {
                                     .tint(.maJuTaPrimary)
                                     .scaleEffect(0.85)
                             }
-                            Text(isChecking ? "جارٍ التحقق..." : "لقد قمت بالتحقق ✓")
+                            Text(isChecking ? L("جارٍ التحقق...") : L("لقد قمت بالتحقق ✓"))
                                 .font(.maJuTaBodyBold)
                                 .foregroundColor(.maJuTaPrimary)
                         }
@@ -117,7 +117,7 @@ struct EmailVerificationView: View {
                                     .tint(.white)
                                     .scaleEffect(0.7)
                             }
-                            Text(isResending ? "جارٍ الإرسال..." : "إعادة إرسال البريد")
+                            Text(isResending ? L("جارٍ الإرسال...") : L("إعادة إرسال البريد"))
                                 .font(.maJuTaCaptionMedium)
                                 .foregroundColor(.white.opacity(0.9))
                         }
@@ -153,7 +153,7 @@ struct EmailVerificationView: View {
             finishAndProceed()
         } else {
             statusIsError = true
-            statusMessage = "لم يتم التحقق بعد، تحقق من بريدك وأعد المحاولة"
+            statusMessage = L("لم يتم التحقق بعد، تحقق من بريدك وأعد المحاولة")
         }
     }
 
@@ -163,10 +163,10 @@ struct EmailVerificationView: View {
         do {
             try await FirebaseAuthService.shared.resendVerificationEmail()
             statusIsError = false
-            statusMessage = "تم إعادة إرسال البريد بنجاح"
+            statusMessage = L("تم إعادة إرسال البريد بنجاح")
         } catch {
             statusIsError = true
-            statusMessage = "تعذّر الإرسال، حاول مرة أخرى"
+            statusMessage = L("تعذّر الإرسال، حاول مرة أخرى")
         }
         isResending = false
     }

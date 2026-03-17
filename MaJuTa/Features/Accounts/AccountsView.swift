@@ -17,10 +17,10 @@ struct AccountsView: View {
                 VStack(spacing: MaJuTaSpacing.md) {
                     totalCard
                     if !sharedAccounts.isEmpty {
-                        accountSection(title: "الحسابات المشتركة", accounts: sharedAccounts, icon: "person.2.fill")
+                        accountSection(title: L("الحسابات المشتركة"), accounts: sharedAccounts, icon: "person.2.fill")
                     }
                     if !personalAccounts.isEmpty {
-                        accountSection(title: "حساباتي الخاصة", accounts: personalAccounts, icon: "person.fill")
+                        accountSection(title: L("حساباتي الخاصة"), accounts: personalAccounts, icon: "person.fill")
                     }
                     if dataStore.visibleAccounts.isEmpty { emptyState }
                 }
@@ -29,7 +29,7 @@ struct AccountsView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("الحسابات")
+            .navigationTitle(L("الحسابات"))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -48,7 +48,7 @@ struct AccountsView: View {
         ZStack {
             LinearGradient.navyGradient
             VStack(spacing: MaJuTaSpacing.sm) {
-                Text("إجمالي الأصول السائلة").font(.maJuTaCaption).foregroundColor(.white.opacity(0.7))
+                Text(L("إجمالي الأصول السائلة")).font(.maJuTaCaption).foregroundColor(.white.opacity(0.7))
                 SARText.hero(totalBalance, color: .white)
             }.padding(MaJuTaSpacing.xl)
         }
@@ -75,8 +75,8 @@ struct AccountsView: View {
     private var emptyState: some View {
         VStack(spacing: MaJuTaSpacing.md) {
             Image(systemName: "creditcard.fill").font(.system(size: 48)).foregroundColor(.maJuTaTextSecondary.opacity(0.4))
-            Text("لا توجد حسابات").font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextSecondary)
-            Text("أضف حسابك البنكي أو محفظتك الإلكترونية")
+            Text(L("لا توجد حسابات")).font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextSecondary)
+            Text(L("أضف حسابك البنكي أو محفظتك الإلكترونية"))
                 .font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary.opacity(0.7)).multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity).padding(MaJuTaSpacing.xxl)
@@ -118,7 +118,7 @@ struct AddAccountView: View {
             ScrollView {
                 VStack(spacing: MaJuTaSpacing.lg) {
                     VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-                        Text("نوع الحساب").font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
+                        Text(L("نوع الحساب")).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: MaJuTaSpacing.sm) {
                                 ForEach(AccountType.allCases, id: \.self) { type in
@@ -141,21 +141,21 @@ struct AddAccountView: View {
                     .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card)).maJuTaCardShadow()
 
                     VStack(spacing: 1) {
-                        fieldRow(label: "اسم الحساب") { TextField("مثال: البنك الأهلي - جاري", text: $name).multilineTextAlignment(.trailing) }
+                        fieldRow(label: L("اسم الحساب")) { TextField(L("مثال: البنك الأهلي - جاري"), text: $name).multilineTextAlignment(.trailing) }
                         Divider()
-                        fieldRow(label: "البنك / المزود") { TextField("مثال: البنك الأهلي", text: $institution).multilineTextAlignment(.trailing) }
+                        fieldRow(label: L("البنك / المزود")) { TextField(L("مثال: البنك الأهلي"), text: $institution).multilineTextAlignment(.trailing) }
                         Divider()
-                        fieldRow(label: "الرصيد (﷼)") { TextField("0", text: $balance).keyboardType(.decimalPad).multilineTextAlignment(.trailing) }
+                        fieldRow(label: L("الرصيد (﷼)")) { TextField("0", text: $balance).keyboardType(.decimalPad).multilineTextAlignment(.trailing) }
                         Divider()
                         HStack {
                             Toggle("", isOn: $isShared).tint(.maJuTaGold).labelsHidden()
                             Spacer()
-                            Text("حساب مشترك مع العائلة").font(.maJuTaBody).foregroundColor(.maJuTaTextPrimary)
+                            Text(L("حساب مشترك مع العائلة")).font(.maJuTaBody).foregroundColor(.maJuTaTextPrimary)
                         }.padding(MaJuTaSpacing.md)
                     }
                     .background(Color.maJuTaCard).clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card)).maJuTaCardShadow()
 
-                    Button("إضافة الحساب") { saveAccount() }
+                    Button(L("إضافة الحساب")) { saveAccount() }
                         .font(.maJuTaBodyBold).foregroundColor(.white)
                         .frame(maxWidth: .infinity).frame(height: 56)
                         .background(name.isEmpty ? Color.maJuTaTextSecondary.opacity(0.3) : Color.maJuTaPrimary)
@@ -165,8 +165,8 @@ struct AddAccountView: View {
                 .padding(MaJuTaSpacing.horizontalPadding).padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("حساب جديد").navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .navigationBarLeading) { Button("إلغاء") { dismiss() }.foregroundColor(.maJuTaTextSecondary) } }
+            .navigationTitle(L("حساب جديد")).navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .navigationBarLeading) { Button(L("إلغاء")) { dismiss() }.foregroundColor(.maJuTaTextSecondary) } }
         }
     }
 

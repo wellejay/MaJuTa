@@ -25,7 +25,7 @@ struct FinancialHealthView: View {
             .padding(.bottom, MaJuTaSpacing.xxxl)
         }
         .background(Color.maJuTaBackground)
-        .navigationTitle("الصحة المالية")
+        .navigationTitle(L("الصحة المالية"))
         .navigationBarTitleDisplayMode(.large)
     }
 
@@ -54,7 +54,7 @@ struct FinancialHealthView: View {
                 VStack(spacing: 4) {
                     Text("\(Int(score.total))").font(.maJuTaHero).foregroundColor(.maJuTaTextPrimary)
                     Text(score.grade.label).font(.maJuTaBodyBold).foregroundColor(Color(hex: score.grade.colorHex))
-                    Text("من 100").font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
+                    Text(L("من 100")).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
                 }
             }
 
@@ -70,12 +70,12 @@ struct FinancialHealthView: View {
 
     private var componentScores: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
-            Text("تفاصيل النتيجة").font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextPrimary)
+            Text(L("تفاصيل النتيجة")).font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextPrimary)
             VStack(spacing: MaJuTaSpacing.sm) {
-                scoreComponent(label: "معدل الادخار", score: score.savingsRateScore, weight: 30, icon: "banknote.fill", color: .maJuTaPositive)
-                scoreComponent(label: "تغطية الطوارئ", score: score.emergencyCoverageScore, weight: 25, icon: "exclamationmark.shield.fill", color: .maJuTaNegative)
-                scoreComponent(label: "نسبة الديون", score: score.debtRatioScore, weight: 25, icon: "creditcard.fill", color: .maJuTaOrange)
-                scoreComponent(label: "ثبات الإنفاق", score: score.spendingStabilityScore, weight: 20, icon: "chart.bar.fill", color: .maJuTaGold)
+                scoreComponent(label: L("معدل الادخار"), score: score.savingsRateScore, weight: 30, icon: "banknote.fill", color: .maJuTaPositive)
+                scoreComponent(label: L("تغطية الطوارئ"), score: score.emergencyCoverageScore, weight: 25, icon: "exclamationmark.shield.fill", color: .maJuTaNegative)
+                scoreComponent(label: L("نسبة الديون"), score: score.debtRatioScore, weight: 25, icon: "creditcard.fill", color: .maJuTaOrange)
+                scoreComponent(label: L("ثبات الإنفاق"), score: score.spendingStabilityScore, weight: 20, icon: "chart.bar.fill", color: .maJuTaGold)
             }
         }
     }
@@ -86,7 +86,7 @@ struct FinancialHealthView: View {
 
             VStack(alignment: .trailing, spacing: 4) {
                 HStack {
-                    Text("وزن \(weight)%").font(.maJuTaLabel).foregroundColor(.maJuTaTextSecondary)
+                    Text(L("وزن") + " \(weight)%").font(.maJuTaLabel).foregroundColor(.maJuTaTextSecondary)
                     Spacer()
                     Text(label).font(.maJuTaCaption).foregroundColor(.maJuTaTextPrimary)
                 }
@@ -106,25 +106,25 @@ struct FinancialHealthView: View {
 
     private var insightsSection: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
-            Text("توصيات").font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextPrimary)
+            Text(L("توصيات")).font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextPrimary)
             VStack(spacing: MaJuTaSpacing.sm) {
                 insightCard(
                     icon: "exclamationmark.shield.fill",
                     color: dataStore.emergencyMonths >= 3 ? .maJuTaPositive : .maJuTaNegative,
-                    title: dataStore.emergencyMonths >= 3 ? "صندوق الطوارئ جيد" : "صندوق الطوارئ يحتاج تعزيز",
+                    title: dataStore.emergencyMonths >= 3 ? L("صندوق الطوارئ جيد") : L("صندوق الطوارئ يحتاج تعزيز"),
                     description: dataStore.emergencyMonths >= 3
-                        ? "لديك \(String(format: "%.1f", dataStore.emergencyMonths)) أشهر من التغطية"
-                        : "يُنصح بتوفير \(String(format: "%.1f", max(3 - dataStore.emergencyMonths, 0))) أشهر إضافية"
+                        ? "\(String(format: "%.1f", dataStore.emergencyMonths)) \(L("أشهر من التغطية"))"
+                        : L("يُنصح بتوفير") + " \(String(format: "%.1f", max(3 - dataStore.emergencyMonths, 0))) " + L("أشهر إضافية")
                 )
                 let actualRate = dataStore.actualSavingsRate
                 let rateColor: Color = actualRate >= 20 ? .maJuTaPositive : .maJuTaGold
                 insightCard(
                     icon: "chart.line.uptrend.xyaxis",
                     color: rateColor,
-                    title: actualRate >= 20 ? "معدل الادخار ممتاز" : "زيادة معدل الادخار",
+                    title: actualRate >= 20 ? L("معدل الادخار ممتاز") : L("زيادة معدل الادخار"),
                     description: actualRate >= 20
-                        ? "معدل ادخارك الحالي \(Int(actualRate))% — أعلى من الهدف المثالي 20%"
-                        : "معدل ادخارك الحالي \(Int(actualRate))%، حاول رفعه إلى 20% من الدخل الشهري"
+                        ? L("معدل ادخارك الحالي") + " \(Int(actualRate))% — " + L("أعلى من الهدف المثالي 20%")
+                        : L("معدل ادخارك الحالي") + " \(Int(actualRate))%، " + L("حاول رفعه إلى 20% من الدخل الشهري")
                 )
             }
         }

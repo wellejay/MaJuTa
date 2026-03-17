@@ -1,4 +1,599 @@
 /* MaJuTa — English Localizable Strings */
-/* App is currently Arabic-first. This file enables the Language option
-   to appear in iOS Settings → MaJuTa → Language. Full English
-   translation is in progress. */
+/* Arabic text is used as the key; English translation is the value */
+/* Version 1.2.0 */
+
+// MARK: - Common
+"إلغاء" = "Cancel";
+"حفظ" = "Save";
+"حذف" = "Delete";
+"إضافة" = "Add";
+"إغلاق" = "Close";
+"تأكيد" = "Confirm";
+"رجوع" = "Back";
+"التالي" = "Next";
+"ابدأ الآن" = "Get Started";
+"تخطى" = "Skip";
+"تحديث" = "Update";
+"إعادة الإرسال" = "Resend";
+"حسناً" = "OK";
+"من" = "of";
+"عرض الكل" = "View All";
+"Language / اللغة" = "Language / اللغة";
+
+// MARK: - Tab Bar
+"الرئيسية" = "Home";
+"المعاملات" = "Transactions";
+"الأهداف" = "Goals";
+"الاستثمارات" = "Investments";
+"القروض" = "Loans";
+"العائلة" = "Family";
+"الحساب" = "Account";
+
+// MARK: - Dashboard
+"المتاح للإنفاق" = "Available to Spend";
+"تجاوزت ميزانيتك" = "Budget Exceeded";
+"تجاوزت الحد بـ" = "Exceeded by";
+"باقي من ميزانيتك" = "Budget Remaining";
+"الدخل" = "Income";
+"المصاريف" = "Expenses";
+"الأهداف المحفوظة" = "Saved Goals";
+"فواتير قادمة" = "Upcoming Bills";
+"مدخرات مخططة" = "Planned Savings";
+"طوارئ ✓" = "Emergency ✓";
+"طوارئ" = "Emergency";
+"صندوق الطوارئ" = "Emergency Fund";
+"صافي الثروة" = "Net Worth";
+"المحفظة الاستثمارية" = "Investment Portfolio";
+"معدل الادخار" = "Savings Rate";
+"الفواتير القادمة" = "Upcoming Bills";
+"لا توجد فواتير قادمة" = "No Upcoming Bills";
+"آخر المعاملات" = "Recent Transactions";
+"اعرض التقرير الكامل" = "View Full Report";
+"الصحة المالية" = "Financial Health";
+"من 100 نقطة" = "out of 100";
+"لا توجد إشعارات جديدة" = "No new notifications";
+"فواتير متأخرة" = "Overdue Bills";
+"فواتير تستحق قريباً" = "Bills Due Soon";
+"الإشعارات" = "Notifications";
+"حد الإنفاق الشهري" = "Monthly Spending Limit";
+"يتغير لون البطاقة تبعاً للمتبقي من ميزانيتك" = "Card color reflects your remaining budget";
+"أكثر من 20%" = "More than 20%";
+"5% - 20%" = "5% - 20%";
+"أقل من 5%" = "Less than 5%";
+"إزالة الحد" = "Remove Limit";
+"حد الإنفاق" = "Spending Limit";
+"أنفقت: %@ ﷼ من %@ ﷼" = "Spent: %@ ﷼ of %@ ﷼";
+"حفظ %@ ﷼" = "Save %@ ﷼";
+"مرحباً، %@" = "Hello, %@";
+
+// MARK: - Lock Screen
+"مركز التحكم المالي" = "Financial Control Center";
+"الدخول بـ Face ID" = "Enter with Face ID";
+"الدخول بـ Touch ID" = "Enter with Touch ID";
+
+// MARK: - Guest Mode
+"أنت في وضع الضيف — انقر لإنشاء حساب والاحتفاظ ببياناتك" = "You're in Guest Mode — tap to create an account and keep your data";
+"ميزة العائلة" = "Family Feature";
+"تتطلب حساباً مسجلاً لمشاركة البيانات مع أفراد عائلتك" = "Requires a registered account to share data with family members";
+
+// MARK: - Transactions List
+"بحث عن معاملة..." = "Search transactions...";
+"لا توجد معاملات" = "No Transactions";
+"أضف معاملتك الأولى بالضغط على +" = "Add your first transaction by tapping +";
+"التاجر" = "Merchant";
+"التاريخ" = "Date";
+"الميلادي" = "Gregorian";
+"طريقة الدفع" = "Payment Method";
+"ملاحظة" = "Note";
+"تفاصيل المعاملة" = "Transaction Details";
+
+// MARK: - Add Transaction
+"إضافة معاملة" = "Add Transaction";
+"مصروف" = "Expense";
+"دخل" = "Income";
+"التاجر / المصدر" = "Merchant / Source";
+"مثال: كارفور، جهة العمل" = "Example: Carrefour, Employer";
+"اختر حساباً" = "Choose Account";
+"اختياري" = "Optional";
+"الفئة" = "Category";
+"مسح فاتورة" = "Scan Receipt";
+"حفظ المعاملة" = "Save Transaction";
+
+// MARK: - Goals
+"إجمالي الأهداف" = "Total Goals";
+"لا توجد أهداف ادخار" = "No Savings Goals";
+"أنشئ هدفك الأول لتبدأ رحلة الادخار" = "Create your first goal to start saving";
+"مكتمل" = "Completed";
+"% مكتمل" = "% Complete";
+"إضافة مبلغ" = "Add Amount";
+"المتبقي" = "Remaining";
+"يوماً متبقياً" = "days remaining";
+"تقدم الهدف" = "Goal Progress";
+"إضافة مبلغ للهدف" = "Add to Goal";
+"إضافة مدخرات" = "Add Savings";
+"اسم الهدف" = "Goal Name";
+"﷼ المبلغ المستهدف" = "﷼ Target Amount";
+"تحديد موعد نهائي" = "Set Deadline";
+"اختر أيقونة" = "Choose Icon";
+"إنشاء الهدف" = "Create Goal";
+"هدف جديد" = "New Goal";
+"يكفي %@ أشهر" = "Covers %@ months";
+
+// MARK: - Emergency Fund
+"أشهر" = "Months";
+"الرصيد الحالي" = "Current Balance";
+"اكتملت مساهمة الشهر ✓" = "This month's contribution complete ✓";
+"لم تُموَّل هذا الشهر بعد" = "Not funded this month yet";
+"مساهمة جزئية هذا الشهر" = "Partial contribution this month";
+"المستهدف الشهري" = "Monthly Target";
+"أشهر حالياً" = "months currently";
+"الهدف الموصى به" = "Recommended Target";
+"المبلغ المستهدف" = "Target Amount";
+"المساهمة الشهرية الموصى بها" = "Recommended Monthly Contribution";
+"لتصل إلى 6 أشهر في 6 أشهر" = "To reach 6 months in 6 months";
+"المصاريف الأساسية الشهرية" = "Monthly Essential Expenses";
+"تشمل: الإيجار، البقالة، المرافق، الاتصالات، الوقود" = "Includes: Rent, Groceries, Utilities, Telecom, Fuel";
+"إضافة مبلغ لصندوق الطوارئ" = "Add to Emergency Fund";
+"سحب من صندوق الطوارئ" = "Withdraw from Emergency Fund";
+"الرصيد الحالي: %@ ﷼" = "Current Balance: %@ ﷼";
+"المبلغ (﷼)" = "Amount (﷼)";
+"لا يمكن سحب أكثر من الرصيد المتاح" = "Cannot withdraw more than the available balance";
+"سحب مبلغ" = "Withdraw Amount";
+"إضافة %@" = "Add %@";
+"سحب %@" = "Withdraw %@";
+
+// MARK: - Investments
+"إجمالي المحفظة" = "Total Portfolio";
+"الربح / الخسارة" = "Profit / Loss";
+"نسبة العائد" = "Return Rate";
+"توزيع المحفظة" = "Portfolio Allocation";
+"لا توجد استثمارات" = "No Investments";
+"أضف استثماراتك لتتبع أداء محفظتك" = "Add your investments to track portfolio performance";
+"الأصل غير موجود" = "Asset Not Found";
+"الوحدات" = "Units";
+"متوسط السعر" = "Average Price";
+"السعر الحالي" = "Current Price";
+"تحديث السعر يدوياً" = "Update Price Manually";
+"تحديث السعر" = "Update Price";
+"نوع الأصل" = "Asset Type";
+"الرمز (مثال: 2222)" = "Symbol (e.g. 2222)";
+"اسم الشركة" = "Company Name";
+"عدد الوحدات" = "Number of Units";
+"سعر الشراء للوحدة (﷼)" = "Purchase Price per Unit (﷼)";
+"السعر الحالي للوحدة (﷼)" = "Current Price per Unit (﷼)";
+"إضافة للمحفظة" = "Add to Portfolio";
+"أصل جديد" = "New Asset";
+
+// MARK: - Loans
+"القروض النشطة" = "Active Loans";
+"مسددة بالكامل" = "Fully Paid";
+"إجمالي المديونية" = "Total Debt";
+"الدفع الشهري" = "Monthly Payment";
+"قروض نشطة" = "Active Loans";
+"ديون التزامات / دخل" = "Debt / Income Ratio";
+"لا توجد قروض مسجلة" = "No Loans Registered";
+"أضف قروضك لتتبع الأرصدة والدفعات الشهرية" = "Add your loans to track balances and monthly payments";
+"مسدد بالكامل" = "Fully Paid";
+"متأخر" = "Overdue";
+"قريباً" = "Soon";
+"مثال: قرض البنك الأهلي" = "Example: NCB Bank Loan";
+"المبلغ الأصلي (﷼)" = "Principal Amount (﷼)";
+"الرصيد المتبقي (﷼)" = "Remaining Balance (﷼)";
+"الدفعة الشهرية (﷼)" = "Monthly Payment (﷼)";
+"نسبة الفائدة السنوية (%)" = "Annual Interest Rate (%)";
+"تاريخ بداية القرض" = "Loan Start Date";
+"تاريخ الدفعة القادمة" = "Next Payment Date";
+"حفظ القرض" = "Save Loan";
+"قرض جديد" = "New Loan";
+"نوع القرض" = "Loan Type";
+"القرض غير موجود" = "Loan Not Found";
+"حذف القرض" = "Delete Loan";
+"سيتم حذف هذا القرض نهائياً." = "This loan will be permanently deleted.";
+"مسدد بالكامل ✓" = "Fully Paid ✓";
+"الرصيد المتبقي" = "Remaining Balance";
+"الدفعة الشهرية" = "Monthly Payment";
+"نسبة الفائدة" = "Interest Rate";
+"أشهر متبقية" = "Months Remaining";
+"تاريخ الإنهاء المتوقع" = "Expected Payoff Date";
+"سداد (متأخر)" = "Pay (Overdue)";
+"سداد الدفعة" = "Make Payment";
+"مبلغ السداد" = "Payment Amount";
+"من أصل %@ ﷼" = "of %@ ﷼ original";
+"%lld%% مسدد" = "%lld%% paid";
+"%lld شهر متبقي" = "%lld months remaining";
+
+// MARK: - Family
+"المنزل" = "Household";
+"الأعضاء" = "Members";
+"أنت" = "You";
+"دعوة أعضاء العائلة" = "Invite Family Members";
+"شارك كود الدعوة مع أفراد عائلتك" = "Share the invite code with your family members";
+"الانضمام لعائلة موجودة" = "Join Existing Family";
+"أدخل كود الدعوة من صاحب الحساب" = "Enter the invite code from the account owner";
+"كود الدعوة" = "Invite Code";
+"شارك هذا الكود مع أفراد عائلتك" = "Share this code with your family members";
+"تم النسخ ✓" = "Copied ✓";
+"نسخ الكود" = "Copy Code";
+"الانضمام لعائلة" = "Join Family";
+"أدخل كود الدعوة المكون من 6 أرقام" = "Enter the 6-digit invite code";
+"تم العثور على العائلة!" = "Family Found!";
+"انضم الآن" = "Join Now";
+"أنت بالفعل عضو في هذه العائلة" = "You are already a member of this family";
+"كود الدعوة غير صحيح، تحقق وأعد المحاولة" = "Invalid invite code, please check and try again";
+"سجل النشاط" = "Activity Log";
+"لا يوجد نشاط بعد" = "No activity yet";
+"الانضمام إلى: %@" = "Joining: %@";
+
+// MARK: - Settings
+"الدخل الشهري" = "Monthly Income";
+"الراتب الشهري" = "Monthly Salary";
+"تعديل الراتب" = "Edit Salary";
+"معلومات الاتصال" = "Contact Information";
+"رقم الهاتف" = "Phone Number";
+"وضع العرض" = "Display Mode";
+"تلقائي" = "Automatic";
+"فاتح" = "Light";
+"داكن" = "Dark";
+"الأمان" = "Security";
+"Face ID / Touch ID" = "Face ID / Touch ID";
+"الإشعارات" = "Notifications";
+"تفعيل الإشعارات" = "Enable Notifications";
+"البيانات" = "Data";
+"تصدير CSV" = "Export CSV";
+"نسخ احتياطي iCloud" = "iCloud Backup";
+"عن التطبيق" = "About App";
+"MaJuTa — الإصدار 1.2.0" = "MaJuTa — Version 1.2.0";
+"سياسة الخصوصية" = "Privacy Policy";
+"إعادة ضبط التطبيق" = "Reset App";
+"سيتم حذف جميع بياناتك المحلية. هذا الإجراء لا يمكن التراجع عنه." = "All your local data will be deleted. This action cannot be undone.";
+"إعادة الضبط" = "Reset";
+"حذف الحساب نهائياً" = "Delete Account Permanently";
+"سيتم حذف حسابك وجميع بياناتك بشكل دائم لا يمكن التراجع عنه. إذا كنت مالك الحساب، سيتم حذف بيانات العائلة بالكامل." = "Your account and all your data will be permanently deleted. If you are the account owner, all family data will also be deleted.";
+"حذف نهائياً" = "Delete Permanently";
+"الإعدادات" = "Settings";
+"اختياري — رقم الهاتف ليس مطلوباً لاستخدام التطبيق" = "Optional — Phone number is not required to use the app";
+"حذف رقم الهاتف" = "Delete Phone Number";
+"ابحث عن دولة..." = "Search for a country...";
+"اختر الدولة" = "Select Country";
+
+// MARK: - Profile
+"الحسابات" = "Accounts";
+"العائلة والمشاركة" = "Family & Sharing";
+"الأقساط BNPL" = "BNPL Installments";
+"التحليلات" = "Analytics";
+"الإعدادات العامة" = "General Settings";
+"تسجيل الخروج" = "Sign Out";
+"المستخدم" = "User";
+"عضو MaJuTa" = "MaJuTa Member";
+"حذف الصورة" = "Delete Photo";
+"حذف صورة الملف الشخصي؟" = "Delete Profile Photo?";
+"لم يتم التحقق من بريدك الإلكتروني" = "Your email is not verified";
+"تحقق من صندوق الوارد وانقر على الرابط" = "Check your inbox and click the link";
+"تم إرسال رابط التحقق" = "Verification Link Sent";
+"تحقق من بريدك الإلكتروني وانقر على الرابط" = "Check your email and click the link";
+"أهداف" = "Goals";
+
+// MARK: - Onboarding
+"مركز التحكم المالي لعائلتك" = "Your Family's Financial Control Center";
+"تتبع الدخل والمصاريف" = "Track Income & Expenses";
+"إدارة الفواتير والالتزامات" = "Manage Bills & Obligations";
+"أهداف الادخار والاستثمار" = "Savings & Investment Goals";
+"تحليل الصحة المالية" = "Financial Health Analysis";
+"اختر اللغة" = "Choose Language";
+"ما هو راتبك الشهري؟" = "What is your monthly salary?";
+"نستخدمه لحساب ميزانيتك" = "We use it to calculate your budget";
+"مثال: محمد الأحمدي" = "Example: John Smith";
+"أضف حسابك البنكي" = "Add Your Bank Account";
+"يمكنك إضافة المزيد لاحقاً" = "You can add more later";
+"اسم البنك (مثال: البنك الأهلي)" = "Bank Name (e.g. NCB)";
+"رقم الآيبان (SA00 0000 0000 0000)" = "IBAN Number (SA00 0000 0000 0000)";
+"الحساب الرئيسي" = "Primary Account";
+"راتب أول شهر" = "First Month Salary";
+
+// MARK: - Registration
+"ما اسمك الكامل؟" = "What is your full name?";
+"سيظهر هذا للأعضاء الآخرين" = "This will be visible to other members";
+"الاسم الكامل" = "Full Name";
+"اختر اسم المستخدم" = "Choose Username";
+"يجب أن يكون فريداً · حروف وأرقام فقط" = "Must be unique · Letters and numbers only";
+"يجب أن يحتوي على 3–20 حرفاً (a-z 0-9 _) فقط" = "Must contain 3–20 characters (a-z 0-9 _) only";
+"اسم المستخدم مستخدم بالفعل، اختر آخر" = "Username already taken, choose another";
+"بريدك الإلكتروني" = "Your Email";
+"مطلوب بريد إلكتروني حقيقي" = "A real email address is required";
+"يرجى إدخال بريد إلكتروني حقيقي (مثال: name@gmail.com)" = "Please enter a real email (e.g. name@gmail.com)";
+"هذا البريد الإلكتروني مسجّل بالفعل في حساب آخر" = "This email is already registered to another account";
+"هل تنضم لعائلة موجودة؟" = "Are you joining an existing family?";
+"لديك كود دعوة من أحد أفراد العائلة" = "You have an invite code from a family member";
+"أنشئ عائلة جديدة" = "Create New Family";
+"ابدأ حساباً منزلياً مستقلاً" = "Start an independent household account";
+"أدخل كود الدعوة" = "Enter Invite Code";
+"اطلب الكود من صاحب الحساب المنزلي" = "Request the code from the household account owner";
+"اختر رمز مرور من 6 أرقام" = "Choose a 6-digit passcode";
+"تأكيد رمز المرور" = "Confirm Passcode";
+"أعد إدخال الرقم السري" = "Re-enter PIN";
+"تفعيل Face ID" = "Enable Face ID";
+"تفعيل Touch ID" = "Enable Touch ID";
+"استخدم Face ID / Touch ID لتسجيل الدخول بسرعة وأمان بدلاً من رمز المرور في كل مرة" = "Use Face ID / Touch ID to sign in quickly and securely instead of entering a passcode each time";
+"الجهاز لا يدعم Face ID / Touch ID" = "Device does not support Face ID / Touch ID";
+"تحقق من هويتك لتفعيل الدخول بـ Face ID / Touch ID" = "Verify your identity to enable Face ID / Touch ID login";
+"فشل تفعيل Face ID / Touch ID ، يمكنك تخطي هذه الخطوة" = "Failed to enable Face ID / Touch ID. You can skip this step";
+"الرمز غير متطابق، حاول مجدداً" = "Codes don't match, please try again";
+
+// MARK: - Email Verification
+"تحقق من بريدك الإلكتروني" = "Verify Your Email";
+"أرسلنا رابط التحقق إلى" = "We sent a verification link to";
+"جارٍ التحقق..." = "Verifying...";
+"لقد قمت بالتحقق ✓" = "Verified ✓";
+"جارٍ الإرسال..." = "Sending...";
+"إعادة إرسال البريد" = "Resend Email";
+"لم يتم التحقق بعد، تحقق من بريدك وأعد المحاولة" = "Not verified yet, check your email and try again";
+"تم إعادة إرسال البريد بنجاح" = "Email resent successfully";
+"تعذّر الإرسال، حاول مرة أخرى" = "Failed to send, please try again";
+
+// MARK: - User Picker
+"من يريد الدخول؟" = "Who wants to sign in?";
+"حساب جديد" = "New Account";
+"تصفح كضيف" = "Browse as Guest";
+"رمز PIN غير صحيح" = "Incorrect PIN";
+"Browse as Guest" = "Browse as Guest";
+
+// MARK: - Welcome Gate
+"إنشاء حساب جديد" = "Create New Account";
+"Create Account" = "Create Account";
+"تصفح كضيف — بدون حساب" = "Browse as Guest — No Account Needed";
+"مدير ميزانيتك الشخصية" = "Your Personal Budget Manager";
+"Your Personal Budget Manager" = "Your Personal Budget Manager";
+"بياناتك في وضع الضيف تُحفظ على جهازك فقط\nGuest data is stored locally on your device only" = "Guest data is stored locally on your device only";
+
+// MARK: - Payment Methods
+"مدى" = "Mada";
+"بطاقة ائتمان" = "Credit Card";
+"تحويل بنكي" = "Bank Transfer";
+"سداد" = "SADAD";
+"نقد" = "Cash";
+"تقسيط" = "Installments";
+
+// MARK: - Category Groups
+"المصاريف الأساسية" = "Essential Expenses";
+"نمط الحياة" = "Lifestyle";
+"المالية" = "Financial";
+
+// MARK: - Asset Types
+"أسهم" = "Stocks";
+"صناديق ETF" = "ETF Funds";
+"صناديق ريت" = "REIT Funds";
+"صكوك" = "Sukuk";
+"أسهم دولية" = "International Stocks";
+
+// MARK: - Investment Markets
+"تداول" = "Tadawul";
+"دولي" = "International";
+
+// MARK: - Loan Types
+"قرض مسكن" = "Home Loan";
+"قرض سيارة" = "Car Loan";
+"قرض شخصي" = "Personal Loan";
+"قرض آخر" = "Other Loan";
+
+// MARK: - User Roles
+"المالك" = "Owner";
+"مدير" = "Admin";
+"عضو" = "Member";
+"مشاهد فقط" = "View Only";
+
+// MARK: - Activity Actions
+"أضاف معاملة" = "added a transaction";
+"حذف معاملة" = "deleted a transaction";
+"أنشأ حساباً" = "created an account";
+"حدّث هدفاً" = "updated a goal";
+"أنشأ هدفاً" = "created a goal";
+"أضاف فاتورة" = "added a bill";
+"أضاف عضواً" = "added a member";
+"أزال عضواً" = "removed a member";
+"غيّر الرمز السري" = "changed the PIN";
+
+// MARK: - Transaction Categories
+"الراتب" = "Salary";
+"دخل إضافي" = "Side Income";
+"دخل إيجار" = "Rental Income";
+"أرباح" = "Dividends";
+"استرداد" = "Refunds";
+"الإيجار" = "Rent";
+"المرافق" = "Utilities";
+"البقالة" = "Groceries";
+"الوقود" = "Fuel";
+"الاتصالات" = "Telecom";
+"الصحة" = "Healthcare";
+"التأمين" = "Insurance";
+"التعليم" = "Education";
+"العمالة المنزلية" = "Domestic Worker";
+"أقساط القروض" = "Loan Installments";
+"المطاعم" = "Restaurants";
+"التسوق" = "Shopping";
+"الترفيه" = "Entertainment";
+"السفر" = "Travel";
+"الرياضة" = "Fitness";
+"الأطفال" = "Kids";
+"دعم الوالدين" = "Parents Support";
+"الهدايا" = "Gifts";
+"المدخرات" = "Savings";
+"سداد الديون" = "Debt Repayment";
+
+// MARK: - Financial Health / Analytics
+"تقرير الصحة المالية" = "Financial Health Report";
+"نسبة الديون" = "Debt Ratio";
+"تنويع الاستثمارات" = "Investment Diversification";
+"ممتاز" = "Excellent";
+"جيد" = "Good";
+"متوسط" = "Average";
+"ضعيف" = "Poor";
+
+// MARK: - Bank Accounts
+"الحسابات البنكية" = "Bank Accounts";
+"إضافة حساب" = "Add Account";
+"حساب جاري" = "Checking Account";
+"حساب توفير" = "Savings Account";
+"الرصيد" = "Balance";
+"رقم الآيبان" = "IBAN Number";
+
+// MARK: - Bills
+"الفواتير" = "Bills";
+"إضافة فاتورة" = "Add Bill";
+"تاريخ الاستحقاق" = "Due Date";
+"متكررة" = "Recurring";
+"شهرياً" = "Monthly";
+"سنوياً" = "Annually";
+"مدفوعة" = "Paid";
+"غير مدفوعة" = "Unpaid";
+"لا توجد فواتير" = "No Bills";
+
+// MARK: - Privacy Screen
+"محتوى مالي محمي" = "Financial content protected";
+
+// MARK: - Dashboard extra
+"مرحباً،" = "Hello,";
+"بك" = "there";
+"تجاوزت الميزانية" = "Budget Exceeded";
+"الصافي" = "Net";
+
+// MARK: - Spending Limit extra
+"يتغير لون البطاقة تبعاً للمتبقي من ميزانيتك" = "Card color changes based on your remaining budget";
+
+// MARK: - Analytics
+"الدخل مقابل المصاريف" = "Income vs Expenses";
+"المصاريف حسب الفئة" = "Expenses by Category";
+"الاتجاه الشهري" = "Monthly Trend";
+"النسب المالية الرئيسية" = "Key Financial Ratios";
+"نسبة الالتزامات" = "Obligations Ratio";
+"يحتاج تحسين" = "Needs Improvement";
+"الشهر" = "Month";
+"المبلغ" = "Amount";
+"النوع" = "Type";
+
+// MARK: - Account Types
+"حساب بنكي" = "Bank Account";
+"محفظة إلكترونية" = "Digital Wallet";
+"حساب استثماري" = "Investment Account";
+"قرض" = "Loan";
+
+// MARK: - BNPL / Installments
+"قادم" = "Upcoming";
+"مدفوع" = "Paid";
+"أخرى" = "Other";
+"تابي" = "Tabby";
+"تمارا" = "Tamara";
+"بوست باي" = "PostPay";
+"إجمالي الأقساط المتبقية" = "Total Remaining Installments";
+"لا توجد أقساط" = "No Installments";
+"أضف أقساط تابي أو تمارا لتتبعها" = "Add Tabby or Tamara installments to track them";
+"المتجر" = "Store";
+"اسم المتجر" = "Store Name";
+"مزود الخدمة" = "Service Provider";
+"المبلغ الكلي" = "Total Amount";
+"عدد الأقساط" = "Number of Installments";
+"/ شهر" = "/ month";
+"قسط" = "installment";
+"/ قسط" = "/ installment";
+"تاريخ البداية" = "Start Date";
+"إضافة الخطة" = "Add Plan";
+"خطة أقساط جديدة" = "New Installment Plan";
+"حساب جديد" = "New Account";
+
+// MARK: - Financial Health extra
+"تفاصيل النتيجة" = "Score Details";
+"ثبات الإنفاق" = "Spending Stability";
+"تغطية الطوارئ" = "Emergency Coverage";
+"توصيات" = "Recommendations";
+"صندوق الطوارئ جيد" = "Emergency Fund is Good";
+"صندوق الطوارئ يحتاج تعزيز" = "Emergency Fund Needs Boost";
+"معدل الادخار ممتاز" = "Excellent Savings Rate";
+"زيادة معدل الادخار" = "Increase Savings Rate";
+"من 100" = "out of 100";
+"وزن" = "Weight";
+
+// MARK: - Bills extra
+"الفواتير والالتزامات" = "Bills & Obligations";
+"إجمالي قادم" = "Total Upcoming";
+"قادمة" = "Upcoming";
+"متأخرة" = "Overdue";
+"أضف فواتيرك الشهرية لتتبعها" = "Add your monthly bills to track them";
+"اسم الفاتورة" = "Bill Name";
+"مثال: كهرباء، إنترنت" = "e.g., Electricity, Internet";
+"الجهة المزودة" = "Provider";
+"مثال: STC، SEC" = "e.g., STC, SEC";
+"التكرار" = "Frequency";
+"حفظ الفاتورة" = "Save Bill";
+"فاتورة جديدة" = "New Bill";
+
+// MARK: - Accounts extra
+"إجمالي الأصول السائلة" = "Total Liquid Assets";
+"الحسابات المشتركة" = "Shared Accounts";
+"حساباتي الخاصة" = "My Personal Accounts";
+"لا توجد حسابات" = "No Accounts";
+"أضف حسابك البنكي أو محفظتك الإلكترونية" = "Add your bank account or digital wallet";
+"نوع الحساب" = "Account Type";
+"اسم الحساب" = "Account Name";
+"مثال: البنك الأهلي - جاري" = "e.g., Al Ahli Bank - Current";
+"البنك / المزود" = "Bank / Provider";
+"مثال: البنك الأهلي" = "e.g., Al Ahli Bank";
+"الرصيد (﷼)" = "Balance (SAR)";
+"حساب مشترك مع العائلة" = "Shared with Family";
+"إضافة الحساب" = "Add Account";
+
+// MARK: - Profile extra
+"الإدارة" = "Management";
+"صافي الثروة" = "Net Worth";
+"حسابات" = "Accounts";
+"الصحة المالية" = "Financial Health";
+"إعادة الضبط" = "Reset";
+"المظهر" = "Appearance";
+
+// MARK: - FinancialHealth description fragments
+"يُنصح بتوفير" = "We recommend saving";
+"أشهر إضافية" = "more months";
+"معدل ادخارك الحالي" = "Your current savings rate is";
+"أعلى من الهدف المثالي 20%" = "above the ideal 20% target";
+"حاول رفعه إلى 20% من الدخل الشهري" = "try to raise it to 20% of monthly income";
+
+// MARK: - Goals extra
+"يكفي" = "covers";
+"شهر متبقي" = "months remaining";
+"مسدد" = "paid";
+"أشهر من التغطية" = "months of coverage";
+
+// MARK: - Loan detail extra
+"من أصل" = "of";
+"متبقٍ" = "remaining";
+"شهر" = "months";
+
+// MARK: - Health Grade Descriptions
+"وضعك المالي ممتاز، استمر هكذا!" = "Your financial health is excellent, keep it up!";
+"وضعك المالي جيد مع مجال للتحسين" = "Your financial health is good with room for improvement";
+"وضعك المالي مقبول، ابدأ بتحسين مدخراتك" = "Your financial health is fair, start improving your savings";
+"وضعك المالي يحتاج إلى اهتمام فوري" = "Your financial health needs immediate attention";
+"تحذير" = "Warning";
+"مقبول" = "Fair";
+"تم" = "Done";
+
+// MARK: - Risk Levels
+"جيد جداً" = "Very Good";
+"خطر" = "Danger";
+"مرتفع" = "High";
+"منخفض" = "Low";
+"لا توجد فواتير متأخرة" = "No Overdue Bills";
+"لا توجد فواتير مدفوعة" = "No Paid Bills";
+"حسابات بنكية" = "Bank Accounts";
+"محافظ رقمية" = "Digital Wallets";
+"صافٍ هذا الشهر" = "Net this month";
+"الأداء" = "Performance";
+"تفاصيل القرض" = "Loan Details";
+"سداد الدفعة" = "Make Payment";
+"دفعة %lld من %lld" = "Payment %lld of %lld";
+"استثمار جديد" = "New Investment";
+"قرض جديد" = "New Loan";
+
+// MARK: - Family extra
+"عضو" = "member";
+"أعضاء" = "members";
+"حالياً" = "currently";
+"عند التسجيل، يختار العضو \"انضم لعائلة موجودة\" ويدخل هذا الكود\nأو يضغط \"الانضمام لعائلة موجودة\" من صفحة العائلة" = "When registering, the member selects \"Join existing family\" and enters this code\nor taps \"Join existing family\" from the Family page";

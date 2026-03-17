@@ -7,6 +7,15 @@ struct AnalyticsView: View {
 
     enum AnalyticsPeriod: String, CaseIterable {
         case week = "أسبوع"; case month = "شهر"; case year = "سنة"
+
+        var displayName: String {
+            let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
+            switch self {
+            case .week:  return isEn ? "Week"  : "أسبوع"
+            case .month: return isEn ? "Month" : "شهر"
+            case .year:  return isEn ? "Year"  : "سنة"
+            }
+        }
     }
 
     var body: some View {
@@ -24,7 +33,7 @@ struct AnalyticsView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("التحليلات")
+            .navigationTitle(L("التحليلات"))
             .navigationBarTitleDisplayMode(.large)
         }
     }
@@ -32,7 +41,7 @@ struct AnalyticsView: View {
     private var periodSelector: some View {
         HStack(spacing: 0) {
             ForEach(AnalyticsPeriod.allCases, id: \.self) { period in
-                Button(period.rawValue) { withAnimation { selectedPeriod = period } }
+                Button(period.displayName) { withAnimation { selectedPeriod = period } }
                     .font(.maJuTaCaptionMedium)
                     .foregroundColor(selectedPeriod == period ? .maJuTaPrimary : .maJuTaTextSecondary)
                     .frame(maxWidth: .infinity)
@@ -49,7 +58,7 @@ struct AnalyticsView: View {
 
     private var cashFlowChart: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
-            Text("الدخل مقابل المصاريف")
+            Text(L("الدخل مقابل المصاريف"))
                 .font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextPrimary)
 
             let income = dataStore.monthlyIncome()
@@ -57,11 +66,11 @@ struct AnalyticsView: View {
             let netFlow = max(income - expenses, 0)
 
             Chart {
-                BarMark(x: .value("النوع", "الدخل"), y: .value("المبلغ", income))
+                BarMark(x: .value(L("النوع"), L("الدخل")), y: .value(L("المبلغ"), income))
                     .foregroundStyle(Color.maJuTaPositive).cornerRadius(8)
-                BarMark(x: .value("النوع", "المصاريف"), y: .value("المبلغ", expenses))
+                BarMark(x: .value(L("النوع"), L("المصاريف")), y: .value(L("المبلغ"), expenses))
                     .foregroundStyle(Color.maJuTaNegative).cornerRadius(8)
-                BarMark(x: .value("النوع", "الصافي"), y: .value("المبلغ", netFlow))
+                BarMark(x: .value(L("النوع"), L("الصافي")), y: .value(L("المبلغ"), netFlow))
                     .foregroundStyle(Color.maJuTaGold).cornerRadius(8)
             }
             .frame(height: 200)
@@ -75,7 +84,7 @@ struct AnalyticsView: View {
 
     private var categoryBreakdown: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
-            Text("المصاريف حسب الفئة")
+            Text(L("المصاريف حسب الفئة"))
                 .font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextPrimary)
 
             let grouped = Dictionary(grouping: dataStore.transactions.filter { $0.amount < 0 }) { $0.categoryId }
@@ -101,7 +110,7 @@ struct AnalyticsView: View {
                         }.frame(height: 8)
                         HStack(spacing: 4) {
                             Image(systemName: cat.icon).font(.system(size: 12)).foregroundColor(Color(hex: cat.colorHex))
-                            Text(cat.nameArabic).font(.maJuTaCaption).foregroundColor(.maJuTaTextPrimary)
+                            Text(cat.displayName).font(.maJuTaCaption).foregroundColor(.maJuTaTextPrimary)
                         }.frame(width: 100, alignment: .trailing)
                     }
                 }
@@ -116,7 +125,9 @@ struct AnalyticsView: View {
     private var trendMonths: [(String, Double, Double)] {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM"
-        formatter.locale = Locale(identifier: "ar_SA")
+        let lang = UserDefaults.standard.string(forKey: "appLanguage") ?? "ar"
+        formatter.locale = Locale(identifier: lang == "en" ? "en_SA" : "ar_SA")
+        formatter.calendar = Calendar(identifier: .gregorian)
         return (0..<6).compactMap { offset -> (String, Double, Double)? in
             guard let date = Calendar.current.date(byAdding: .month, value: -offset, to: Date()) else { return nil }
             return (formatter.string(from: date), dataStore.monthlyIncome(for: date), dataStore.monthlyExpenses(for: date))
@@ -125,15 +136,15 @@ struct AnalyticsView: View {
 
     private var monthlyTrend: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
-            Text("الاتجاه الشهري").font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextPrimary)
+            Text(L("الاتجاه الشهري")).font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextPrimary)
 
             let months = trendMonths
 
             Chart {
                 ForEach(months, id: \.0) { month, income, expenses in
-                    LineMark(x: .value("الشهر", month), y: .value("المبلغ", income))
+                    LineMark(x: .value(L("الشهر"), month), y: .value(L("المبلغ"), income))
                         .foregroundStyle(Color.maJuTaPositive).symbol(Circle().strokeBorder(lineWidth: 2))
-                    LineMark(x: .value("الشهر", month), y: .value("المبلغ", expenses))
+                    LineMark(x: .value(L("الشهر"), month), y: .value(L("المبلغ"), expenses))
                         .foregroundStyle(Color.maJuTaNegative).symbol(Circle().strokeBorder(lineWidth: 2))
                 }
             }
@@ -141,8 +152,8 @@ struct AnalyticsView: View {
 
             HStack(spacing: MaJuTaSpacing.md) {
                 Spacer()
-                Label("المصاريف", systemImage: "circle.fill").foregroundColor(.maJuTaNegative)
-                Label("الدخل", systemImage: "circle.fill").foregroundColor(.maJuTaPositive)
+                Label(L("المصاريف"), systemImage: "circle.fill").foregroundColor(.maJuTaNegative)
+                Label(L("الدخل"), systemImage: "circle.fill").foregroundColor(.maJuTaPositive)
             }.font(.maJuTaCaption)
         }
         .padding(MaJuTaSpacing.lg)
@@ -153,7 +164,7 @@ struct AnalyticsView: View {
 
     private var keyRatios: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
-            Text("النسب المالية الرئيسية").font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextPrimary)
+            Text(L("النسب المالية الرئيسية")).font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextPrimary)
 
             let income = dataStore.monthlyIncome()
             let obligationRatio = CashFlowEngine.fixedObligationRatio(
@@ -162,16 +173,16 @@ struct AnalyticsView: View {
             let risk = CashFlowEngine.obligationRiskLevel(ratio: obligationRatio)
 
             VStack(spacing: 1) {
-                ratioRow(label: "نسبة الالتزامات", value: obligationRatio.percentageFormatted,
+                ratioRow(label: L("نسبة الالتزامات"), value: obligationRatio.percentageFormatted,
                          status: risk.label, color: Color(hex: risk.colorHex))
                 Divider()
-                ratioRow(label: "معدل الادخار",
+                ratioRow(label: L("معدل الادخار"),
                          value: CashFlowEngine.savingsRate(savingsContributions: dataStore.plannedSavingsThisMonth, disposableIncome: income).percentageFormatted,
-                         status: "جيد", color: .maJuTaPositive)
+                         status: L("جيد"), color: .maJuTaPositive)
                 Divider()
-                ratioRow(label: "تغطية الطوارئ",
-                         value: "\(String(format: "%.1f", dataStore.emergencyMonths)) أشهر",
-                         status: dataStore.emergencyMonths >= 3 ? "جيد" : "يحتاج تحسين",
+                ratioRow(label: L("تغطية الطوارئ"),
+                         value: "\(String(format: "%.1f", dataStore.emergencyMonths)) \(L("أشهر"))",
+                         status: dataStore.emergencyMonths >= 3 ? L("جيد") : L("يحتاج تحسين"),
                          color: dataStore.emergencyMonths >= 3 ? .maJuTaPositive : .maJuTaWarning)
             }
             .background(Color.maJuTaBackground)

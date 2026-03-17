@@ -27,7 +27,7 @@ struct GoalDetailView: View {
                 Button {
                     showContribute = true
                 } label: {
-                    Label("إضافة مبلغ", systemImage: "plus.circle.fill")
+                    Label(L("إضافة مبلغ"), systemImage: "plus.circle.fill")
                         .font(.maJuTaBodyBold)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -61,7 +61,7 @@ struct GoalDetailView: View {
             SARText.hero(currentGoal.currentAmount)
 
             HStack(spacing: 2) {
-                Text("من").font(.maJuTaBody).foregroundColor(.maJuTaTextSecondary)
+                Text(L("من")).font(.maJuTaBody).foregroundColor(.maJuTaTextSecondary)
                 SARText.body(currentGoal.targetAmount, color: .maJuTaTextSecondary)
             }
         }
@@ -74,10 +74,10 @@ struct GoalDetailView: View {
 
     private var statsGrid: some View {
         HStack(spacing: MaJuTaSpacing.sm) {
-            statItem(value: "\(currentGoal.progressPercentage)%", label: "مكتمل")
+            statItem(value: "\(currentGoal.progressPercentage)%", label: L("مكتمل"))
             VStack(spacing: 4) {
                 SARText.compact(currentGoal.remainingAmount)
-                Text("المتبقي")
+                Text(L("المتبقي"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
             }
@@ -88,7 +88,7 @@ struct GoalDetailView: View {
             .maJuTaCardShadow()
             if let deadline = currentGoal.deadline {
                 let days = Calendar.current.dateComponents([.day], from: Date(), to: deadline).day ?? 0
-                statItem(value: "\(max(0, days))", label: "يوماً متبقياً")
+                statItem(value: "\(max(0, days))", label: L("يوماً متبقياً"))
             }
         }
     }
@@ -111,7 +111,7 @@ struct GoalDetailView: View {
 
     private var progressSection: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
-            Text("تقدم الهدف")
+            Text(L("تقدم الهدف"))
                 .font(.maJuTaSectionTitle)
                 .foregroundColor(.maJuTaTextPrimary)
 
@@ -140,7 +140,7 @@ struct GoalDetailView: View {
     private var contributeSheet: some View {
         NavigationStack {
             VStack(spacing: MaJuTaSpacing.lg) {
-                Text("إضافة مبلغ للهدف")
+                Text(L("إضافة مبلغ للهدف"))
                     .font(.maJuTaTitle2)
 
                 HStack {
@@ -158,7 +158,7 @@ struct GoalDetailView: View {
 
                 Spacer()
 
-                Button("إضافة") {
+                Button(L("إضافة")) {
                     if let amount = Double(contributionAmount), amount > 0 {
                         dataStore.contribute(to: currentGoal, amount: amount)
                         contributionAmount = ""
@@ -173,7 +173,7 @@ struct GoalDetailView: View {
                 .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
             }
             .padding(MaJuTaSpacing.horizontalPadding)
-            .navigationTitle("إضافة مدخرات")
+            .navigationTitle(L("إضافة مدخرات"))
             .navigationBarTitleDisplayMode(.inline)
         }
         .presentationDetents([.medium])
@@ -210,7 +210,7 @@ struct AddGoalView: View {
                                 .foregroundColor(Color(hex: selectedColor))
                         }
 
-                        TextField("اسم الهدف", text: $name)
+                        TextField(L("اسم الهدف"), text: $name)
                             .font(.maJuTaTitle2)
                             .multilineTextAlignment(.center)
                             .foregroundColor(.maJuTaTextPrimary)
@@ -227,7 +227,7 @@ struct AddGoalView: View {
                             .keyboardType(.numberPad)
                             .font(.maJuTaLargeNumber)
                             .multilineTextAlignment(.trailing)
-                        Text("﷼ المبلغ المستهدف")
+                        Text(L("﷼ المبلغ المستهدف"))
                             .font(.maJuTaCaption)
                             .foregroundColor(.maJuTaTextSecondary)
                     }
@@ -238,7 +238,7 @@ struct AddGoalView: View {
 
                     // Deadline
                     VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-                        Toggle("تحديد موعد نهائي", isOn: $hasDeadline)
+                        Toggle(L("تحديد موعد نهائي"), isOn: $hasDeadline)
                             .font(.maJuTaBody)
                             .tint(.maJuTaGold)
                         if hasDeadline {
@@ -255,7 +255,7 @@ struct AddGoalView: View {
 
                     // Icons
                     VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-                        Text("اختر أيقونة")
+                        Text(L("اختر أيقونة"))
                             .font(.maJuTaCaption)
                             .foregroundColor(.maJuTaTextSecondary)
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5), spacing: MaJuTaSpacing.sm) {
@@ -278,7 +278,7 @@ struct AddGoalView: View {
                     .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
                     .maJuTaCardShadow()
 
-                    Button("إنشاء الهدف") {
+                    Button(L("إنشاء الهدف")) {
                         saveGoal()
                     }
                     .font(.maJuTaBodyBold)
@@ -293,11 +293,11 @@ struct AddGoalView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("هدف جديد")
+            .navigationTitle(L("هدف جديد"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("إلغاء") { dismiss() }
+                    Button(L("إلغاء")) { dismiss() }
                         .foregroundColor(.maJuTaTextSecondary)
                 }
             }

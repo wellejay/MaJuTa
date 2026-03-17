@@ -29,7 +29,7 @@ struct InstallmentsView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("الأقساط BNPL")
+            .navigationTitle(L("الأقساط BNPL"))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -46,14 +46,14 @@ struct InstallmentsView: View {
 
     private var bnplSummaryCard: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-            Text("إجمالي الأقساط المتبقية")
+            Text(L("إجمالي الأقساط المتبقية"))
                 .font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
             SARText.hero(totalOwed)
             HStack(spacing: MaJuTaSpacing.md) {
                 Spacer()
-                providerBadge("تابي", color: "#3DBDB2")
-                providerBadge("تمارا", color: "#FF5FA0")
-                providerBadge("بوست باي", color: "#0052CC")
+                providerBadge(L("تابي"), color: "#3DBDB2")
+                providerBadge(L("تمارا"), color: "#FF5FA0")
+                providerBadge(L("بوست باي"), color: "#0052CC")
             }
         }
         .padding(MaJuTaSpacing.lg)
@@ -72,8 +72,8 @@ struct InstallmentsView: View {
         VStack(spacing: MaJuTaSpacing.md) {
             Image(systemName: "calendar.badge.plus")
                 .font(.system(size: 48)).foregroundColor(.maJuTaTextSecondary.opacity(0.4))
-            Text("لا توجد أقساط").font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextSecondary)
-            Text("أضف أقساط تابي أو تمارا لتتبعها")
+            Text(L("لا توجد أقساط")).font(.maJuTaSectionTitle).foregroundColor(.maJuTaTextSecondary)
+            Text(L("أضف أقساط تابي أو تمارا لتتبعها"))
                 .font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary.opacity(0.7))
         }
         .frame(maxWidth: .infinity).padding(MaJuTaSpacing.xxl)
@@ -101,8 +101,8 @@ struct AddInstallmentPlanView: View {
                 VStack(spacing: MaJuTaSpacing.lg) {
                     // Merchant
                     VStack(alignment: .trailing, spacing: MaJuTaSpacing.xs) {
-                        Text("المتجر").font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
-                        TextField("اسم المتجر", text: $merchant)
+                        Text(L("المتجر")).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
+                        TextField(L("اسم المتجر"), text: $merchant)
                             .font(.maJuTaBody).multilineTextAlignment(.trailing)
                             .padding(MaJuTaSpacing.md).background(Color.maJuTaCard)
                             .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
@@ -111,7 +111,7 @@ struct AddInstallmentPlanView: View {
 
                     // Provider
                     VStack(alignment: .trailing, spacing: MaJuTaSpacing.xs) {
-                        Text("مزود الخدمة").font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
+                        Text(L("مزود الخدمة")).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
                         HStack(spacing: MaJuTaSpacing.sm) {
                             ForEach(BNPLProvider.allCases, id: \.self) { p in
                                 Button {
@@ -130,7 +130,7 @@ struct AddInstallmentPlanView: View {
 
                     // Total Amount
                     VStack(alignment: .trailing, spacing: MaJuTaSpacing.xs) {
-                        Text("المبلغ الكلي").font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
+                        Text(L("المبلغ الكلي")).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
                         HStack {
                             TextField("0", text: $totalAmount)
                                 .keyboardType(.numberPad)
@@ -143,7 +143,7 @@ struct AddInstallmentPlanView: View {
 
                     // Installments Count
                     VStack(alignment: .trailing, spacing: MaJuTaSpacing.xs) {
-                        Text("عدد الأقساط").font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
+                        Text(L("عدد الأقساط")).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
                         HStack(spacing: MaJuTaSpacing.sm) {
                             ForEach(countOptions, id: \.self) { count in
                                 Button {
@@ -161,16 +161,16 @@ struct AddInstallmentPlanView: View {
 
                         if let amount = Double(totalAmount), amount > 0 {
                             HStack(spacing: 2) {
-                                Text("/ شهر").font(.maJuTaBodyBold).foregroundColor(.maJuTaGold)
+                                Text(L("/ شهر")).font(.maJuTaBodyBold).foregroundColor(.maJuTaGold)
                                 SARText.bodyBold(amount / Double(installmentsCount), color: .maJuTaGold)
-                                Text("قسط").font(.maJuTaBodyBold).foregroundColor(.maJuTaGold)
+                                Text(L("قسط")).font(.maJuTaBodyBold).foregroundColor(.maJuTaGold)
                             }
                         }
                     }
 
                     // Start Date
                     VStack(alignment: .trailing, spacing: MaJuTaSpacing.xs) {
-                        Text("تاريخ البداية").font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
+                        Text(L("تاريخ البداية")).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
                         DatePicker("", selection: $startDate, displayedComponents: .date)
                             .datePickerStyle(.compact).labelsHidden()
                             .environment(\.locale, Locale(identifier: "en_SA"))
@@ -179,7 +179,7 @@ struct AddInstallmentPlanView: View {
                     .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card)).maJuTaCardShadow()
 
                     // Save
-                    Button("إضافة الخطة") {
+                    Button(L("إضافة الخطة")) {
                         savePlan()
                     }
                     .font(.maJuTaBodyBold).foregroundColor(.white)
@@ -192,11 +192,11 @@ struct AddInstallmentPlanView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("خطة أقساط جديدة")
+            .navigationTitle(L("خطة أقساط جديدة"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("إلغاء") { dismiss() }.foregroundColor(.maJuTaTextSecondary)
+                    Button(L("إلغاء")) { dismiss() }.foregroundColor(.maJuTaTextSecondary)
                 }
             }
         }
@@ -229,7 +229,7 @@ struct InstallmentPlanCard: View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
             HStack {
                 SARText.bodyBold(plan.installmentAmount)
-                Text("/ قسط").font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
+                Text(L("/ قسط")).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
                 Spacer()
                 Text(plan.merchant).font(.maJuTaBodyMedium).foregroundColor(.maJuTaTextPrimary)
                 providerLabel(plan.provider)
@@ -237,9 +237,9 @@ struct InstallmentPlanCard: View {
 
             VStack(alignment: .trailing, spacing: 4) {
                 HStack {
-                    Text("\(plan.installmentsCount) قسط").font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
+                    Text("\(plan.installmentsCount) \(L("قسط"))").font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
                     Spacer()
-                    Text("\(paidCount) مدفوع").font(.maJuTaCaption).foregroundColor(.maJuTaPositive)
+                    Text("\(paidCount) \(L("مدفوع"))").font(.maJuTaCaption).foregroundColor(.maJuTaPositive)
                 }
                 GeometryReader { geo in
                     ZStack(alignment: .trailing) {

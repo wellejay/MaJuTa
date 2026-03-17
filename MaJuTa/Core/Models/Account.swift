@@ -78,14 +78,15 @@ enum AccountType: String, Codable, CaseIterable {
     case loan        = "loan"
 
     var displayName: String {
+        let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
         switch self {
-        case .bank:        return "حساب بنكي"
-        case .wallet:      return "محفظة إلكترونية"
-        case .savings:     return "حساب توفير"
-        case .investment:  return "حساب استثماري"
-        case .cash:        return "نقد"
-        case .creditCard:  return "بطاقة ائتمان"
-        case .loan:        return "قرض"
+        case .bank:        return isEn ? "Bank Account"       : "حساب بنكي"
+        case .wallet:      return isEn ? "Digital Wallet"     : "محفظة إلكترونية"
+        case .savings:     return isEn ? "Savings Account"    : "حساب توفير"
+        case .investment:  return isEn ? "Investment Account" : "حساب استثماري"
+        case .cash:        return isEn ? "Cash"               : "نقد"
+        case .creditCard:  return isEn ? "Credit Card"        : "بطاقة ائتمان"
+        case .loan:        return isEn ? "Loan"               : "قرض"
         }
     }
 

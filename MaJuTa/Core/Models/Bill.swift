@@ -68,10 +68,11 @@ enum BillStatus: String, Codable {
     case overdue  = "overdue"
 
     var displayName: String {
+        let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
         switch self {
-        case .upcoming: return "قادم"
-        case .paid:     return "مدفوع"
-        case .overdue:  return "متأخر"
+        case .upcoming: return isEn ? "Upcoming" : "قادم"
+        case .paid:     return isEn ? "Paid"     : "مدفوع"
+        case .overdue:  return isEn ? "Overdue"  : "متأخر"
         }
     }
 }
@@ -84,12 +85,13 @@ enum RecurringFrequency: String, Codable, CaseIterable {
     case custom  = "custom"
 
     var displayName: String {
+        let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
         switch self {
-        case .daily:   return "يومي"
-        case .weekly:  return "أسبوعي"
-        case .monthly: return "شهري"
-        case .yearly:  return "سنوي"
-        case .custom:  return "مخصص"
+        case .daily:   return isEn ? "Daily"   : "يومي"
+        case .weekly:  return isEn ? "Weekly"  : "أسبوعي"
+        case .monthly: return isEn ? "Monthly" : "شهري"
+        case .yearly:  return isEn ? "Annually": "سنوي"
+        case .custom:  return isEn ? "Custom"  : "مخصص"
         }
     }
 }

@@ -19,7 +19,7 @@ struct LockScreenView: View {
                     .background(Color.white.opacity(0.95))
                     .clipShape(RoundedRectangle(cornerRadius: 20))
 
-                Text("مركز التحكم المالي")
+                Text(L("مركز التحكم المالي"))
                     .font(.maJuTaBody)
                     .foregroundColor(.white.opacity(0.7))
 
@@ -32,7 +32,7 @@ struct LockScreenView: View {
                         HStack(spacing: MaJuTaSpacing.sm) {
                             Image(systemName: authService.biometricType == .faceID ? "faceid" : "touchid")
                                 .font(.system(size: 20))
-                            Text(authService.biometricType == .faceID ? "الدخول بـ Face ID" : "الدخول بـ Touch ID")
+                            Text(authService.biometricType == .faceID ? L("الدخول بـ Face ID") : L("الدخول بـ Touch ID"))
                                 .font(.maJuTaBodyBold)
                         }
                         .foregroundColor(.maJuTaPrimary)

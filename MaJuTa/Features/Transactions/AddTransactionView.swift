@@ -47,15 +47,15 @@ struct AddTransactionView: View {
                 .padding(.bottom, MaJuTaSpacing.xxxl)
             }
             .background(Color.maJuTaBackground)
-            .navigationTitle("إضافة معاملة")
+            .navigationTitle(L("إضافة معاملة"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("إلغاء") { dismiss() }
+                    Button(L("إلغاء")) { dismiss() }
                         .foregroundColor(.maJuTaTextSecondary)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("حفظ") { saveTransaction() }
+                    Button(L("حفظ")) { saveTransaction() }
                         .font(.maJuTaBodyBold)
                         .foregroundColor(isValid ? .maJuTaGold : .maJuTaTextSecondary)
                         .disabled(!isValid)
@@ -88,10 +88,10 @@ struct AddTransactionView: View {
     // MARK: - Income / Expense Toggle
     private var typeToggle: some View {
         HStack(spacing: 0) {
-            toggleButton(title: "مصروف", icon: "arrow.up.circle.fill", isSelected: isExpense) {
+            toggleButton(title: L("مصروف"), icon: "arrow.up.circle.fill", isSelected: isExpense) {
                 isExpense = true
             }
-            toggleButton(title: "دخل", icon: "arrow.down.circle.fill", isSelected: !isExpense) {
+            toggleButton(title: L("دخل"), icon: "arrow.down.circle.fill", isSelected: !isExpense) {
                 isExpense = false
             }
         }
@@ -121,15 +121,15 @@ struct AddTransactionView: View {
     // MARK: - Fields
     private var fieldsSection: some View {
         VStack(spacing: 1) {
-            inputRow(label: "التاجر / المصدر") {
-                TextField("مثال: كارفور، جهة العمل", text: $merchant)
+            inputRow(label: L("التاجر / المصدر")) {
+                TextField(L("مثال: كارفور، جهة العمل"), text: $merchant)
                     .font(.maJuTaBody)
                     .multilineTextAlignment(.trailing)
             }
 
             Divider().padding(.leading, MaJuTaSpacing.md)
 
-            inputRow(label: "طريقة الدفع") {
+            inputRow(label: L("طريقة الدفع")) {
                 Menu {
                     ForEach(PaymentMethod.allCases, id: \.self) { method in
                         Button(method.displayName) {
@@ -149,7 +149,7 @@ struct AddTransactionView: View {
 
             Divider().padding(.leading, MaJuTaSpacing.md)
 
-            inputRow(label: "الحساب") {
+            inputRow(label: L("الحساب")) {
                 Menu {
                     ForEach(dataStore.accounts) { account in
                         Button(account.name) {
@@ -160,7 +160,7 @@ struct AddTransactionView: View {
                     HStack(spacing: MaJuTaSpacing.xs) {
                         Image(systemName: "chevron.up.chevron.down")
                             .font(.system(size: 12))
-                        Text(selectedAccount?.name ?? "اختر حساباً")
+                        Text(selectedAccount?.name ?? L("اختر حساباً"))
                             .font(.maJuTaBody)
                     }
                     .foregroundColor(selectedAccount == nil ? .maJuTaTextSecondary : .maJuTaGold)
@@ -169,7 +169,7 @@ struct AddTransactionView: View {
 
             Divider().padding(.leading, MaJuTaSpacing.md)
 
-            inputRow(label: "التاريخ") {
+            inputRow(label: L("التاريخ")) {
                 DatePicker("", selection: $selectedDate, displayedComponents: .date)
                     .datePickerStyle(.compact)
                     .labelsHidden()
@@ -178,8 +178,8 @@ struct AddTransactionView: View {
 
             Divider().padding(.leading, MaJuTaSpacing.md)
 
-            inputRow(label: "ملاحظة") {
-                TextField("اختياري", text: $note)
+            inputRow(label: L("ملاحظة")) {
+                TextField(L("اختياري"), text: $note)
                     .font(.maJuTaBody)
                     .multilineTextAlignment(.trailing)
             }
@@ -203,7 +203,7 @@ struct AddTransactionView: View {
     // MARK: - Category Section
     private var categorySection: some View {
         VStack(alignment: .trailing, spacing: MaJuTaSpacing.md) {
-            Text("الفئة")
+            Text(L("الفئة"))
                 .font(.maJuTaSectionTitle)
                 .foregroundColor(.maJuTaTextPrimary)
 
@@ -234,7 +234,7 @@ struct AddTransactionView: View {
                         .font(.system(size: 20))
                         .foregroundColor(Color(hex: cat.colorHex))
                 }
-                Text(cat.nameArabic)
+                Text(cat.displayName)
                     .font(.maJuTaLabel)
                     .foregroundColor(.maJuTaTextSecondary)
                     .lineLimit(1)
@@ -248,7 +248,7 @@ struct AddTransactionView: View {
             Button {
                 showReceiptScanner = true
             } label: {
-                Label("مسح فاتورة", systemImage: "camera.viewfinder")
+                Label(L("مسح فاتورة"), systemImage: "camera.viewfinder")
                     .font(.maJuTaBodyMedium)
                     .foregroundColor(.maJuTaGold)
                     .frame(maxWidth: .infinity)
@@ -258,7 +258,7 @@ struct AddTransactionView: View {
             }
 
             Button(action: saveTransaction) {
-                Text("حفظ المعاملة")
+                Text(L("حفظ المعاملة"))
                     .font(.maJuTaBodyBold)
                     .foregroundColor(isValid ? .white : .maJuTaTextSecondary)
                     .frame(maxWidth: .infinity)

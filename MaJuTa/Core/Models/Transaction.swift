@@ -71,14 +71,15 @@ enum PaymentMethod: String, Codable, CaseIterable {
     case bnpl         = "bnpl"
 
     var displayName: String {
+        let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
         switch self {
         case .applePay:     return "Apple Pay"
-        case .mada:         return "مدى"
-        case .creditCard:   return "بطاقة ائتمان"
-        case .bankTransfer: return "تحويل بنكي"
-        case .sadad:        return "سداد"
-        case .cash:         return "نقد"
-        case .bnpl:         return "تقسيط"
+        case .mada:         return isEn ? "Mada"          : L("مدى")
+        case .creditCard:   return isEn ? "Credit Card"   : L("بطاقة ائتمان")
+        case .bankTransfer: return isEn ? "Bank Transfer"  : L("تحويل بنكي")
+        case .sadad:        return isEn ? "SADAD"         : L("سداد")
+        case .cash:         return isEn ? "Cash"          : L("نقد")
+        case .bnpl:         return isEn ? "Installments"  : L("تقسيط")
         }
     }
 

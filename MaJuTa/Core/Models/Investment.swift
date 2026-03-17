@@ -71,12 +71,13 @@ enum AssetType: String, Codable, CaseIterable {
     case international = "international"
 
     var displayName: String {
+        let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
         switch self {
-        case .stock:         return "أسهم"
-        case .etf:           return "صناديق ETF"
-        case .reit:          return "صناديق ريت"
-        case .sukuk:         return "صكوك"
-        case .international: return "أسهم دولية"
+        case .stock:         return isEn ? "Stocks"               : "أسهم"
+        case .etf:           return isEn ? "ETF Funds"            : "صناديق ETF"
+        case .reit:          return isEn ? "REIT Funds"           : "صناديق ريت"
+        case .sukuk:         return isEn ? "Sukuk"                : "صكوك"
+        case .international: return isEn ? "International Stocks" : "أسهم دولية"
         }
     }
 
@@ -96,9 +97,10 @@ enum InvestmentMarket: String, Codable {
     case international = "INTERNATIONAL"
 
     var displayName: String {
+        let isEn = UserDefaults.standard.string(forKey: "appLanguage") == "en"
         switch self {
-        case .tadawul:       return "تداول"
-        case .international: return "دولي"
+        case .tadawul:       return isEn ? "Tadawul"       : "تداول"
+        case .international: return isEn ? "International" : "دولي"
         }
     }
 }

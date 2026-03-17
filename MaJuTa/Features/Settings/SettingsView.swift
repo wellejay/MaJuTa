@@ -21,8 +21,8 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: MaJuTaSpacing.md) {
-                settingsSection(title: "الدخل الشهري") {
-                    settingsRow(label: "الراتب الشهري", icon: "banknote.fill", color: "#22C55E") {
+                settingsSection(title: L("الدخل الشهري")) {
+                    settingsRow(label: L("الراتب الشهري"), icon: "banknote.fill", color: "#22C55E") {
                         Button {
                             incomeText = String(Int(appState.monthlyIncome))
                             showIncomeEdit = true
@@ -53,15 +53,15 @@ struct SettingsView: View {
                             Spacer()
                         }
                         .background(Color.maJuTaBackground)
-                        .navigationTitle("تعديل الراتب")
+                        .navigationTitle(L("تعديل الراتب"))
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
-                                Button("إلغاء") { showIncomeEdit = false }
+                                Button(L("إلغاء")) { showIncomeEdit = false }
                                     .foregroundColor(.maJuTaTextSecondary)
                             }
                             ToolbarItem(placement: .navigationBarTrailing) {
-                                Button("حفظ") {
+                                Button(L("حفظ")) {
                                     let newIncome = Double(incomeText) ?? appState.monthlyIncome
                                     appState.monthlyIncome = newIncome
                                     showIncomeEdit = false
@@ -74,14 +74,14 @@ struct SettingsView: View {
                     .presentationDetents([.medium])
                 }
 
-                settingsSection(title: "معلومات الاتصال") {
-                    settingsRow(label: "رقم الهاتف", icon: "phone.fill", color: "#22C55E") {
+                settingsSection(title: L("معلومات الاتصال")) {
+                    settingsRow(label: L("رقم الهاتف"), icon: "phone.fill", color: "#22C55E") {
                         Button {
                             initPhoneEdit()
                             showPhoneEdit = true
                         } label: {
                             let phone = userService.currentUser?.phoneNumber ?? ""
-                            Text(phone.isEmpty ? "إضافة" : phone)
+                            Text(phone.isEmpty ? L("إضافة") : phone)
                                 .font(.maJuTaCaption)
                                 .foregroundColor(phone.isEmpty ? .maJuTaTextSecondary : .maJuTaGold)
                         }
@@ -89,12 +89,12 @@ struct SettingsView: View {
                 }
                 .sheet(isPresented: $showPhoneEdit) { phoneEditSheet }
 
-                settingsSection(title: "المظهر") {
-                    settingsRow(label: "وضع العرض", icon: "moon.fill", color: "#0C2031") {
+                settingsSection(title: L("المظهر")) {
+                    settingsRow(label: L("وضع العرض"), icon: "moon.fill", color: "#0C2031") {
                         Picker("", selection: $selectedScheme) {
-                            Text("تلقائي").tag("system")
-                            Text("فاتح").tag("light")
-                            Text("داكن").tag("dark")
+                            Text(L("تلقائي")).tag("system")
+                            Text(L("فاتح")).tag("light")
+                            Text(L("داكن")).tag("dark")
                         }
                         .pickerStyle(.segmented).frame(width: 160)
                     }
@@ -107,61 +107,61 @@ struct SettingsView: View {
                     }
                 }
 
-                settingsSection(title: "الأمان") {
+                settingsSection(title: L("الأمان")) {
                     settingsRow(label: "Face ID / Touch ID", icon: "faceid", color: "#22C55E") {
                         Toggle("", isOn: $biometricEnabled).tint(.maJuTaGold).labelsHidden()
                     }
                 }
 
-                settingsSection(title: "الإشعارات") {
-                    settingsRow(label: "تفعيل الإشعارات", icon: "bell.fill", color: "#F2AE2E") {
+                settingsSection(title: L("الإشعارات")) {
+                    settingsRow(label: L("تفعيل الإشعارات"), icon: "bell.fill", color: "#F2AE2E") {
                         Toggle("", isOn: $notificationsEnabled).tint(.maJuTaGold).labelsHidden()
                     }
                 }
 
-                settingsSection(title: "البيانات") {
-                    settingsRow(label: "تصدير CSV", icon: "square.and.arrow.up", color: "#06B6D4") {
+                settingsSection(title: L("البيانات")) {
+                    settingsRow(label: L("تصدير CSV"), icon: "square.and.arrow.up", color: "#06B6D4") {
                         Image(systemName: "chevron.left").font(.system(size: 12)).foregroundColor(.maJuTaTextSecondary)
                     }
                     Divider()
-                    settingsRow(label: "نسخ احتياطي iCloud", icon: "icloud.fill", color: "#0C2031") {
+                    settingsRow(label: L("نسخ احتياطي iCloud"), icon: "icloud.fill", color: "#0C2031") {
                         Image(systemName: "chevron.left").font(.system(size: 12)).foregroundColor(.maJuTaTextSecondary)
                     }
                 }
 
-                settingsSection(title: "عن التطبيق") {
-                    settingsRow(label: "MaJuTa — الإصدار 1.2.0", icon: "info.circle.fill", color: "#6B7280") {
+                settingsSection(title: L("عن التطبيق")) {
+                    settingsRow(label: L("MaJuTa — الإصدار 1.2.0"), icon: "info.circle.fill", color: "#6B7280") {
                         EmptyView()
                     }
                     Divider()
-                    settingsRow(label: "سياسة الخصوصية", icon: "lock.shield.fill", color: "#0C2031") {
+                    settingsRow(label: L("سياسة الخصوصية"), icon: "lock.shield.fill", color: "#0C2031") {
                         Image(systemName: "chevron.left").font(.system(size: 12)).foregroundColor(.maJuTaTextSecondary)
                     }
                 }
 
-                Button("إعادة ضبط التطبيق") {
+                Button(L("إعادة ضبط التطبيق")) {
                     showResetAlert = true
                 }
                 .font(.maJuTaCaption).foregroundColor(.maJuTaNegative.opacity(0.7))
                 .padding(.top, MaJuTaSpacing.sm)
-                .alert("إعادة ضبط التطبيق", isPresented: $showResetAlert) {
-                    Button("إلغاء", role: .cancel) {}
-                    Button("إعادة الضبط", role: .destructive) {
+                .alert(L("إعادة ضبط التطبيق"), isPresented: $showResetAlert) {
+                    Button(L("إلغاء"), role: .cancel) {}
+                    Button(L("إعادة الضبط"), role: .destructive) {
                         DataStore.shared.reset()
                         appState.resetAll()
                     }
                 } message: {
-                    Text("سيتم حذف جميع بياناتك المحلية. هذا الإجراء لا يمكن التراجع عنه.")
+                    Text(L("سيتم حذف جميع بياناتك المحلية. هذا الإجراء لا يمكن التراجع عنه."))
                 }
 
-                Button("حذف الحساب نهائياً") {
+                Button(L("حذف الحساب نهائياً")) {
                     showDeleteAccountAlert = true
                 }
                 .font(.maJuTaCaption).foregroundColor(.maJuTaNegative)
                 .padding(.top, MaJuTaSpacing.xs)
-                .alert("حذف الحساب", isPresented: $showDeleteAccountAlert) {
-                    Button("إلغاء", role: .cancel) {}
-                    Button("حذف نهائياً", role: .destructive) {
+                .alert(L("حذف الحساب"), isPresented: $showDeleteAccountAlert) {
+                    Button(L("إلغاء"), role: .cancel) {}
+                    Button(L("حذف نهائياً"), role: .destructive) {
                         Task {
                             await UserService.shared.deleteCurrentAccount()
                             await MainActor.run {
@@ -171,7 +171,7 @@ struct SettingsView: View {
                         }
                     }
                 } message: {
-                    Text("سيتم حذف حسابك وجميع بياناتك بشكل دائم لا يمكن التراجع عنه. إذا كنت مالك الحساب، سيتم حذف بيانات العائلة بالكامل.")
+                    Text(L("سيتم حذف حسابك وجميع بياناتك بشكل دائم لا يمكن التراجع عنه. إذا كنت مالك الحساب، سيتم حذف بيانات العائلة بالكامل."))
                 }
             }
             .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
@@ -179,7 +179,7 @@ struct SettingsView: View {
             .padding(.bottom, MaJuTaSpacing.xxxl)
         }
         .background(Color.maJuTaBackground)
-        .navigationTitle("الإعدادات")
+        .navigationTitle(L("الإعدادات"))
         .navigationBarTitleDisplayMode(.large)
     }
 
@@ -241,7 +241,7 @@ struct SettingsView: View {
                 .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
                 .maJuTaCardShadow()
 
-                Text("اختياري — رقم الهاتف ليس مطلوباً لاستخدام التطبيق")
+                Text(L("اختياري — رقم الهاتف ليس مطلوباً لاستخدام التطبيق"))
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
                     .multilineTextAlignment(.center)
@@ -253,7 +253,7 @@ struct SettingsView: View {
                         }
                         showPhoneEdit = false
                     } label: {
-                        Text("حذف رقم الهاتف")
+                        Text(L("حذف رقم الهاتف"))
                             .font(.maJuTaCaption)
                             .foregroundColor(.maJuTaNegative)
                     }
@@ -264,15 +264,15 @@ struct SettingsView: View {
             .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
             .padding(.top, MaJuTaSpacing.md)
             .background(Color.maJuTaBackground)
-            .navigationTitle("رقم الهاتف")
+            .navigationTitle(L("رقم الهاتف"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("إلغاء") { showPhoneEdit = false }
+                    Button(L("إلغاء")) { showPhoneEdit = false }
                         .foregroundColor(.maJuTaTextSecondary)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("حفظ") { savePhone() }
+                    Button(L("حفظ")) { savePhone() }
                         .foregroundColor(.maJuTaGold)
                         .font(.maJuTaBodyBold)
                 }
@@ -303,12 +303,12 @@ struct SettingsView: View {
                 .buttonStyle(.plain)
             }
             .listStyle(.plain)
-            .searchable(text: $countrySearch, prompt: "ابحث عن دولة...")
-            .navigationTitle("اختر الدولة")
+            .searchable(text: $countrySearch, prompt: L("ابحث عن دولة..."))
+            .navigationTitle(L("اختر الدولة"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("إغلاق") { showCountryPicker = false }
+                    Button(L("إغلاق")) { showCountryPicker = false }
                         .foregroundColor(.maJuTaTextSecondary)
                 }
             }

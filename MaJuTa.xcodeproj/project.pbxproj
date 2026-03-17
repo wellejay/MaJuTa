@@ -68,6 +68,7 @@
 		DD0A13B3CA3638B057F2599D /* MaJuTaIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B58C2604CE652F3E17E12F4 /* MaJuTaIcons.swift */; };
 		E143EFA079765BFAA8BCFF4E /* AddTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F6E53667D972FDD18538B1 /* AddTransactionView.swift */; };
 		E64FA02B6B3AAD908B0A34D9 /* GoalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F0401E17FC07625892C627B /* GoalDetailView.swift */; };
+		EA375FFFAAC4A92D7A77417E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CAB9FA05238336672E7D5BE6 /* Localizable.strings */; };
 		EC4C7DA826502E8F012EE7D6 /* InvestmentEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23248AE5764EA39721CF35FF /* InvestmentEngine.swift */; };
 		EDDD4EE4E6A8AC6007AAF8BA /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 428553479B935134F39F1CA3 /* FirebaseFirestore */; };
 		EF80C4ECFFEF0ADB2ECD37FB /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A2D435B2E123A492E3A382 /* DashboardView.swift */; };
@@ -91,6 +92,7 @@
 		118B585913C4A0062BFEDB4C /* FamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyView.swift; sourceTree = "<group>"; };
 		1C719BA7F1244E0580CD67D6 /* LedgerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LedgerEngine.swift; sourceTree = "<group>"; };
 		1E609E8495FF41EA99B88593 /* Loan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loan.swift; sourceTree = "<group>"; };
+		1FB8A4980866DCA428015252 /* en */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		214BA9DE5075E844C26EB297 /* MaJuTa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MaJuTa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2269B80DC77B06C01C7D5A4B /* BNPLInstallment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BNPLInstallment.swift; sourceTree = "<group>"; };
 		23248AE5764EA39721CF35FF /* InvestmentEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvestmentEngine.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 		8081C8912652535267533A5C /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		8563CE577BC54B518E7790A0A20D4D1D /* EmailVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationView.swift; sourceTree = "<group>"; };
 		8846E7AF83FFF5901A419D3D /* FirebaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
+		8AB40F463ECE98CB9D0FE9A1 /* ar */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8C68BB1FECCC8F499FF657E5 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
 		93C6079828C9A5D5AC524E21 /* FinancialHealthEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialHealthEngine.swift; sourceTree = "<group>"; };
 		95F9132B3667AD385B9F69F5 /* LockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenView.swift; sourceTree = "<group>"; };
@@ -271,6 +274,7 @@
 				A3F72B8C1D4E5F60A3F72B8C /* PrivacyInfo.xcprivacy */,
 				5A5EAE96639320F74F515704 /* MaJuTa.entitlements */,
 				B78290C4DE1249480C40582E /* Fonts */,
+				CAB9FA05238336672E7D5BE6 /* Localizable.strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -511,6 +515,7 @@
 			buildConfigurationList = 7BC8694A0E2D52A1C50DF618 /* Build configuration list for PBXNativeTarget "MaJuTaTests" */;
 			buildPhases = (
 				5874B7AB4D63E1BF1749C6FA /* Sources */,
+				10B089AE5ADD1F6E735015B5 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -518,8 +523,6 @@
 				3554F46B024864F0F5971AA6 /* PBXTargetDependency */,
 			);
 			name = MaJuTaTests;
-			packageProductDependencies = (
-			);
 			productName = MaJuTaTests;
 			productReference = D56B62C900FB7AA0768478DC /* MaJuTaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -567,12 +570,14 @@
 			knownRegions = (
 				Base,
 				ar,
+				en,
 			);
 			mainGroup = F6F894DBD51C41D7D19CB400;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				ADC3712FDD92D4C6FC86A3F2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
+			productRefGroup = E0438F5946D30133B56F7B17 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -583,6 +588,13 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		10B089AE5ADD1F6E735015B5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A00063569CFD363452C63C13 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -591,6 +603,7 @@
 				2831D2E900B0BADF093374D9 /* GoogleService-Info.plist in Resources */,
 				10AD8AA6A0644341B05CC79A /* SaudiRiyal.ttf in Resources */,
 				D5E8A91B2C3F4D7EA5B6C8D9 /* PrivacyInfo.xcprivacy in Resources */,
+				EA375FFFAAC4A92D7A77417E /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -678,6 +691,18 @@
 			targetProxy = 885E0D6DAC9B30FB2D994023 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CAB9FA05238336672E7D5BE6 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1FB8A4980866DCA428015252 /* en */,
+				8AB40F463ECE98CB9D0FE9A1 /* ar */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		00F940CDF7A4C40687D6BADC /* Debug */ = {

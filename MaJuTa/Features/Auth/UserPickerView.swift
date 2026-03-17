@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct UserPickerView: View {
+    @EnvironmentObject var appState: AppState
     @EnvironmentObject var authService: AuthenticationService
     @ObservedObject private var userService = UserService.shared
     @State private var selectedUser: UserProfile? = nil
@@ -56,6 +57,19 @@ struct UserPickerView: View {
                 }
 
                 Spacer()
+
+                // Guest mode option
+                Button {
+                    UserService.shared.setupGuestUser()
+                    DataStore.shared.loadGuestMode()
+                    appState.isGuestMode = true
+                } label: {
+                    Text("تصفح كضيف — بدون حساب")
+                        .font(.maJuTaCaption)
+                        .foregroundColor(.white.opacity(0.6))
+                        .padding(.vertical, MaJuTaSpacing.sm)
+                }
+                .padding(.bottom, MaJuTaSpacing.xl)
             }
             .padding(.top, MaJuTaSpacing.xl)
             .animation(.spring(), value: showPINEntry)

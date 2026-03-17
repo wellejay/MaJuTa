@@ -45,6 +45,7 @@ struct MaJuTaApp: App {
                         .environmentObject(authService)
                 } else if !authService.isAuthenticated {
                     UserPickerView()
+                        .environmentObject(appState)
                         .environmentObject(authService)
                 } else if userService.currentUser != nil {
                     if appState.hasCompletedOnboarding {

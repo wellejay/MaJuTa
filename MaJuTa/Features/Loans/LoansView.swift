@@ -230,19 +230,19 @@ struct AddLoanView: View {
                                 .multilineTextAlignment(.trailing)
                         }
                         divider()
-                        fieldRow(label: L("المبلغ الأصلي (﷼)")) {
+                        fieldRow(label: L("المبلغ الأصلي (ر.س)")) {
                             TextField("0", text: $principalText)
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
                         }
                         divider()
-                        fieldRow(label: L("الرصيد المتبقي (﷼)")) {
+                        fieldRow(label: L("الرصيد المتبقي (ر.س)")) {
                             TextField("0", text: $remainingText)
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
                         }
                         divider()
-                        fieldRow(label: L("الدفعة الشهرية (﷼)")) {
+                        fieldRow(label: L("الدفعة الشهرية (ر.س)")) {
                             TextField("0", text: $monthlyText)
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
@@ -444,9 +444,9 @@ struct LoanDetailView: View {
                     .foregroundColor(loan.isFullyPaid ? .maJuTaPositive : .maJuTaTextSecondary)
                 SARText.hero(loan.remainingBalance,
                              color: loan.isFullyPaid ? .maJuTaPositive : .maJuTaNegative)
-                Text(L("من أصل") + " \(Int(loan.principalAmount).formatted()) ﷼")
-                    .font(.maJuTaLabel)
-                    .foregroundColor(.maJuTaTextSecondary)
+                (Text(L("من أصل") + " \(Int(loan.principalAmount).formatted()) ").font(.maJuTaLabel)
+                 + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 11)))
+                .foregroundColor(.maJuTaTextSecondary)
             }
             Spacer()
             ZStack {
@@ -554,8 +554,8 @@ struct LoanDetailView: View {
                             .keyboardType(.decimalPad)
                             .font(.maJuTaLargeNumber)
                             .multilineTextAlignment(.trailing)
-                        Text("﷼")
-                            .font(.maJuTaTitle1)
+                        Text("\u{E900}")
+                            .font(.custom("saudi_riyalregular", size: 28))
                             .foregroundColor(.maJuTaGold)
                     }
                     .padding(MaJuTaSpacing.md)
@@ -567,9 +567,9 @@ struct LoanDetailView: View {
 
                 let remaining = max(0, loan.remainingBalance - (Double(paymentText) ?? 0))
                 let remainingStr = String(format: "%.0f", remaining)
-                Text(L("الرصيد المتبقي بعد السداد:") + " \(remainingStr) ﷼")
-                    .font(.maJuTaCaption)
-                    .foregroundColor(.maJuTaTextSecondary)
+                (Text(L("الرصيد المتبقي بعد السداد:") + " \(remainingStr) ").font(.maJuTaCaption)
+                 + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 13)))
+                .foregroundColor(.maJuTaTextSecondary)
 
                 Spacer()
             }

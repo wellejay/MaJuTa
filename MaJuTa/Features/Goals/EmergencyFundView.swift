@@ -272,14 +272,14 @@ private struct EmergencyFundTransactionSheet: View {
                     Text(isDeposit ? L("إضافة مبلغ لصندوق الطوارئ") : L("سحب من صندوق الطوارئ"))
                         .font(.maJuTaTitle2)
                         .foregroundColor(.maJuTaTextPrimary)
-                    Text(L("الرصيد الحالي") + ": \(String(format: "%.0f", balance)) ﷼")
-                        .font(.maJuTaCaption)
-                        .foregroundColor(.maJuTaTextSecondary)
+                    (Text(L("الرصيد الحالي") + ": \(String(format: "%.0f", balance)) ").font(.maJuTaCaption)
+                     + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 13)))
+                    .foregroundColor(.maJuTaTextSecondary)
                 }
                 .padding(.top, MaJuTaSpacing.xl)
 
                 VStack(alignment: .trailing, spacing: MaJuTaSpacing.sm) {
-                    Text(L("المبلغ (﷼)"))
+                    Text(L("المبلغ (ر.س)"))
                         .font(.maJuTaBodyMedium)
                         .foregroundColor(.maJuTaTextPrimary)
                     TextField("0", text: $amountText)
@@ -311,8 +311,8 @@ private struct EmergencyFundTransactionSheet: View {
                     dismiss()
                 } label: {
                     let label = isDeposit
-                        ? L("إضافة") + " \(amount > 0 ? String(format: "%.0f ﷼", amount) : "")"
-                        : L("سحب") + " \(amount > 0 ? String(format: "%.0f ﷼", amount) : "")"
+                        ? L("إضافة") + " \(amount > 0 ? String(format: "%.0f SAR", amount) : "")"
+                        : L("سحب") + " \(amount > 0 ? String(format: "%.0f SAR", amount) : "")"
                     Text(label)
                         .font(.maJuTaBodyBold)
                         .foregroundColor(.white)

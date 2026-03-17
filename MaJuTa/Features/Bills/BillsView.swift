@@ -117,7 +117,7 @@ struct AddBillView: View {
                             TextField(L("مثال: كهرباء، إنترنت"), text: $name).multilineTextAlignment(.trailing)
                         }
                         Divider()
-                        fieldRow(label: L("المبلغ (﷼)")) {
+                        fieldRow(label: L("المبلغ (ر.س)")) {
                             TextField("0", text: $amount).keyboardType(.decimalPad).multilineTextAlignment(.trailing)
                         }
                         Divider()

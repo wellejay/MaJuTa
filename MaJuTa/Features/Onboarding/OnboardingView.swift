@@ -136,8 +136,8 @@ struct OnboardingView: View {
                         .foregroundColor(.white)
                         .multilineTextAlignment(.trailing)
 
-                    Text("﷼")
-                        .font(.maJuTaTitle1)
+                    Text("\u{E900}")
+                        .font(.custom("saudi_riyalregular", size: 28))
                         .foregroundColor(.maJuTaGold)
                 }
                 .padding(MaJuTaSpacing.md)

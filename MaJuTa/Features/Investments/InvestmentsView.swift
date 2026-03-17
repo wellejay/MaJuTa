@@ -309,8 +309,8 @@ struct AssetDetailView: View {
                             .keyboardType(.decimalPad)
                             .font(.maJuTaLargeNumber)
                             .multilineTextAlignment(.trailing)
-                        Text("﷼")
-                            .font(.maJuTaTitle1)
+                        Text("\u{E900}")
+                            .font(.custom("saudi_riyalregular", size: 28))
                             .foregroundColor(.maJuTaGold)
                     }
                     .padding(MaJuTaSpacing.md)
@@ -431,9 +431,9 @@ struct AddInvestmentView: View {
                         Divider()
                         addField(label: L("عدد الوحدات"), text: $units, keyboard: .decimalPad)
                         Divider()
-                        addField(label: L("سعر الشراء للوحدة (﷼)"), text: $purchasePricePerUnit, keyboard: .decimalPad)
+                        addField(label: L("سعر الشراء للوحدة (ر.س)"), text: $purchasePricePerUnit, keyboard: .decimalPad)
                         Divider()
-                        addField(label: L("السعر الحالي للوحدة (﷼)"), text: $lastPrice, keyboard: .decimalPad)
+                        addField(label: L("السعر الحالي للوحدة (ر.س)"), text: $lastPrice, keyboard: .decimalPad)
                     }
                     .background(Color.maJuTaCard)
                     .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))

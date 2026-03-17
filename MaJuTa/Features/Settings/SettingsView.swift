@@ -27,9 +27,9 @@ struct SettingsView: View {
                             incomeText = String(Int(appState.monthlyIncome))
                             showIncomeEdit = true
                         } label: {
-                            Text("\(Int(appState.monthlyIncome)) ﷼")
-                                .font(.maJuTaBody)
-                                .foregroundColor(.maJuTaGold)
+                            (Text("\(Int(appState.monthlyIncome)) ").font(.maJuTaBody)
+                             + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 16)))
+                            .foregroundColor(.maJuTaGold)
                         }
                     }
                 }
@@ -41,8 +41,8 @@ struct SettingsView: View {
                                     .keyboardType(.numberPad)
                                     .font(.maJuTaLargeNumber)
                                     .multilineTextAlignment(.trailing)
-                                Text("﷼")
-                                    .font(.maJuTaTitle1)
+                                Text("\u{E900}")
+                                    .font(.custom("saudi_riyalregular", size: 28))
                                     .foregroundColor(.maJuTaGold)
                             }
                             .padding(MaJuTaSpacing.md)

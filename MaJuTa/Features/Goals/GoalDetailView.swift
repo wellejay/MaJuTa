@@ -144,8 +144,8 @@ struct GoalDetailView: View {
                     .font(.maJuTaTitle2)
 
                 HStack {
-                    Text("﷼")
-                        .font(.maJuTaTitle1)
+                    Text("\u{E900}")
+                        .font(.custom("saudi_riyalregular", size: 28))
                         .foregroundColor(.maJuTaTextSecondary)
                     TextField("0", text: $contributionAmount)
                         .keyboardType(.numberPad)
@@ -227,7 +227,7 @@ struct AddGoalView: View {
                             .keyboardType(.numberPad)
                             .font(.maJuTaLargeNumber)
                             .multilineTextAlignment(.trailing)
-                        Text(L("﷼ المبلغ المستهدف"))
+                        Text(L("المبلغ المستهدف (ر.س)"))
                             .font(.maJuTaCaption)
                             .foregroundColor(.maJuTaTextSecondary)
                     }

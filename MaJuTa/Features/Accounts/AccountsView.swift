@@ -145,7 +145,7 @@ struct AddAccountView: View {
                         Divider()
                         fieldRow(label: L("البنك / المزود")) { TextField(L("مثال: البنك الأهلي"), text: $institution).multilineTextAlignment(.trailing) }
                         Divider()
-                        fieldRow(label: L("الرصيد (﷼)")) { TextField("0", text: $balance).keyboardType(.decimalPad).multilineTextAlignment(.trailing) }
+                        fieldRow(label: L("الرصيد (ر.س)")) { TextField("0", text: $balance).keyboardType(.decimalPad).multilineTextAlignment(.trailing) }
                         Divider()
                         HStack {
                             Toggle("", isOn: $isShared).tint(.maJuTaGold).labelsHidden()

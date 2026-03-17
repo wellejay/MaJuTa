@@ -135,7 +135,7 @@ struct AddInstallmentPlanView: View {
                             TextField("0", text: $totalAmount)
                                 .keyboardType(.numberPad)
                                 .font(.maJuTaLargeNumber).multilineTextAlignment(.trailing)
-                            Text("﷼").font(.maJuTaTitle1).foregroundColor(.maJuTaGold)
+                            Text("\u{E900}").font(.custom("saudi_riyalregular", size: 28)).foregroundColor(.maJuTaGold)
                         }
                         .padding(MaJuTaSpacing.md).background(Color.maJuTaCard)
                         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card)).maJuTaCardShadow()

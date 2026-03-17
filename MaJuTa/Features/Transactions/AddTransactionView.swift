@@ -68,8 +68,8 @@ struct AddTransactionView: View {
     private var amountSection: some View {
         VStack(spacing: MaJuTaSpacing.sm) {
             HStack(alignment: .lastTextBaseline, spacing: MaJuTaSpacing.sm) {
-                Text("﷼")
-                    .font(.maJuTaTitle1)
+                Text("\u{E900}")
+                    .font(.custom("saudi_riyalregular", size: 28))
                     .foregroundColor(.maJuTaTextSecondary)
                 TextField("0", text: $amountText)
                     .keyboardType(.decimalPad)

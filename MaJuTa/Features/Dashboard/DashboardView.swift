@@ -91,12 +91,14 @@ struct DashboardView: View {
                         Text("\(L("مرحباً،")) \(appState.userName.isEmpty ? L("بك") : appState.userName)")
                             .font(.maJuTaCaption)
                             .foregroundColor(.white.opacity(0.7))
-                        Text(Date().monthYearArabic)
+                        Text(Date().monthYearLocalized)
                             .font(.maJuTaCaptionMedium)
                             .foregroundColor(.white)
-                        Text(Date().hijriMonthYear)
-                            .font(.maJuTaLabel)
-                            .foregroundColor(.white.opacity(0.65))
+                        if UserDefaults.standard.string(forKey: "appLanguage") != "en" {
+                            Text(Date().hijriMonthYear)
+                                .font(.maJuTaLabel)
+                                .foregroundColor(.white.opacity(0.65))
+                        }
                     }
 
                     Spacer()
@@ -222,9 +224,11 @@ struct DashboardView: View {
                         .font(.maJuTaCaptionMedium)
                         .foregroundColor(spendingCardAmount >= 0 ? .maJuTaTextSecondary : .maJuTaNegative)
                     if appState.spendingLimit > 0 {
-                        Text("\(L("أنفقت:")) \(String(format: "%.0f", dataStore.discretionaryExpensesThisMonth)) ﷼ \(L("من")) \(String(format: "%.0f", appState.spendingLimit)) ﷼")
-                            .font(.maJuTaLabel)
-                            .foregroundColor(spendingLimitColor)
+                        (Text("\(L("أنفقت:")) \(String(format: "%.0f", dataStore.discretionaryExpensesThisMonth)) ").font(.maJuTaLabel)
+                         + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 11))
+                         + Text(" \(L("من")) \(String(format: "%.0f", appState.spendingLimit)) ").font(.maJuTaLabel)
+                         + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 11)))
+                        .foregroundColor(spendingLimitColor)
                     }
                 }
             }
@@ -616,13 +620,19 @@ private struct SpendingLimitSheet: View {
                     onSave(amount)
                     dismiss()
                 } label: {
-                    Text(amount > 0 ? "\(L("حفظ")) \(String(format: "%.0f", amount)) ﷼" : L("حفظ"))
-                        .font(.maJuTaBodyBold)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(MaJuTaSpacing.md)
-                        .background(amount > 0 ? Color.maJuTaGold : Color.maJuTaTextSecondary)
-                        .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
+                    Group {
+                        if amount > 0 {
+                            Text("\(L("حفظ")) \(String(format: "%.0f", amount)) ").font(.maJuTaBodyBold)
+                            + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 16))
+                        } else {
+                            Text(L("حفظ")).font(.maJuTaBodyBold)
+                        }
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(MaJuTaSpacing.md)
+                    .background(amount > 0 ? Color.maJuTaGold : Color.maJuTaTextSecondary)
+                    .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
                 }
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
                 .disabled(amount <= 0)

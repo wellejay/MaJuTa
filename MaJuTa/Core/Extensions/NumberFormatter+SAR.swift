@@ -34,17 +34,17 @@ extension Double {
     }
 
     // MARK: - String variants (symbol + number) — for non-SwiftUI contexts
-    /// "﷼15,000"
-    var sarFormatted: String { "﷼\(sarNumber)" }
+    /// "SAR 15,000"
+    var sarFormatted: String { "SAR \(sarNumber)" }
 
-    /// "﷼15,000.50"
-    var sarFormattedDecimal: String { "﷼\(sarNumberDecimal)" }
+    /// "SAR 15,000.50"
+    var sarFormattedDecimal: String { "SAR \(sarNumberDecimal)" }
 
-    /// "﷼15K" / "﷼1.2M"
+    /// "SAR 15K" / "SAR 1.2M"
     var sarCompact: String {
         switch abs(self) {
-        case 1_000_000...: return "﷼\(String(format: "%.1fM", abs(self) / 1_000_000))"
-        case 1_000...:     return "﷼\(String(format: "%.0fK", abs(self) / 1_000))"
+        case 1_000_000...: return "SAR \(String(format: "%.1fM", abs(self) / 1_000_000))"
+        case 1_000...:     return "SAR \(String(format: "%.0fK", abs(self) / 1_000))"
         default:           return sarFormatted
         }
     }
@@ -83,6 +83,21 @@ extension Date {
         f.dateFormat = "d MMMM yyyy"
         f.calendar = Calendar(identifier: .gregorian)
         f.locale = Locale(identifier: "ar")
+        return f.string(from: self)
+    }
+
+    /// Gregorian date respecting app language — "March 18, 2026" (en) or "١٨ مارس ٢٠٢٦" (ar)
+    var monthYearLocalized: String {
+        let lang = UserDefaults.standard.string(forKey: "appLanguage") ?? "ar"
+        let f = DateFormatter()
+        f.calendar = Calendar(identifier: .gregorian)
+        if lang == "en" {
+            f.dateFormat = "MMMM d, yyyy"
+            f.locale = Locale(identifier: "en_US")
+        } else {
+            f.dateFormat = "d MMMM yyyy"
+            f.locale = Locale(identifier: "ar")
+        }
         return f.string(from: self)
     }
 

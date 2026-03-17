@@ -52,6 +52,6 @@ final class MaJuTaTests: XCTestCase {
     }
 
     func testSARFormatting() {
-        XCTAssertEqual(15000.0.sarFormatted, "﷼15,000")
+        XCTAssertEqual(15000.0.sarFormatted, "SAR 15,000")
     }
 }

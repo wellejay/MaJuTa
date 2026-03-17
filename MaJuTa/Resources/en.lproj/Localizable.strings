@@ -62,8 +62,7 @@
 "أقل من 5%" = "Less than 5%";
 "إزالة الحد" = "Remove Limit";
 "حد الإنفاق" = "Spending Limit";
-"أنفقت: %@ ﷼ من %@ ﷼" = "Spent: %@ ﷼ of %@ ﷼";
-"حفظ %@ ﷼" = "Save %@ ﷼";
+"أنفقت:" = "Spent:";
 "مرحباً، %@" = "Hello, %@";
 
 // MARK: - Lock Screen
@@ -112,7 +111,7 @@
 "إضافة مبلغ للهدف" = "Add to Goal";
 "إضافة مدخرات" = "Add Savings";
 "اسم الهدف" = "Goal Name";
-"﷼ المبلغ المستهدف" = "﷼ Target Amount";
+"المبلغ المستهدف (ر.س)" = "Target Amount (SAR)";
 "تحديد موعد نهائي" = "Set Deadline";
 "اختر أيقونة" = "Choose Icon";
 "إنشاء الهدف" = "Create Goal";
@@ -135,8 +134,7 @@
 "تشمل: الإيجار، البقالة، المرافق، الاتصالات، الوقود" = "Includes: Rent, Groceries, Utilities, Telecom, Fuel";
 "إضافة مبلغ لصندوق الطوارئ" = "Add to Emergency Fund";
 "سحب من صندوق الطوارئ" = "Withdraw from Emergency Fund";
-"الرصيد الحالي: %@ ﷼" = "Current Balance: %@ ﷼";
-"المبلغ (﷼)" = "Amount (﷼)";
+"المبلغ (ر.س)" = "Amount (SAR)";
 "لا يمكن سحب أكثر من الرصيد المتاح" = "Cannot withdraw more than the available balance";
 "سحب مبلغ" = "Withdraw Amount";
 "إضافة %@" = "Add %@";
@@ -159,8 +157,8 @@
 "الرمز (مثال: 2222)" = "Symbol (e.g. 2222)";
 "اسم الشركة" = "Company Name";
 "عدد الوحدات" = "Number of Units";
-"سعر الشراء للوحدة (﷼)" = "Purchase Price per Unit (﷼)";
-"السعر الحالي للوحدة (﷼)" = "Current Price per Unit (﷼)";
+"سعر الشراء للوحدة (ر.س)" = "Purchase Price per Unit (SAR)";
+"السعر الحالي للوحدة (ر.س)" = "Current Price per Unit (SAR)";
 "إضافة للمحفظة" = "Add to Portfolio";
 "أصل جديد" = "New Asset";
 
@@ -177,9 +175,9 @@
 "متأخر" = "Overdue";
 "قريباً" = "Soon";
 "مثال: قرض البنك الأهلي" = "Example: NCB Bank Loan";
-"المبلغ الأصلي (﷼)" = "Principal Amount (﷼)";
-"الرصيد المتبقي (﷼)" = "Remaining Balance (﷼)";
-"الدفعة الشهرية (﷼)" = "Monthly Payment (﷼)";
+"المبلغ الأصلي (ر.س)" = "Principal Amount (SAR)";
+"الرصيد المتبقي (ر.س)" = "Remaining Balance (SAR)";
+"الدفعة الشهرية (ر.س)" = "Monthly Payment (SAR)";
 "نسبة الفائدة السنوية (%)" = "Annual Interest Rate (%)";
 "تاريخ بداية القرض" = "Loan Start Date";
 "تاريخ الدفعة القادمة" = "Next Payment Date";
@@ -198,7 +196,7 @@
 "سداد (متأخر)" = "Pay (Overdue)";
 "سداد الدفعة" = "Make Payment";
 "مبلغ السداد" = "Payment Amount";
-"من أصل %@ ﷼" = "of %@ ﷼ original";
+"من أصل" = "of";
 "%lld%% مسدد" = "%lld%% paid";
 "%lld شهر متبقي" = "%lld months remaining";
 
@@ -536,7 +534,7 @@
 "مثال: البنك الأهلي - جاري" = "e.g., Al Ahli Bank - Current";
 "البنك / المزود" = "Bank / Provider";
 "مثال: البنك الأهلي" = "e.g., Al Ahli Bank";
-"الرصيد (﷼)" = "Balance (SAR)";
+"الرصيد (ر.س)" = "Balance (SAR)";
 "حساب مشترك مع العائلة" = "Shared with Family";
 "إضافة الحساب" = "Add Account";
 

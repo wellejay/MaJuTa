@@ -6,6 +6,9 @@ final class AppState: ObservableObject {
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
     @AppStorage("preferredColorScheme") private var storedColorScheme: String = "system"
     @AppStorage("isGuestMode") var isGuestMode: Bool = false
+    @AppStorage("appLanguage") var appLanguage: String = "ar"
+
+    var layoutDirection: LayoutDirection { appLanguage == "ar" ? .rightToLeft : .leftToRight }
 
     // MARK: - Current User (delegates to UserService)
     var currentUser: UserProfile? { UserService.shared.currentUser }

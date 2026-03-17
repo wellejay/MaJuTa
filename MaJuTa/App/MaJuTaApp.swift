@@ -80,7 +80,7 @@ struct MaJuTaApp: App {
                     .ignoresSafeArea()
                 }
             }
-            .environment(\.layoutDirection, .rightToLeft)
+            .environment(\.layoutDirection, appState.layoutDirection)
             .preferredColorScheme(appState.colorScheme)
             .task { appState.loadProfileImage() }
             // Handle majuta://email-verified deep link
@@ -104,7 +104,7 @@ struct MaJuTaApp: App {
 struct WelcomeGateView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var authService: AuthenticationService
-    @Environment(\.openURL) private var openURL
+    @State private var showLanguagePicker = false
 
     var body: some View {
         ZStack {
@@ -116,9 +116,7 @@ struct WelcomeGateView: View {
                 HStack {
                     Spacer()
                     Button {
-                        if let url = URL(string: UIApplication.openSettingsURLString) {
-                            openURL(url)
-                        }
+                        showLanguagePicker = true
                     } label: {
                         HStack(spacing: 6) {
                             Image(systemName: "globe")
@@ -220,5 +218,63 @@ struct WelcomeGateView: View {
                 Spacer().frame(height: MaJuTaSpacing.xl)
             }
         }
+        .sheet(isPresented: $showLanguagePicker) {
+            LanguagePickerSheet().environmentObject(appState)
+        }
+    }
+}
+
+// MARK: - In-App Language Picker
+
+struct LanguagePickerSheet: View {
+    @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) var dismiss
+
+    private let languages: [(code: String, flag: String, name: String, subtitle: String)] = [
+        ("ar", "🇸🇦", "العربية", "Arabic"),
+        ("en", "🇬🇧", "English", "الإنجليزية"),
+    ]
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(languages, id: \.code) { lang in
+                    Button {
+                        appState.appLanguage = lang.code
+                        dismiss()
+                    } label: {
+                        HStack(spacing: MaJuTaSpacing.md) {
+                            Text(lang.flag).font(.system(size: 28))
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(lang.name)
+                                    .font(.body)
+                                    .foregroundColor(.primary)
+                                Text(lang.subtitle)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            if appState.appLanguage == lang.code {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.maJuTaGold)
+                                    .font(.system(size: 20))
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Language / اللغة")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") { dismiss() }
+                        .fontWeight(.semibold)
+                }
+            }
+        }
+        .presentationDetents([.medium])
     }
 }

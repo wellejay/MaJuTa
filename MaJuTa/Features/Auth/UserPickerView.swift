@@ -8,7 +8,7 @@ struct UserPickerView: View {
     @State private var pin = ""
     @State private var pinError = ""
     @State private var showPINEntry = false
-    @Environment(\.openURL) private var openURL
+    @State private var showLanguagePicker = false
 
     var body: some View {
         ZStack {
@@ -19,9 +19,7 @@ struct UserPickerView: View {
                 HStack {
                     Spacer()
                     Button {
-                        if let url = URL(string: UIApplication.openSettingsURLString) {
-                            openURL(url)
-                        }
+                        showLanguagePicker = true
                     } label: {
                         HStack(spacing: 6) {
                             Image(systemName: "globe")
@@ -117,6 +115,9 @@ struct UserPickerView: View {
             }
             .padding(.top, MaJuTaSpacing.sm)
             .animation(.spring(), value: showPINEntry)
+        }
+        .sheet(isPresented: $showLanguagePicker) {
+            LanguagePickerSheet().environmentObject(appState)
         }
     }
 

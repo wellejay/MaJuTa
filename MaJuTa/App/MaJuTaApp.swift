@@ -104,12 +104,38 @@ struct MaJuTaApp: App {
 struct WelcomeGateView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var authService: AuthenticationService
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         ZStack {
             Color.maJuTaBackground.ignoresSafeArea()
 
             VStack(spacing: MaJuTaSpacing.xl) {
+
+                // Language button — top trailing
+                HStack {
+                    Spacer()
+                    Button {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            openURL(url)
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "globe")
+                                .font(.system(size: 14))
+                            Text("Language / اللغة")
+                                .font(.system(size: 13, weight: .medium))
+                        }
+                        .foregroundColor(.maJuTaTextSecondary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 7)
+                        .background(Color.maJuTaCard)
+                        .clipShape(Capsule())
+                    }
+                }
+                .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
+                .padding(.top, MaJuTaSpacing.sm)
+
                 Spacer()
 
                 // Logo / Branding
@@ -128,6 +154,9 @@ struct WelcomeGateView: View {
                     Text("مدير ميزانيتك الشخصية")
                         .font(.maJuTaBody)
                         .foregroundColor(.maJuTaTextSecondary)
+                    Text("Your Personal Budget Manager")
+                        .font(.system(size: 13))
+                        .foregroundColor(.maJuTaTextSecondary.opacity(0.6))
                 }
 
                 Spacer()
@@ -138,13 +167,18 @@ struct WelcomeGateView: View {
                     Button {
                         authService.showRegistration = true
                     } label: {
-                        Text("إنشاء حساب جديد")
-                            .font(.maJuTaBodyBold)
-                            .foregroundColor(.black)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, MaJuTaSpacing.md)
-                            .background(Color.maJuTaGold)
-                            .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
+                        VStack(spacing: 2) {
+                            Text("إنشاء حساب جديد")
+                                .font(.maJuTaBodyBold)
+                            Text("Create Account")
+                                .font(.system(size: 12))
+                                .opacity(0.75)
+                        }
+                        .foregroundColor(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, MaJuTaSpacing.md)
+                        .background(Color.maJuTaGold)
+                        .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
                     }
 
                     // Secondary: Browse as Guest
@@ -153,18 +187,31 @@ struct WelcomeGateView: View {
                         DataStore.shared.loadGuestMode()
                         appState.isGuestMode = true
                     } label: {
-                        Text("تصفح كضيف — بدون حساب")
-                            .font(.maJuTaBody)
-                            .foregroundColor(.maJuTaTextSecondary)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, MaJuTaSpacing.md)
-                            .background(Color.maJuTaCard)
-                            .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
+                        HStack(spacing: MaJuTaSpacing.sm) {
+                            Image(systemName: "person.fill.questionmark")
+                                .font(.system(size: 16))
+                            VStack(spacing: 2) {
+                                Text("تصفح كضيف — بدون حساب")
+                                    .font(.maJuTaBody)
+                                Text("Browse as Guest — No account needed")
+                                    .font(.system(size: 12))
+                                    .opacity(0.75)
+                            }
+                        }
+                        .foregroundColor(.maJuTaTextPrimary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, MaJuTaSpacing.md)
+                        .background(Color.maJuTaCard)
+                        .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: MaJuTaRadius.button)
+                                .stroke(Color.maJuTaGold.opacity(0.3), lineWidth: 1)
+                        )
                     }
                 }
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
 
-                Text("بياناتك في وضع الضيف تُحفظ على جهازك فقط")
+                Text("بياناتك في وضع الضيف تُحفظ على جهازك فقط\nGuest data is stored locally on your device only")
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary.opacity(0.7))
                     .multilineTextAlignment(.center)

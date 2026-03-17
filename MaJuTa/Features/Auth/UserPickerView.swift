@@ -8,11 +8,38 @@ struct UserPickerView: View {
     @State private var pin = ""
     @State private var pinError = ""
     @State private var showPINEntry = false
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         ZStack {
             LinearGradient.navyGradient.ignoresSafeArea()
             VStack(spacing: MaJuTaSpacing.xl) {
+
+                // Language button — top trailing
+                HStack {
+                    Spacer()
+                    Button {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            openURL(url)
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "globe")
+                                .font(.system(size: 14))
+                            Text("Language / اللغة")
+                                .font(.system(size: 13, weight: .medium))
+                        }
+                        .foregroundColor(.white.opacity(0.85))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 7)
+                        .background(Color.white.opacity(0.15))
+                        .clipShape(Capsule())
+                        .overlay(Capsule().stroke(Color.white.opacity(0.25), lineWidth: 1))
+                    }
+                }
+                .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
+                .padding(.top, MaJuTaSpacing.sm)
+
                 Image("MaJuTaLogo")
                     .resizable().scaledToFit().frame(width: 160)
                     .padding(.horizontal, 16).padding(.vertical, 12)
@@ -58,20 +85,37 @@ struct UserPickerView: View {
 
                 Spacer()
 
-                // Guest mode option
+                // Guest mode button — visible styled box
                 Button {
                     UserService.shared.setupGuestUser()
                     DataStore.shared.loadGuestMode()
                     appState.isGuestMode = true
                 } label: {
-                    Text("تصفح كضيف — بدون حساب")
-                        .font(.maJuTaCaption)
-                        .foregroundColor(.white.opacity(0.6))
-                        .padding(.vertical, MaJuTaSpacing.sm)
+                    HStack(spacing: MaJuTaSpacing.sm) {
+                        Image(systemName: "person.fill.questionmark")
+                            .font(.system(size: 16))
+                        VStack(alignment: .trailing, spacing: 2) {
+                            Text("تصفح كضيف")
+                                .font(.maJuTaBodyBold)
+                            Text("Browse as Guest")
+                                .font(.system(size: 12))
+                                .opacity(0.75)
+                        }
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, MaJuTaSpacing.md)
+                    .background(Color.white.opacity(0.12))
+                    .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: MaJuTaRadius.button)
+                            .stroke(Color.white.opacity(0.35), lineWidth: 1)
+                    )
                 }
+                .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
                 .padding(.bottom, MaJuTaSpacing.xl)
             }
-            .padding(.top, MaJuTaSpacing.xl)
+            .padding(.top, MaJuTaSpacing.sm)
             .animation(.spring(), value: showPINEntry)
         }
     }
@@ -128,14 +172,12 @@ struct UserPickerView: View {
         pin = ""
         pinError = ""
         withAnimation { showPINEntry = true }
-        // Try biometric first
         Task { await authService.authenticate(as: user) }
     }
 
     private func verifyAndLogin(user: UserProfile, pin: String) {
         if UserService.shared.verifyPIN(pin, for: user) {
             UserService.shared.setCurrentUser(user)
-            // Sign in to Firebase Auth with the verified PIN
             UserService.shared.signInToFirebase(user: user, pin: pin)
             DataStore.shared.loadForCurrentUser()
             authService.isAuthenticated = true

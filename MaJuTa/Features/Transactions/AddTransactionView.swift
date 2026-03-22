@@ -14,13 +14,14 @@ struct AddTransactionView: View {
     @State private var isExpense: Bool = true
     @State private var showCategoryPicker = false
     @State private var showReceiptScanner = false
+    @State private var isSaving = false
 
     var amount: Double {
-        (Double(amountText) ?? 0) * (isExpense ? -1 : 1)
+        (amountText.arabicNormalizedDouble ?? 0) * (isExpense ? -1 : 1)
     }
 
     var isValid: Bool {
-        !amountText.isEmpty && Double(amountText) != nil && selectedCategory != nil && selectedAccount != nil
+        (amountText.arabicNormalizedDouble ?? 0) > 0 && selectedCategory != nil && selectedAccount != nil
     }
 
     var body: some View {
@@ -57,8 +58,8 @@ struct AddTransactionView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(L("حفظ")) { saveTransaction() }
                         .font(.maJuTaBodyBold)
-                        .foregroundColor(isValid ? .maJuTaGold : .maJuTaTextSecondary)
-                        .disabled(!isValid)
+                        .foregroundColor(isValid && !isSaving ? .maJuTaGold : .maJuTaTextSecondary)
+                        .disabled(!isValid || isSaving)
                 }
             }
         }
@@ -69,7 +70,7 @@ struct AddTransactionView: View {
         VStack(spacing: MaJuTaSpacing.sm) {
             HStack(alignment: .lastTextBaseline, spacing: MaJuTaSpacing.sm) {
                 Text("\u{E900}")
-                    .font(.custom("saudi_riyalregular", size: 28))
+                    .font(.custom(maJuTaRiyalFontName, size: 28))
                     .foregroundColor(.maJuTaTextSecondary)
                 TextField("0", text: $amountText)
                     .keyboardType(.decimalPad)
@@ -116,6 +117,7 @@ struct AddTransactionView: View {
             )
             .padding(4)
         }
+        .accessibilityLabel(isSelected ? L("النوع المحدد: \(title)") : L("تحديد \(title)"))
     }
 
     // MARK: - Fields
@@ -240,6 +242,7 @@ struct AddTransactionView: View {
                     .lineLimit(1)
             }
         }
+        .accessibilityLabel(selectedCategory?.id == cat.id ? L("الفئة المحددة: \(cat.displayName)") : L("اختيار فئة \(cat.displayName)"))
     }
 
     // MARK: - Action Buttons
@@ -256,17 +259,19 @@ struct AddTransactionView: View {
                     .background(Color.maJuTaGold.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
             }
+            .accessibilityLabel(L("مسح فاتورة بالكاميرا"))
 
             Button(action: saveTransaction) {
                 Text(L("حفظ المعاملة"))
                     .font(.maJuTaBodyBold)
-                    .foregroundColor(isValid ? .white : .maJuTaTextSecondary)
+                    .foregroundColor(isValid && !isSaving ? .white : .maJuTaTextSecondary)
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
-                    .background(isValid ? Color.maJuTaPrimary : Color.maJuTaBackground)
+                    .background(isValid && !isSaving ? Color.maJuTaPrimary : Color.maJuTaBackground)
                     .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
             }
-            .disabled(!isValid)
+            .disabled(!isValid || isSaving)
+            .accessibilityLabel(L("حفظ المعاملة الجديدة"))
         }
         .sheet(isPresented: $showReceiptScanner) {
             ReceiptScannerView()
@@ -275,7 +280,8 @@ struct AddTransactionView: View {
 
     // MARK: - Save
     private func saveTransaction() {
-        guard let cat = selectedCategory, let account = selectedAccount else { return }
+        guard !isSaving, let cat = selectedCategory, let account = selectedAccount else { return }
+        isSaving = true
         let userId = UserService.shared.currentUser?.id ?? UUID()
         let tx = Transaction(
             amount: amount,

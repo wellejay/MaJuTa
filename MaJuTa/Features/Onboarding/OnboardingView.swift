@@ -68,7 +68,7 @@ struct OnboardingView: View {
                     HStack {
                         Text(currentPage == 2 ? L("ابدأ الآن") : L("التالي"))
                             .font(.maJuTaBodyBold)
-                        Image(systemName: appState.appLanguage == "ar" ? "arrow.left" : "arrow.right")
+                        Image(systemName: "arrow.forward")
                     }
                     .foregroundColor(.maJuTaPrimary)
                     .frame(maxWidth: .infinity)
@@ -137,7 +137,7 @@ struct OnboardingView: View {
                         .multilineTextAlignment(.trailing)
 
                     Text("\u{E900}")
-                        .font(.custom("saudi_riyalregular", size: 28))
+                        .font(.custom(maJuTaRiyalFontName, size: 28))
                         .foregroundColor(.maJuTaGold)
                 }
                 .padding(MaJuTaSpacing.md)
@@ -210,19 +210,18 @@ struct OnboardingView: View {
     }
 
     private func completeOnboarding() {
-        appState.userName = userName
-        let income = Double(monthlyIncome) ?? 0
-        appState.monthlyIncome = income
-        appState.hasCompletedOnboarding = true
-
         guard let user = UserService.shared.currentUser else { return }
+
+        appState.userName = userName
+        let income = monthlyIncome.arabicNormalizedDouble ?? 0
+        appState.monthlyIncome = income
 
         // Create bank account from onboarding data
         let accountName = bankName.isEmpty ? "الحساب الرئيسي" : bankName
         let account = Account(
             name: accountName,
             type: .bank,
-            balance: income,  // seed with first salary
+            balance: 0,  // starts at 0 — salary transaction below sets the balance
             institution: bankName,
             ownerUserId: user.id,
             householdId: user.householdId,
@@ -233,6 +232,7 @@ struct OnboardingView: View {
         // Create initial salary transaction if income > 0
         if income > 0 {
             let salaryCategory = DataStore.shared.categories.first { $0.name == "Salary" }
+                                 ?? DataStore.shared.categories.first { $0.type == .income }
             if let cat = salaryCategory {
                 let salaryTx = Transaction(
                     amount: income,
@@ -248,5 +248,8 @@ struct OnboardingView: View {
                 DataStore.shared.addTransaction(salaryTx)
             }
         }
+
+        // Navigate only after data is ready
+        appState.hasCompletedOnboarding = true
     }
 }

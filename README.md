@@ -48,16 +48,19 @@ MaJuTa (ماجوتا) is an Arabic-first iOS app for:
 
 | Layer | Technology |
 |---|---|
-| UI | SwiftUI (RTL, Arabic) |
+| Language | Swift 5.9 |
+| UI | SwiftUI iOS 17+ (RTL, Arabic-first) |
 | Auth | Firebase Authentication (email/password) |
 | Database | Cloud Firestore (real-time listeners) |
 | Hosting | Firebase Hosting |
-| Local cache | Keychain (users, households, PINs, invite codes) |
+| Local cache | Keychain `kSecAttrAccessibleWhenUnlockedThisDeviceOnly` |
 | App state | `@AppStorage` (UserDefaults) for non-sensitive prefs |
-| Engines | Custom Swift engines (CashFlow, FinancialHealth, Investment) |
-| Font | `SaudiRiyal.ttf` — custom Saudi Riyal currency symbol (﷼) |
-| Crypto | `CryptoKit.SHA256` for PIN hashing and Firebase password derivation |
-| Biometrics | `LocalAuthentication` framework (Face ID / Touch ID + device passcode fallback) |
+| Engines | CashFlow, FinancialHealth, Investment, Zakat, Ledger |
+| Font | `SaudiRiyal.ttf` — custom Saudi Riyal glyph (U+E900) |
+| Crypto | `CryptoKit` — PBKDF2-HMAC-SHA256 (PIN), SHA256 (Firebase password) |
+| Biometrics | `LocalAuthentication` — Face ID → Touch ID → Device Passcode |
+| Build | XcodeGen (`project.yml`) + Swift Package Manager |
+| CI/CD | GitHub Actions (`.github/workflows/`) |
 
 ---
 
@@ -736,19 +739,49 @@ Deployed files:
 ## iOS App Setup
 
 ### Requirements
-- Xcode 16+
-- iOS 16+ deployment target
+- Xcode 15.0+
+- iOS 17.0 deployment target
+- [XcodeGen](https://github.com/yonaskolb/XcodeGen) — `brew install xcodegen`
+- Firebase CLI — `npm install -g firebase-tools`
 - `GoogleService-Info.plist` (download from Firebase Console → Project Settings)
 - Apple Developer account (for device deployment)
 
 ### Installation
-1. Clone / open `MaJuTa.xcodeproj`
-2. Add `GoogleService-Info.plist` to `MaJuTa/Resources/`
-3. Firebase Swift packages required:
-   - `FirebaseAuth`
-   - `FirebaseFirestore`
-   - `FirebaseCore`
-4. Build & run
+```bash
+# 1. Clone the repo
+git clone <repo-url> && cd MaJuTa
+
+# 2. Add GoogleService-Info.plist (never committed — gitignored)
+cp /path/to/GoogleService-Info.plist MaJuTa/Resources/
+
+# 3. Generate the Xcode project from project.yml
+xcodegen generate --spec project.yml
+
+# 4. Open in Xcode — SPM packages resolve automatically
+open MaJuTa.xcodeproj
+```
+
+Firebase dependencies are declared in `project.yml` and resolved via Swift Package Manager — no Podfile or Podfile.lock.
+
+### Localization
+
+The app uses a custom `L()` function instead of `NSLocalizedString`:
+
+```swift
+// Core/Localization/L.swift
+func L(_ key: String) -> String {
+    let lang = UserDefaults.standard.string(forKey: "appLanguage") ?? "ar"
+    guard lang != "ar" else { return key }  // Arabic keys ARE the text
+    guard let bundle = Bundle(path: Bundle.main.path(forResource: lang, ofType: "lproj")!)
+    else { return key }
+    return bundle.localizedString(forKey: key, value: key, table: nil)
+}
+```
+
+- **Arabic** is the development language — keys are the Arabic strings themselves
+- **English** translations live in `Resources/en.lproj/Localizable.strings`
+- Language switching is in-app (no app restart needed) via `AppState.appLanguage`
+- To add a new string: use it with `L("عربي")` in code, add the English translation to `en.lproj/Localizable.strings`
 
 ### Info.plist Permissions
 ```xml
@@ -793,6 +826,40 @@ MaJuTaApp.onOpenURL handler:
 | **AASA Team ID placeholder** | Universal Links do not work — custom URL scheme (`majuta://`) works as fallback | Replace `TEAMID` in `public/.well-known/apple-app-site-association` |
 | **Spending stability needs 2+ months** | Score component always 0 for new users until second calendar month has expense data | By design — not a bug |
 | **Investment prices manual** | No live price feed — user must update prices manually | MVP scope |
+
+---
+
+## CI/CD
+
+GitHub Actions workflows live in `.github/workflows/`:
+
+| Workflow | Trigger | Purpose |
+|---|---|---|
+| `ci.yml` | Push/PR to `main` | Build + run all unit tests |
+| `lint.yml` | Push/PR to `main` | SwiftLint — fails on errors |
+| `release.yml` | Tag `v*` | Archive → export IPA → upload to TestFlight |
+
+SwiftLint config: `.swiftlint.yml` — 150-char line limit, SwiftUI nesting disabled, `force_cast`/`force_try`/`empty_catch` enabled.
+
+To trigger a TestFlight release:
+```bash
+git tag v1.0.0 && git push origin v1.0.0
+```
+
+Required GitHub Secrets for release: `APPLE_ID`, `APP_SPECIFIC_PASSWORD`, `TEAM_ID`, `DISTRIBUTION_CERTIFICATE_BASE64`, `DISTRIBUTION_CERTIFICATE_PASSWORD`, `PROVISIONING_PROFILE_BASE64`, `KEYCHAIN_PASSWORD`.
+
+---
+
+## Contributing
+
+1. Create a feature branch: `git checkout -b feat/my-feature`
+2. Run SwiftLint before committing: `swiftlint lint --config .swiftlint.yml`
+3. Regenerate project if `project.yml` changed: `xcodegen generate --spec project.yml`
+4. Deploy updated Firestore rules before merging: `firebase deploy --only firestore:rules,firestore:indexes`
+5. All strings must use `L("string")` — no raw Arabic literals in components
+6. New financial math belongs in an Engine, not in a View or Service
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for system design and [SECURITY.md](SECURITY.md) for the security model.
 
 ---
 

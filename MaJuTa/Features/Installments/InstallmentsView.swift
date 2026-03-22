@@ -135,7 +135,7 @@ struct AddInstallmentPlanView: View {
                             TextField("0", text: $totalAmount)
                                 .keyboardType(.numberPad)
                                 .font(.maJuTaLargeNumber).multilineTextAlignment(.trailing)
-                            Text("\u{E900}").font(.custom("saudi_riyalregular", size: 28)).foregroundColor(.maJuTaGold)
+                            Text("\u{E900}").font(.custom(maJuTaRiyalFontName, size: 28)).foregroundColor(.maJuTaGold)
                         }
                         .padding(MaJuTaSpacing.md).background(Color.maJuTaCard)
                         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card)).maJuTaCardShadow()
@@ -159,7 +159,7 @@ struct AddInstallmentPlanView: View {
                             Spacer()
                         }
 
-                        if let amount = Double(totalAmount), amount > 0 {
+                        if let amount = totalAmount.arabicNormalizedDouble, amount > 0 {
                             HStack(spacing: 2) {
                                 Text(L("/ شهر")).font(.maJuTaBodyBold).foregroundColor(.maJuTaGold)
                                 SARText.bodyBold(amount / Double(installmentsCount), color: .maJuTaGold)
@@ -203,7 +203,7 @@ struct AddInstallmentPlanView: View {
     }
 
     private func savePlan() {
-        guard let amount = Double(totalAmount), amount > 0, !merchant.isEmpty else { return }
+        guard let amount = totalAmount.arabicNormalizedDouble, amount > 0, !merchant.isEmpty else { return }
         let plan = InstallmentPlan(
             merchant: merchant,
             provider: provider,

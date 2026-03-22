@@ -45,6 +45,7 @@ struct TransactionsListView: View {
                                         .environmentObject(dataStore)
                                 }
                                 .buttonStyle(.plain)
+                                .accessibilityLabel(L("\(transaction.merchant.isEmpty ? L("معاملة") : transaction.merchant) — \(String(format: "%.0f", abs(transaction.amount))) ريال سعودي"))
                             }
                         }
                         .background(Color.maJuTaCard)
@@ -67,6 +68,7 @@ struct TransactionsListView: View {
                         Image(systemName: ActionIcon.filter)
                             .foregroundColor(.maJuTaGold)
                     }
+                    .accessibilityLabel(showFilters ? L("إخفاء خيارات التصفية") : L("عرض خيارات التصفية"))
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -75,6 +77,7 @@ struct TransactionsListView: View {
                         Image(systemName: "plus.circle.fill")
                             .foregroundColor(.maJuTaGold)
                     }
+                    .accessibilityLabel(L("إضافة معاملة جديدة"))
                 }
             }
         }
@@ -122,6 +125,7 @@ struct TransactionsListView: View {
                 .background(isSelected ? Color.maJuTaGold : Color.maJuTaCard)
                 .clipShape(Capsule())
         }
+        .accessibilityLabel(isSelected ? L("إلغاء تصفية \(title)") : L("تصفية بـ\(title)"))
     }
 
     private var emptyState: some View {

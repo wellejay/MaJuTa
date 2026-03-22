@@ -109,6 +109,16 @@ final class FirestoreService {
         collection(collectionName, householdId: householdId).document(id.uuidString).delete()
     }
 
+    /// Atomically increments a numeric field in a Firestore document.
+    /// Safe for concurrent offline edits — Firestore resolves deltas server-side.
+    func incrementField(_ field: String, by delta: Double,
+                        in collectionName: String, documentId: String,
+                        householdId: UUID) {
+        let ref = collection(collectionName, householdId: householdId)
+            .document(documentId)
+        ref.updateData([field: FieldValue.increment(delta)])
+    }
+
     func listen<T: Decodable>(
         collection collectionName: String,
         householdId: UUID,

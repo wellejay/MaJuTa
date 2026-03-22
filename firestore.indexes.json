@@ -1,0 +1,158 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "transactions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "accountId",  "order": "ASCENDING" },
+        { "fieldPath": "date",       "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "transactions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "categoryId", "order": "ASCENDING" },
+        { "fieldPath": "date",       "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "transactions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "createdByUserId", "order": "ASCENDING" },
+        { "fieldPath": "date",            "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "transactions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isRecurring", "order": "ASCENDING" },
+        { "fieldPath": "date",        "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status",  "order": "ASCENDING" },
+        { "fieldPath": "dueDate", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ownerUserId", "order": "ASCENDING" },
+        { "fieldPath": "dueDate",     "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "accountId", "order": "ASCENDING" },
+        { "fieldPath": "dueDate",   "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "installments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "planId",  "order": "ASCENDING" },
+        { "fieldPath": "dueDate", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "installments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status",  "order": "ASCENDING" },
+        { "fieldPath": "dueDate", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "activityLog",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId",    "order": "ASCENDING" },
+        { "fieldPath": "timestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "activityLog",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "actionType", "order": "ASCENDING" },
+        { "fieldPath": "timestamp",  "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "loans",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ownerUserId",     "order": "ASCENDING" },
+        { "fieldPath": "nextPaymentDate", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "loans",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isShared",        "order": "ASCENDING" },
+        { "fieldPath": "nextPaymentDate", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "savingsGoals",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ownerUserId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt",   "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "savingsGoals",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isShared",  "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "activityLog",
+      "fieldPath": "timestamp",
+      "indexes": [
+        { "order": "DESCENDING", "queryScope": "COLLECTION" },
+        { "arrayConfig": "CONTAINS", "queryScope": "COLLECTION" }
+      ]
+    },
+    {
+      "collectionGroup": "transactions",
+      "fieldPath": "date",
+      "indexes": [
+        { "order": "DESCENDING", "queryScope": "COLLECTION" },
+        { "arrayConfig": "CONTAINS", "queryScope": "COLLECTION" }
+      ]
+    },
+    {
+      "collectionGroup": "bills",
+      "fieldPath": "dueDate",
+      "indexes": [
+        { "order": "ASCENDING",  "queryScope": "COLLECTION" },
+        { "arrayConfig": "CONTAINS", "queryScope": "COLLECTION" }
+      ]
+    },
+    {
+      "collectionGroup": "installments",
+      "fieldPath": "dueDate",
+      "indexes": [
+        { "order": "ASCENDING",  "queryScope": "COLLECTION" },
+        { "arrayConfig": "CONTAINS", "queryScope": "COLLECTION" }
+      ]
+    }
+  ]
+}

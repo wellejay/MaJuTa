@@ -28,7 +28,7 @@ struct SettingsView: View {
                             showIncomeEdit = true
                         } label: {
                             (Text("\(Int(appState.monthlyIncome)) ").font(.maJuTaBody)
-                             + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 16)))
+                             + Text("\u{E900}").font(.custom(maJuTaRiyalFontName, size: 16)))
                             .foregroundColor(.maJuTaGold)
                         }
                     }
@@ -42,7 +42,7 @@ struct SettingsView: View {
                                     .font(.maJuTaLargeNumber)
                                     .multilineTextAlignment(.trailing)
                                 Text("\u{E900}")
-                                    .font(.custom("saudi_riyalregular", size: 28))
+                                    .font(.custom(maJuTaRiyalFontName, size: 28))
                                     .foregroundColor(.maJuTaGold)
                             }
                             .padding(MaJuTaSpacing.md)
@@ -62,7 +62,7 @@ struct SettingsView: View {
                             }
                             ToolbarItem(placement: .navigationBarTrailing) {
                                 Button(L("حفظ")) {
-                                    let newIncome = Double(incomeText) ?? appState.monthlyIncome
+                                    let newIncome = incomeText.arabicNormalizedDouble ?? appState.monthlyIncome
                                     appState.monthlyIncome = newIncome
                                     showIncomeEdit = false
                                 }
@@ -142,7 +142,7 @@ struct SettingsView: View {
                 Button(L("إعادة ضبط التطبيق")) {
                     showResetAlert = true
                 }
-                .font(.maJuTaCaption).foregroundColor(.maJuTaNegative.opacity(0.7))
+                .font(.maJuTaCaption).foregroundColor(.maJuTaNegative)
                 .padding(.top, MaJuTaSpacing.sm)
                 .alert(L("إعادة ضبط التطبيق"), isPresented: $showResetAlert) {
                     Button(L("إلغاء"), role: .cancel) {}

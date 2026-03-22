@@ -1,0 +1,91 @@
+name: CI — Build & Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SCHEME: MaJuTa
+  DESTINATION: "platform=iOS Simulator,name=iPhone 15,OS=17.0"
+  XCODE_VERSION: "15.4"
+
+jobs:
+  build-and-test:
+    name: Build & Test (Xcode ${{ env.XCODE_VERSION }})
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode ${{ env.XCODE_VERSION }}
+        run: sudo xcode-select -s /Applications/Xcode_${{ env.XCODE_VERSION }}.app/Contents/Developer
+
+      - name: Cache Swift Package Manager
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/**/SourcePackages/checkouts
+            ~/Library/Caches/org.swift.swiftpm
+          key: spm-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            spm-${{ runner.os }}-
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate --spec project.yml
+
+      - name: Resolve Swift Package Manager dependencies
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project MaJuTa.xcodeproj \
+            -scheme "${{ env.SCHEME }}" \
+            -destination "${{ env.DESTINATION }}" \
+            | xcpretty --color || true
+
+      - name: Build (Debug)
+        run: |
+          xcodebuild build \
+            -project MaJuTa.xcodeproj \
+            -scheme "${{ env.SCHEME }}" \
+            -destination "${{ env.DESTINATION }}" \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty --color
+
+      - name: Run unit tests
+        run: |
+          xcodebuild test \
+            -project MaJuTa.xcodeproj \
+            -scheme "${{ env.SCHEME }}" \
+            -destination "${{ env.DESTINATION }}" \
+            -configuration Debug \
+            -resultBundlePath TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty --color --report junit --output test-results.xml
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ github.run_number }}
+          path: |
+            TestResults.xcresult
+            test-results.xml
+          retention-days: 14
+
+      - name: Report test results
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: test-results.xml
+          check_name: Unit Test Results
+          fail_on_failure: true

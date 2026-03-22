@@ -48,6 +48,7 @@ struct AnalyticsView: View {
                     .padding(.vertical, MaJuTaSpacing.sm)
                     .background(selectedPeriod == period ? Color.maJuTaGold : Color.clear)
                     .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
+                    .accessibilityLabel(selectedPeriod == period ? L("الفترة المحددة: \(period.displayName)") : L("عرض تحليلات \(period.displayName)"))
             }
         }
         .padding(4)
@@ -198,11 +199,13 @@ struct AnalyticsView: View {
             Text(status).font(.maJuTaCaptionMedium).foregroundColor(color)
                 .padding(.horizontal, MaJuTaSpacing.sm).padding(.vertical, 4)
                 .background(color.opacity(0.1)).clipShape(Capsule())
+                .accessibilityLabel(L("الحالة: \(status)"))
             Spacer()
             VStack(alignment: .trailing, spacing: 2) {
                 Text(value).font(.maJuTaBodyBold).foregroundColor(.maJuTaTextPrimary)
                 Text(label).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
             }
+            .accessibilityLabel(L("\(label): \(value)"))
         }
         .padding(MaJuTaSpacing.md)
         .background(Color.maJuTaCard)

@@ -57,6 +57,7 @@ struct FinancialHealthView: View {
                     Text(L("من 100")).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
                 }
             }
+            .accessibilityLabel(L("نقاط الصحة المالية: \(Int(score.total)) من 100 — \(score.grade.label)"))
 
             Text(score.grade.description)
                 .font(.maJuTaBody).foregroundColor(.maJuTaTextSecondary)
@@ -102,6 +103,7 @@ struct FinancialHealthView: View {
         }
         .padding(MaJuTaSpacing.md).background(Color.maJuTaCard)
         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card)).maJuTaCardShadow()
+        .accessibilityLabel(L("\(label): \(Int(score)) نقطة من 100 — الوزن \(weight)%"))
     }
 
     private var insightsSection: some View {
@@ -144,5 +146,6 @@ struct FinancialHealthView: View {
         }
         .padding(MaJuTaSpacing.md).background(Color.maJuTaCard)
         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card)).maJuTaCardShadow()
+        .accessibilityLabel(L("\(title): \(description)"))
     }
 }

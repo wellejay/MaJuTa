@@ -1,6 +1,9 @@
 import Foundation
 import Combine
 import FirebaseFirestore
+import OSLog
+
+private let dsLogger = Logger(subsystem: "com.majuta.app", category: "datastore")
 
 @MainActor
 final class DataStore: ObservableObject {
@@ -27,12 +30,20 @@ final class DataStore: ObservableObject {
     private var listeners: [ListenerRegistration] = []
 
     // MARK: - Stable IDs (derived from UserService)
+    /// Sentinel UUID used when no user is signed in — prevents random UUID orphaning.
+    /// All documents saved with this ID will be rejected by Firestore security rules (not a real user).
+    static let noUserSentinel = UUID(uuidString: "00000000-0000-0000-0000-FFFFFFFFFFFF")!
+
     var currentUserId: UUID {
-        UserService.shared.currentUser?.id ?? UUID()
+        if let id = UserService.shared.currentUser?.id { return id }
+        dsLogger.error("currentUserId accessed with no current user — using sentinel UUID")
+        return Self.noUserSentinel
     }
 
     var currentHouseholdId: UUID {
-        UserService.shared.currentUser?.householdId ?? UUID()
+        if let id = UserService.shared.currentUser?.householdId { return id }
+        dsLogger.error("currentHouseholdId accessed with no current user — using sentinel UUID")
+        return Self.noUserSentinel
     }
 
     private init() {}
@@ -159,23 +170,28 @@ final class DataStore: ObservableObject {
     }
 
     // MARK: - Visibility Rules
+    // Guest mode: all local data belongs to the single guest user — no ownership filter needed.
 
     var visibleAccounts: [Account] {
+        if isGuestMode { return accounts }
         guard let user = UserService.shared.currentUser else { return [] }
         return accounts.filter { $0.isShared || $0.ownerUserId == user.id }
     }
 
     var visibleTransactions: [Transaction] {
+        if isGuestMode { return transactions }
         let visibleIds = Set(visibleAccounts.map { $0.id })
         return transactions.filter { visibleIds.contains($0.accountId) }
     }
 
     var visibleGoals: [SavingsGoal] {
+        if isGuestMode { return savingsGoals }
         guard let user = UserService.shared.currentUser else { return [] }
         return savingsGoals.filter { $0.isShared || $0.ownerUserId == user.id }
     }
 
     var visibleBills: [Bill] {
+        if isGuestMode { return bills }
         guard let user = UserService.shared.currentUser else { return [] }
         let visibleAccountIds = Set(visibleAccounts.map { $0.id })
         return bills.filter { $0.ownerUserId == user.id || visibleAccountIds.contains($0.accountId) }
@@ -527,27 +543,67 @@ final class DataStore: ObservableObject {
         }
     }
 
+    func updateAccount(_ account: Account) {
+        guard let idx = accounts.firstIndex(where: { $0.id == account.id }) else { return }
+        var updated = account
+        updated.updatedAt = Date()
+        accounts[idx] = updated
+        logActivity(.accountCreated, objectType: "account", description: account.name)
+        if isGuestMode {
+            saveGuestData()
+        } else {
+            FirestoreService.shared.save(updated, to: "accounts", householdId: currentHouseholdId)
+        }
+    }
+
+    func deleteAccount(_ id: UUID) {
+        guard let account = accounts.first(where: { $0.id == id }) else { return }
+        // Remove all transactions tied to this account first
+        let linked = transactions.filter { $0.accountId == id }
+        linked.forEach { deleteTransaction($0.id) }
+        accounts.removeAll { $0.id == id }
+        logActivity(.transactionDeleted, objectType: "account", description: account.name)
+        if isGuestMode {
+            saveGuestData()
+        } else {
+            FirestoreService.shared.delete(id: id, from: "accounts", householdId: currentHouseholdId)
+        }
+    }
+
     func withdrawFromEmergencyFund(amount: Double) {
         guard amount > 0 else { return }
-        guard let savingsIdx = accounts.firstIndex(where: { $0.type == .savings }) else { return }
+        // Prefer the named emergency fund account; fall back to first savings account
+        let savingsIdx: Int? = accounts.firstIndex(where: {
+            $0.type == .savings && ($0.name.contains("طوارئ") || $0.name.lowercased().contains("emergency"))
+        }) ?? accounts.firstIndex(where: { $0.type == .savings })
+        guard let savingsIdx else { return }
 
         let actualWithdrawal = min(amount, accounts[savingsIdx].balance)
         guard actualWithdrawal > 0 else { return }
 
-        // 1. Decrease savings account
+        // 1. Decrease savings account — optimistic local update for instant UI feedback
         accounts[savingsIdx].balance -= actualWithdrawal
         accounts[savingsIdx].updatedAt = Date()
         if !isGuestMode {
-            FirestoreService.shared.save(accounts[savingsIdx], to: "accounts", householdId: currentHouseholdId)
+            // Atomic server-side decrement — safe for concurrent offline edits
+            FirestoreService.shared.incrementField(
+                "balance", by: -actualWithdrawal,
+                in: "accounts", documentId: accounts[savingsIdx].id.uuidString,
+                householdId: currentHouseholdId
+            )
         }
 
-        // 2. Add back to liquid account
-        if var liquid = accounts.first(where: { $0.isLiquid }) {
-            liquid.balance += actualWithdrawal
-            liquid.updatedAt = Date()
-            if let lIdx = accounts.firstIndex(where: { $0.id == liquid.id }) { accounts[lIdx] = liquid }
+        // 2. Add back to liquid account — optimistic local update for instant UI feedback
+        if let lIdx = accounts.firstIndex(where: { $0.isLiquid }) {
+            accounts[lIdx].balance += actualWithdrawal
+            accounts[lIdx].updatedAt = Date()
             if !isGuestMode {
-                FirestoreService.shared.save(liquid, to: "accounts", householdId: currentHouseholdId)
+                // Atomic server-side increment — safe for concurrent offline edits
+                FirestoreService.shared.incrementField(
+                    "balance", by: actualWithdrawal,
+                    in: "accounts", documentId: accounts[lIdx].id.uuidString,
+                    householdId: currentHouseholdId
+                )
             }
         }
 
@@ -561,13 +617,17 @@ final class DataStore: ObservableObject {
         let liquidAccount = accounts.first(where: { $0.isLiquid })
         guard liquidAccount != nil || isGuestMode else { return }
 
-        // 1. Increase savings account balance
-        if var savings = accounts.first(where: { $0.type == .savings }) {
-            savings.balance += amount
-            savings.updatedAt = Date()
-            if let idx = accounts.firstIndex(where: { $0.id == savings.id }) { accounts[idx] = savings }
+        // 1. Increase savings account balance — optimistic local update for instant UI feedback
+        if let idx = accounts.firstIndex(where: { $0.type == .savings }) {
+            accounts[idx].balance += amount
+            accounts[idx].updatedAt = Date()
             if !isGuestMode {
-                FirestoreService.shared.save(savings, to: "accounts", householdId: currentHouseholdId)
+                // Atomic server-side increment — safe for concurrent offline edits
+                FirestoreService.shared.incrementField(
+                    "balance", by: amount,
+                    in: "accounts", documentId: accounts[idx].id.uuidString,
+                    householdId: currentHouseholdId
+                )
             }
         } else {
             // Create savings account automatically
@@ -604,14 +664,17 @@ final class DataStore: ObservableObject {
 
     func deleteTransaction(_ id: UUID) {
         guard let t = transactions.first(where: { $0.id == id }) else { return }
-        // Reverse balance: update account
-        if var account = accounts.first(where: { $0.id == t.accountId }) {
-            account.balance -= t.amount
-            account.updatedAt = Date()
-            if isGuestMode {
-                if let idx = accounts.firstIndex(where: { $0.id == account.id }) { accounts[idx] = account }
-            } else {
-                FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
+        // Reverse balance — optimistic local update for instant UI feedback
+        if let idx = accounts.firstIndex(where: { $0.id == t.accountId }) {
+            accounts[idx].balance -= t.amount
+            accounts[idx].updatedAt = Date()
+            if !isGuestMode {
+                // Atomic server-side decrement — safe for concurrent offline edits
+                FirestoreService.shared.incrementField(
+                    "balance", by: -t.amount,
+                    in: "accounts", documentId: t.accountId.uuidString,
+                    householdId: currentHouseholdId
+                )
             }
         }
         logActivity(.transactionDeleted, objectType: "transaction", description: t.merchant)
@@ -624,14 +687,17 @@ final class DataStore: ObservableObject {
     }
 
     func addTransaction(_ transaction: Transaction) {
-        // Update account balance
-        if var account = accounts.first(where: { $0.id == transaction.accountId }) {
-            account.balance += transaction.amount
-            account.updatedAt = Date()
-            if isGuestMode {
-                if let idx = accounts.firstIndex(where: { $0.id == account.id }) { accounts[idx] = account }
-            } else {
-                FirestoreService.shared.save(account, to: "accounts", householdId: currentHouseholdId)
+        // Update account balance — optimistic local update for instant UI feedback
+        if let idx = accounts.firstIndex(where: { $0.id == transaction.accountId }) {
+            accounts[idx].balance += transaction.amount
+            accounts[idx].updatedAt = Date()
+            if !isGuestMode {
+                // Atomic server-side increment — safe for concurrent offline edits
+                FirestoreService.shared.incrementField(
+                    "balance", by: transaction.amount,
+                    in: "accounts", documentId: transaction.accountId.uuidString,
+                    householdId: currentHouseholdId
+                )
             }
         }
         logActivity(.transactionCreated, objectType: "transaction", description: transaction.merchant)
@@ -659,10 +725,7 @@ final class DataStore: ObservableObject {
         updated.updatedAt = Date()
         // Optimistic local update
         if let idx = bills.firstIndex(where: { $0.id == bill.id }) { bills[idx] = updated }
-        if !isGuestMode {
-            FirestoreService.shared.save(updated, to: "bills", householdId: currentHouseholdId)
-        }
-        // Guest: saveGuestData() will be called by addTransaction below
+
         // Create expense transaction for this bill payment
         guard let user = UserService.shared.currentUser else { return }
         let tx = Transaction(
@@ -675,7 +738,52 @@ final class DataStore: ObservableObject {
             ownerUserId: user.id,
             createdByUserId: user.id
         )
-        addTransaction(tx)
+
+        if isGuestMode {
+            // Guest: no Firestore — just update local state via addTransaction
+            addTransaction(tx)
+        } else {
+            let hid = currentHouseholdId
+            let fs = FirestoreService.shared
+
+            // Batch bill update + transaction create so both succeed or both fail atomically
+            let batch = fs.db.batch()
+
+            let billRef = fs.collection("bills", householdId: hid)
+                .document(updated.id.uuidString)
+            if let encoded = try? Firestore.Encoder().encode(updated) {
+                batch.setData(encoded, forDocument: billRef)
+            }
+
+            let txRef = fs.collection("transactions", householdId: hid)
+                .document(tx.id.uuidString)
+            if let encoded = try? Firestore.Encoder().encode(tx) {
+                batch.setData(encoded, forDocument: txRef)
+            }
+
+            batch.commit { error in
+                if let error {
+                    dsLogger.error("payBill batch commit failed: \(error.localizedDescription, privacy: .public)")
+                }
+            }
+
+            // Atomically decrement the account balance for the bill payment
+            fs.incrementField(
+                "balance", by: tx.amount,
+                in: "accounts", documentId: bill.accountId.uuidString,
+                householdId: hid
+            )
+
+            // Optimistic local account balance update
+            if let idx = accounts.firstIndex(where: { $0.id == bill.accountId }) {
+                accounts[idx].balance += tx.amount
+                accounts[idx].updatedAt = Date()
+            }
+
+            // Optimistic local transaction insert (listener will confirm/reconcile)
+            transactions.insert(tx, at: 0)
+        }
+
         logActivity(.billCreated, objectType: "bill", description: "\(bill.name) — مدفوعة")
         // If recurring, schedule next due date
         if !isGuestMode && bill.frequency != .custom {
@@ -714,6 +822,30 @@ final class DataStore: ObservableObject {
             saveGuestData()
         } else {
             FirestoreService.shared.save(goal, to: "savingsGoals", householdId: currentHouseholdId)
+        }
+    }
+
+    func updateGoal(_ goal: SavingsGoal) {
+        guard let idx = savingsGoals.firstIndex(where: { $0.id == goal.id }) else { return }
+        var updated = goal
+        updated.updatedAt = Date()
+        savingsGoals[idx] = updated
+        logActivity(.goalUpdated, objectType: "goal", description: goal.name)
+        if isGuestMode {
+            saveGuestData()
+        } else {
+            FirestoreService.shared.save(updated, to: "savingsGoals", householdId: currentHouseholdId)
+        }
+    }
+
+    func deleteGoal(_ id: UUID) {
+        guard let goal = savingsGoals.first(where: { $0.id == id }) else { return }
+        savingsGoals.removeAll { $0.id == id }
+        logActivity(.transactionDeleted, objectType: "goal", description: goal.name)
+        if isGuestMode {
+            saveGuestData()
+        } else {
+            FirestoreService.shared.delete(id: id, from: "savingsGoals", householdId: currentHouseholdId)
         }
     }
 

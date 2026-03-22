@@ -71,6 +71,10 @@ enum ActionIcon {
     static let share         = "square.and.arrow.up"
     static let edit          = "pencil"
     static let delete        = "trash"
-    static let chevronRight  = "chevron.left" // RTL
-    static let back          = "chevron.right" // RTL
+    // Using SF Symbols' built-in RTL mirroring — auto-flips in RTL environments.
+    static let chevronForward = "chevron.forward"  // points toward content (←  in Arabic)
+    static let chevronBack    = "chevron.backward" // points back (→ in Arabic)
+    // Legacy aliases — kept for compatibility; prefer chevronForward/chevronBack
+    static let chevronRight  = "chevron.forward"
+    static let back          = "chevron.backward"
 }

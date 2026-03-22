@@ -18,14 +18,34 @@ struct PINPadView: View {
                             Text(key)
                                 .font(.maJuTaTitle2)
                                 .foregroundColor(.white)
-                                .frame(width: 72, height: 72)
+                                .frame(width: MaJuTaSpacing.pinButtonSize, height: MaJuTaSpacing.pinButtonSize)
                                 .background(key.isEmpty ? Color.clear : Color.white.opacity(0.15))
                                 .clipShape(Circle())
                         }
                         .disabled(key.isEmpty)
+                        .accessibilityLabel(pinKeyLabel(key))
+                        .accessibilityHint(pinKeyHint(key))
+                        .accessibilityHidden(key.isEmpty)
                     }
                 }
             }
+        }
+        .accessibilityLabel(L("لوحة أرقام رمز المرور"))
+    }
+
+    private func pinKeyLabel(_ key: String) -> String {
+        switch key {
+        case "⌫": return L("حذف")
+        case "":  return ""
+        default:  return L("رقم \(key)")
+        }
+    }
+
+    private func pinKeyHint(_ key: String) -> String {
+        switch key {
+        case "⌫": return L("يحذف آخر رقم تم إدخاله")
+        case "":  return ""
+        default:  return L("انقر لإدخال الرقم \(key)")
         }
     }
 

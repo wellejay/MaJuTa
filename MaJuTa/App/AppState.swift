@@ -87,8 +87,10 @@ final class AppState: ObservableObject {
             hasCompletedOnboarding = false
             KeychainService.delete(for: "monthlyIncome")
             KeychainService.delete(for: "spendingLimit")
+            KeychainService.delete(for: "lastLoggedInUserId")
             deleteProfileImage()
             DataStore.shared.clearAll()
+            DataStore.shared.deleteGuestData()
             objectWillChange.send()
             return
         }

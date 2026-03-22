@@ -21,6 +21,7 @@ struct GoalsView: View {
                                     GoalCardView(goal: goal)
                                 }
                                 .buttonStyle(.plain)
+                                .accessibilityLabel(L("عرض تفاصيل هدف: \(goal.nameArabic.isEmpty ? goal.name : goal.nameArabic)"))
                             }
                         }
                     }
@@ -33,6 +34,7 @@ struct GoalsView: View {
                         )
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(L("صندوق الطوارئ — الرصيد: \(String(format: "%.0f", dataStore.emergencyFundBalance)) ريال سعودي"))
                 }
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
                 .padding(.vertical, MaJuTaSpacing.md)
@@ -49,6 +51,7 @@ struct GoalsView: View {
                         Image(systemName: "plus.circle.fill")
                             .foregroundColor(.maJuTaGold)
                     }
+                    .accessibilityLabel(L("إضافة هدف جديد"))
                 }
             }
             .sheet(isPresented: $showAddGoal) {
@@ -225,13 +228,7 @@ struct EmergencyFundCardView: View {
             }
         }
         .padding(MaJuTaSpacing.lg)
-        .background(
-            LinearGradient(
-                colors: [Color(hex: "#EF4444"), Color(hex: "#DC2626")],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
+        .background(LinearGradient.emergencyGradient)
         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
         .maJuTaCardShadow()
     }

@@ -54,6 +54,7 @@ struct EmergencyFundView: View {
                             .foregroundColor(.maJuTaNegative)
                     }
                     .disabled(dataStore.emergencyFundBalance <= 0)
+                    .accessibilityLabel(L("سحب من صندوق الطوارئ"))
 
                     Button {
                         showAddFunds = true
@@ -62,6 +63,7 @@ struct EmergencyFundView: View {
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.maJuTaGold)
                     }
+                    .accessibilityLabel(L("إضافة مبلغ لصندوق الطوارئ"))
                 }
             }
         }
@@ -100,6 +102,7 @@ struct EmergencyFundView: View {
             }
 
             SARText.largeNumber(balance)
+                .accessibilityLabel(L("الرصيد الحالي: \(String(format: "%.0f", balance)) ريال سعودي"))
 
             Text(L("الرصيد الحالي"))
                 .font(.maJuTaCaption)
@@ -146,6 +149,11 @@ struct EmergencyFundView: View {
         .background(bgColor)
         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
         .maJuTaCardShadow()
+        .accessibilityLabel(isCompleted
+            ? L("مساهمة الشهر مكتملة — \(String(format: "%.0f", deposited)) ريال سعودي")
+            : isNotStarted
+            ? L("لم تُموَّل صندوق الطوارئ هذا الشهر — المستهدف \(String(format: "%.0f", target)) ريال سعودي")
+            : L("مساهمة جزئية — \(String(format: "%.0f", deposited)) من \(String(format: "%.0f", target)) ريال سعودي"))
     }
 
     private var coverageDetail: some View {
@@ -211,13 +219,7 @@ struct EmergencyFundView: View {
                 .foregroundColor(.white.opacity(0.8))
         }
         .padding(MaJuTaSpacing.lg)
-        .background(
-            LinearGradient(
-                colors: [Color(hex: "#EF4444"), Color(hex: "#B91C1C")],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
+        .background(LinearGradient.emergencyGradient)
         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
         .maJuTaCardShadow()
     }
@@ -253,7 +255,7 @@ private struct EmergencyFundTransactionSheet: View {
     @State private var amountText = ""
     @FocusState private var focused: Bool
 
-    var amount: Double { Double(amountText) ?? 0 }
+    var amount: Double { amountText.arabicNormalizedDouble ?? 0 }
     var balance: Double { dataStore.emergencyFundBalance }
 
     var isDeposit: Bool { mode == .deposit }
@@ -273,7 +275,7 @@ private struct EmergencyFundTransactionSheet: View {
                         .font(.maJuTaTitle2)
                         .foregroundColor(.maJuTaTextPrimary)
                     (Text(L("الرصيد الحالي") + ": \(String(format: "%.0f", balance)) ").font(.maJuTaCaption)
-                     + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 13)))
+                     + Text("\u{E900}").font(.custom(maJuTaRiyalFontName, size: 13)))
                     .foregroundColor(.maJuTaTextSecondary)
                 }
                 .padding(.top, MaJuTaSpacing.xl)
@@ -325,6 +327,9 @@ private struct EmergencyFundTransactionSheet: View {
                 }
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
                 .disabled(!isValid)
+                .accessibilityLabel(isDeposit
+                    ? L("إضافة \(amount > 0 ? String(format: "%.0f", amount) : "") ريال سعودي لصندوق الطوارئ")
+                    : L("سحب \(amount > 0 ? String(format: "%.0f", amount) : "") ريال سعودي من صندوق الطوارئ"))
 
                 Spacer()
             }

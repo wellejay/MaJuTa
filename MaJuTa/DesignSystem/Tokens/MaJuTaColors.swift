@@ -11,6 +11,36 @@ extension Color {
     static let maJuTaPositive    = Color(hex: "#22C55E")
     static let maJuTaNegative    = Color(hex: "#EF4444")
     static let maJuTaWarning     = Color(hex: "#F59E0B")
+    static let maJuTaInfo        = Color(hex: "#3B82F6")
+
+    // MARK: - Semantic Tint Backgrounds (adaptive — replaces inline .opacity() hacks)
+    static let maJuTaPositiveBg  = Color(UIColor { t in
+        t.userInterfaceStyle == .dark
+            ? UIColor(hex: "#22C55E").withAlphaComponent(0.15)
+            : UIColor(hex: "#22C55E").withAlphaComponent(0.10)
+    })
+    static let maJuTaNegativeBg  = Color(UIColor { t in
+        t.userInterfaceStyle == .dark
+            ? UIColor(hex: "#EF4444").withAlphaComponent(0.15)
+            : UIColor(hex: "#EF4444").withAlphaComponent(0.10)
+    })
+    static let maJuTaWarningBg   = Color(UIColor { t in
+        t.userInterfaceStyle == .dark
+            ? UIColor(hex: "#F59E0B").withAlphaComponent(0.15)
+            : UIColor(hex: "#F59E0B").withAlphaComponent(0.10)
+    })
+    static let maJuTaInfoBg      = Color(UIColor { t in
+        t.userInterfaceStyle == .dark
+            ? UIColor(hex: "#3B82F6").withAlphaComponent(0.15)
+            : UIColor(hex: "#3B82F6").withAlphaComponent(0.10)
+    })
+
+    // MARK: - Adaptive Border / Divider
+    static let maJuTaBorder      = Color(UIColor { t in
+        t.userInterfaceStyle == .dark
+            ? UIColor(hex: "#1E2D3D")
+            : UIColor(hex: "#E5E7EB")
+    })
 
     // MARK: - Adaptive Backgrounds
     /// Page background: light #F6F7F9 / dark #0A0F14
@@ -95,6 +125,14 @@ extension LinearGradient {
         colors: [Color(.systemBackground), Color(.systemBackground).opacity(0.95)],
         startPoint: .top,
         endPoint: .bottom
+    )
+
+    // Emergency fund / danger CTA — single source of truth, replaces
+    // divergent inline red gradients in GoalsView and EmergencyFundView.
+    static let emergencyGradient = LinearGradient(
+        colors: [Color(hex: "#EF4444"), Color(hex: "#DC2626")],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
     )
 }
 

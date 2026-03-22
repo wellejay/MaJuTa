@@ -7,7 +7,6 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // Resolve the authenticated user's household from the authLookup table.
     function authLookup() {
       return get(/databases/$(database)/documents/authLookup/$(request.auth.uid)).data;
     }
@@ -38,9 +37,17 @@ service cloud.firestore {
       allow read: if isSignedIn() &&
         (userId == myUserId() ||
          get(/databases/$(database)/documents/users/$(userId)).data.householdId == myHouseholdId());
-      // Only the owner of the profile can write it (or owner/admin for role updates).
-      allow write: if isSignedIn() &&
-        (userId == myUserId() || canWrite());
+      // Users can only create their own profile document.
+      allow create: if isSignedIn() && userId == myUserId();
+      // Self-update always allowed. Owners/admins can only update profiles of
+      // users within their own household — prevents cross-household tampering.
+      allow update: if isSignedIn() && (
+        userId == myUserId() ||
+        (canWrite() &&
+         get(/databases/$(database)/documents/users/$(userId)).data.householdId == myHouseholdId())
+      );
+      // No client-side deletion — prevents orphaned household data.
+      allow delete: if false;
     }
 
     // ── Households ────────────────────────────────────────────────────────────
@@ -54,7 +61,6 @@ service cloud.firestore {
         allow create: if isSignedIn() && householdId == myHouseholdId() && canWrite();
         allow update: if isSignedIn() && householdId == myHouseholdId() &&
           (canWrite() ||
-           // Members can only update accounts they own
            (isMember() && resource.data.ownerUserId == myUserId()));
         allow delete: if isSignedIn() && householdId == myHouseholdId() && isOwner();
       }
@@ -62,9 +68,14 @@ service cloud.firestore {
       // ── Transactions ────────────────────────────────────────────────────────
       match /transactions/{txId} {
         allow read: if isSignedIn() && householdId == myHouseholdId();
-        allow create: if isSignedIn() && householdId == myHouseholdId() && canAddTx();
+        // Pin createdByUserId to the caller on create — prevents spoofing.
+        allow create: if isSignedIn() && householdId == myHouseholdId() && canAddTx() &&
+          request.resource.data.createdByUserId == myUserId();
+        // Prevent createdByUserId and ownerUserId from being changed on update.
         allow update: if isSignedIn() && householdId == myHouseholdId() &&
-          (canWrite() || resource.data.createdByUserId == myUserId());
+          (canWrite() || resource.data.createdByUserId == myUserId()) &&
+          request.resource.data.createdByUserId == resource.data.createdByUserId &&
+          request.resource.data.ownerUserId     == resource.data.ownerUserId;
         allow delete: if isSignedIn() && householdId == myHouseholdId() &&
           (isOwner() || resource.data.createdByUserId == myUserId());
       }
@@ -76,9 +87,13 @@ service cloud.firestore {
       }
 
       // ── Bills ────────────────────────────────────────────────────────────────
+      // Bills have no createdByUserId; delete is restricted to owners/admins.
       match /bills/{billId} {
         allow read: if isSignedIn() && householdId == myHouseholdId();
-        allow write: if isSignedIn() && householdId == myHouseholdId() && canAddTx();
+        allow create: if isSignedIn() && householdId == myHouseholdId() && canAddTx();
+        allow update: if isSignedIn() && householdId == myHouseholdId() &&
+          (canWrite() || resource.data.ownerUserId == myUserId());
+        allow delete: if isSignedIn() && householdId == myHouseholdId() && canWrite();
       }
 
       // ── Investments ──────────────────────────────────────────────────────────
@@ -97,22 +112,30 @@ service cloud.firestore {
         allow delete: if isSignedIn() && householdId == myHouseholdId() && isOwner();
       }
 
-      // ── Installment Plans + Installments ────────────────────────────────────
+      // ── Installment Plans ────────────────────────────────────────────────────
       match /installmentPlans/{planId} {
         allow read: if isSignedIn() && householdId == myHouseholdId();
-        allow write: if isSignedIn() && householdId == myHouseholdId() && canAddTx();
+        allow create: if isSignedIn() && householdId == myHouseholdId() && canAddTx();
+        allow update: if isSignedIn() && householdId == myHouseholdId() &&
+          (canWrite() || resource.data.ownerUserId == myUserId());
+        allow delete: if isSignedIn() && householdId == myHouseholdId() && canWrite();
       }
 
+      // ── Installments ─────────────────────────────────────────────────────────
       match /installments/{installmentId} {
         allow read: if isSignedIn() && householdId == myHouseholdId();
-        allow write: if isSignedIn() && householdId == myHouseholdId() && canAddTx();
+        allow create: if isSignedIn() && householdId == myHouseholdId() && canAddTx();
+        allow update: if isSignedIn() && householdId == myHouseholdId() && canAddTx();
+        allow delete: if isSignedIn() && householdId == myHouseholdId() && canWrite();
       }
 
       // ── Activity Log ─────────────────────────────────────────────────────────
+      // Immutable log; entries must be attributed to the writing user.
       match /activityLog/{entryId} {
         allow read: if isSignedIn() && householdId == myHouseholdId();
-        allow create: if isSignedIn() && householdId == myHouseholdId();
-        allow update, delete: if false;   // Immutable log
+        allow create: if isSignedIn() && householdId == myHouseholdId() &&
+          request.resource.data.userId == myUserId();
+        allow update, delete: if false;
       }
 
       // ── Budgets ──────────────────────────────────────────────────────────────
@@ -123,29 +146,37 @@ service cloud.firestore {
     }
 
     // ── Auth Lookup ───────────────────────────────────────────────────────────
-    // Written only during registration; readable by the owning Firebase user only.
+    // Written once during registration; immutable thereafter.
+    // Mutable authLookup would allow a user to switch their householdId.
+    // Delete is allowed so account deletion can clean up the lookup entry.
     match /authLookup/{uid} {
-      allow read: if isSignedIn() && uid == request.auth.uid;
-      allow write: if isSignedIn() && uid == request.auth.uid;
+      allow read:   if isSignedIn() && uid == request.auth.uid;
+      allow create: if isSignedIn() && uid == request.auth.uid;
+      allow update: if false;
+      allow delete: if isSignedIn() && uid == request.auth.uid;
     }
 
     // ── Invite Codes ─────────────────────────────────────────────────────────
-    // Anyone can read (to validate a code); only authenticated users can create.
-    // Deletion only by household owner.
+    // Anyone can read (knowing the code string IS the credential).
+    // Only household owners/admins can create codes for their own household.
     match /inviteCodes/{code} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn();
+      allow create: if isSignedIn() &&
+        request.resource.data.householdId == myHouseholdId() && canWrite();
       allow delete: if isSignedIn() &&
         resource.data.householdId == myHouseholdId() && isOwner();
       allow update: if false;
     }
 
     // ── Auth Logs ─────────────────────────────────────────────────────────────
-    // Write-only from the app; readable only by owners for audit purposes.
+    // Write-only immutable audit trail; uid field must match the caller.
     match /authLogs/{logId} {
-      allow create: if isSignedIn();
-      allow read: if false;    // No client-side read — review via Firebase console
-      allow update, delete: if false;
+      allow create: if isSignedIn() &&
+        (!request.resource.data.keys().hasAny(["uid"]) ||
+         request.resource.data.uid == request.auth.uid) &&
+        (!request.resource.data.keys().hasAny(["userId"]) ||
+         request.resource.data.userId == myUserId());
+      allow read, update, delete: if false;
     }
 
     // Deny everything else by default

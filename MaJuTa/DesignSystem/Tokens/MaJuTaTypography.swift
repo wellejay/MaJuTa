@@ -17,6 +17,9 @@ extension Font {
     static let maJuTaBodyMedium  = Font.system(size: 16, weight: .medium, design: .default)
     static let maJuTaBodyBold    = Font.system(size: 16, weight: .semibold, design: .default)
 
+    // CTA / primary button label
+    static let maJuTaButton      = Font.system(size: 16, weight: .semibold, design: .default)
+
     // Supporting
     static let maJuTaSubheadline = Font.system(size: 15, weight: .medium, design: .default)
     static let maJuTaCaption     = Font.system(size: 13, weight: .regular, design: .default)

@@ -35,6 +35,7 @@ struct GoalDetailView: View {
                         .background(Color.maJuTaPrimary)
                         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
                 }
+                .accessibilityLabel(L("إضافة مبلغ لهدف \(currentGoal.nameArabic.isEmpty ? currentGoal.name : currentGoal.nameArabic)"))
             }
             .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
             .padding(.vertical, MaJuTaSpacing.lg)
@@ -59,11 +60,13 @@ struct GoalDetailView: View {
             }
 
             SARText.hero(currentGoal.currentAmount)
+                .accessibilityLabel(L("المبلغ المدخر: \(String(format: "%.0f", currentGoal.currentAmount)) ريال سعودي"))
 
             HStack(spacing: 2) {
                 Text(L("من")).font(.maJuTaBody).foregroundColor(.maJuTaTextSecondary)
                 SARText.body(currentGoal.targetAmount, color: .maJuTaTextSecondary)
             }
+            .accessibilityLabel(L("المستهدف: \(String(format: "%.0f", currentGoal.targetAmount)) ريال سعودي"))
         }
         .frame(maxWidth: .infinity)
         .padding(MaJuTaSpacing.lg)
@@ -145,7 +148,7 @@ struct GoalDetailView: View {
 
                 HStack {
                     Text("\u{E900}")
-                        .font(.custom("saudi_riyalregular", size: 28))
+                        .font(.custom(maJuTaRiyalFontName, size: 28))
                         .foregroundColor(.maJuTaTextSecondary)
                     TextField("0", text: $contributionAmount)
                         .keyboardType(.numberPad)
@@ -159,7 +162,7 @@ struct GoalDetailView: View {
                 Spacer()
 
                 Button(L("إضافة")) {
-                    if let amount = Double(contributionAmount), amount > 0 {
+                    if let amount = contributionAmount.arabicNormalizedDouble, amount > 0 {
                         dataStore.contribute(to: currentGoal, amount: amount)
                         contributionAmount = ""
                     }
@@ -171,6 +174,7 @@ struct GoalDetailView: View {
                 .frame(height: 56)
                 .background(Color.maJuTaPrimary)
                 .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
+                .accessibilityLabel(L("إضافة المبلغ للهدف"))
             }
             .padding(MaJuTaSpacing.horizontalPadding)
             .navigationTitle(L("إضافة مدخرات"))
@@ -288,6 +292,7 @@ struct AddGoalView: View {
                     .background(name.isEmpty || targetAmount.isEmpty ? Color.maJuTaTextSecondary.opacity(0.3) : Color.maJuTaPrimary)
                     .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
                     .disabled(name.isEmpty || targetAmount.isEmpty)
+                    .accessibilityLabel(L("إنشاء هدف ادخار جديد"))
                 }
                 .padding(MaJuTaSpacing.horizontalPadding)
                 .padding(.bottom, MaJuTaSpacing.xxxl)
@@ -308,7 +313,7 @@ struct AddGoalView: View {
         let goal = SavingsGoal(
             name: name,
             nameArabic: name,
-            targetAmount: Double(targetAmount) ?? 0,
+            targetAmount: targetAmount.arabicNormalizedDouble ?? 0,
             deadline: hasDeadline ? deadline : nil,
             ownerUserId: UserService.shared.currentUser?.id ?? UUID(),
             householdId: UserService.shared.currentUser?.householdId ?? UUID(),

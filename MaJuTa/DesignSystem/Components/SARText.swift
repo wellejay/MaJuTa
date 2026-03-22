@@ -3,7 +3,9 @@ import SwiftUI
 // MARK: - Saudi Riyal Symbol Font
 // Font family: "saudi_riyal", PostScript name: "saudi_riyalregular"
 // U+E900 = private-use riyal glyph (works on all iOS versions)
-private let riyalFontName = "saudi_riyalregular"
+// Internal (not private) so feature views can reference it in custom Text concatenations.
+let maJuTaRiyalFontName = "saudi_riyalregular"
+private let riyalFontName = maJuTaRiyalFontName
 private let riyalChar = "\u{E900}"
 
 // MARK: - SARText View
@@ -36,6 +38,9 @@ struct SARText: View {
          + Text(compact ? amount.sarCompactNumber : amount.sarNumber)
             .font(.system(size: size, weight: weight, design: .rounded)))
         .foregroundColor(color)
+        // U+E900 is a private-use glyph — VoiceOver cannot read it.
+        // Provide a full Arabic label so screen reader users hear the amount correctly.
+        .accessibilityLabel("\(compact ? amount.sarCompactNumber : amount.sarNumber) ريال سعودي")
     }
 }
 

@@ -102,6 +102,7 @@ private struct GuestModeBanner: View {
             .background(Color.maJuTaCard)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(L("وضع الضيف — اضغط لإنشاء حساب"))
     }
 }
 

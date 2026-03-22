@@ -84,6 +84,7 @@ struct DashboardView: View {
                             .font(.system(size: 20))
                             .foregroundColor(.white.opacity(0.8))
                     }
+                    .accessibilityLabel(L("الإشعارات"))
 
                     Spacer()
 
@@ -137,6 +138,7 @@ struct DashboardView: View {
                         .foregroundColor(.white.opacity(0.7))
 
                     SARText.hero(dataStore.monthlyNetFromIncome, color: .white)
+                        .accessibilityLabel(L("المتاح للإنفاق: \(String(format: "%.0f", dataStore.monthlyNetFromIncome)) ريال سعودي"))
 
                     HStack(spacing: MaJuTaSpacing.sm) {
                         HStack(spacing: 4) {
@@ -189,9 +191,13 @@ struct DashboardView: View {
                     .foregroundColor(color)
             }
             SARText.mediumNumber(amount)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
             Text(title)
                 .font(.maJuTaCaption)
                 .foregroundColor(.maJuTaTextSecondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
         }
         .frame(maxWidth: .infinity)
         .padding(MaJuTaSpacing.md)
@@ -209,6 +215,7 @@ struct DashboardView: View {
                         Image(systemName: "info.circle")
                             .foregroundColor(.maJuTaTextSecondary)
                     }
+                    .accessibilityLabel(L("عرض الصحة المالية"))
                     Button {
                         limitInput = appState.spendingLimit > 0 ? String(format: "%.0f", appState.spendingLimit) : ""
                         showSetLimit = true
@@ -217,6 +224,7 @@ struct DashboardView: View {
                             .foregroundColor(spendingLimitColor)
                             .font(.system(size: 16))
                     }
+                    .accessibilityLabel(appState.spendingLimit > 0 ? L("تعديل حد الإنفاق") : L("تعيين حد الإنفاق"))
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
@@ -225,9 +233,9 @@ struct DashboardView: View {
                         .foregroundColor(spendingCardAmount >= 0 ? .maJuTaTextSecondary : .maJuTaNegative)
                     if appState.spendingLimit > 0 {
                         (Text("\(L("أنفقت:")) \(String(format: "%.0f", dataStore.discretionaryExpensesThisMonth)) ").font(.maJuTaLabel)
-                         + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 11))
+                         + Text("\u{E900}").font(.custom(maJuTaRiyalFontName, size: 11))
                          + Text(" \(L("من")) \(String(format: "%.0f", appState.spendingLimit)) ").font(.maJuTaLabel)
-                         + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 11)))
+                         + Text("\u{E900}").font(.custom(maJuTaRiyalFontName, size: 11)))
                         .foregroundColor(spendingLimitColor)
                     }
                 }
@@ -370,6 +378,7 @@ struct DashboardView: View {
                         .font(.maJuTaCaptionMedium)
                         .foregroundColor(.maJuTaGold)
                 }
+                .accessibilityLabel(L("عرض جميع الفواتير"))
                 Spacer()
                 Text(L("الفواتير القادمة"))
                     .font(.maJuTaSectionTitle)
@@ -402,6 +411,7 @@ struct DashboardView: View {
                         .font(.maJuTaCaptionMedium)
                         .foregroundColor(.maJuTaGold)
                 }
+                .accessibilityLabel(L("عرض جميع المعاملات"))
                 Spacer()
                 Text(L("آخر المعاملات"))
                     .font(.maJuTaSectionTitle)
@@ -438,7 +448,7 @@ struct DashboardView: View {
                     Text(score.grade.description)
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaTextSecondary)
-                        .multilineTextAlignment(.leading)
+                        .multilineTextAlignment(.trailing)
                     Text(L("اعرض التقرير الكامل"))
                         .font(.maJuTaCaptionMedium)
                         .foregroundColor(.maJuTaGold)
@@ -481,6 +491,7 @@ struct DashboardView: View {
             .maJuTaCardShadow()
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(L("الصحة المالية — عرض التقرير الكامل"))
     }
 
     // MARK: - Notifications Sheet
@@ -526,6 +537,7 @@ struct DashboardView: View {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(L("إغلاق")) { dismiss() }
                             .foregroundColor(.maJuTaTextSecondary)
+                            .accessibilityLabel(L("إغلاق الإشعارات"))
                     }
                 }
             }
@@ -578,7 +590,7 @@ private struct SpendingLimitSheet: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focused: Bool
 
-    var amount: Double { Double(limitInput) ?? 0 }
+    var amount: Double { limitInput.arabicNormalizedDouble ?? 0 }
 
     var body: some View {
         NavigationStack {
@@ -623,7 +635,7 @@ private struct SpendingLimitSheet: View {
                     Group {
                         if amount > 0 {
                             Text("\(L("حفظ")) \(String(format: "%.0f", amount)) ").font(.maJuTaBodyBold)
-                            + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 16))
+                            + Text("\u{E900}").font(.custom(maJuTaRiyalFontName, size: 16))
                         } else {
                             Text(L("حفظ")).font(.maJuTaBodyBold)
                         }
@@ -636,6 +648,7 @@ private struct SpendingLimitSheet: View {
                 }
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
                 .disabled(amount <= 0)
+                .accessibilityLabel(amount > 0 ? L("حفظ حد الإنفاق: \(String(format: "%.0f", amount)) ريال سعودي") : L("حفظ حد الإنفاق"))
 
                 if limitInput != "" {
                     Button(L("إزالة الحد")) {
@@ -644,6 +657,7 @@ private struct SpendingLimitSheet: View {
                     }
                     .font(.maJuTaCaption)
                     .foregroundColor(.maJuTaTextSecondary)
+                    .accessibilityLabel(L("إزالة حد الإنفاق"))
                 }
 
                 Spacer()

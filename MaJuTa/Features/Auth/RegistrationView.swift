@@ -52,7 +52,7 @@ struct RegistrationView: View {
             LinearGradient.navyGradient.ignoresSafeArea()
             VStack(spacing: 0) {
                 // Top bar: back button + logo
-                ZStack(alignment: .leading) {
+                ZStack(alignment: .trailing) {
                     // Back button: goes to previous step, or cancels registration on first step
                     if step != .biometric {
                         Button(action: {
@@ -63,14 +63,14 @@ struct RegistrationView: View {
                             }
                         }) {
                             HStack(spacing: 6) {
-                                Image(systemName: "chevron.right")
+                                Image(systemName: "chevron.left")
                                     .font(.system(size: 14, weight: .semibold))
                                 Text(step == .name ? L("إلغاء") : L("رجوع"))
                                     .font(.maJuTaCaptionMedium)
                             }
                             .foregroundColor(.white.opacity(0.8))
                         }
-                        .padding(.leading, MaJuTaSpacing.horizontalPadding)
+                        .padding(.trailing, MaJuTaSpacing.horizontalPadding)
                     }
 
                     // Logo centred

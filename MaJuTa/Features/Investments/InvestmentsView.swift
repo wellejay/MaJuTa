@@ -45,6 +45,7 @@ struct InvestmentsView: View {
                         Image(systemName: "plus.circle.fill")
                             .foregroundColor(.maJuTaGold)
                     }
+                    .accessibilityLabel(L("إضافة أصل جديد"))
                 }
             }
             .sheet(isPresented: $showAddAsset) {
@@ -63,6 +64,7 @@ struct InvestmentsView: View {
                     .font(.maJuTaCaption)
                     .foregroundColor(.white.opacity(0.7))
                 SARText.hero(totalValue, color: .white)
+                    .accessibilityLabel(L("إجمالي المحفظة: \(String(format: "%.0f", totalValue)) ريال سعودي"))
 
                 HStack(spacing: MaJuTaSpacing.lg) {
                     plStatSAR(
@@ -146,6 +148,7 @@ struct InvestmentsView: View {
                     AssetRowView(asset: asset)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(L("عرض تفاصيل \(asset.name)"))
             }
         }
         .background(Color.maJuTaCard)
@@ -296,6 +299,7 @@ struct AssetDetailView: View {
                         .background(Color.maJuTaGold.opacity(0.1))
                         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
                 }
+                .accessibilityLabel(L("تحديث سعر \(asset.name) يدوياً"))
             }
             .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
             .padding(.vertical, MaJuTaSpacing.lg)
@@ -310,7 +314,7 @@ struct AssetDetailView: View {
                             .font(.maJuTaLargeNumber)
                             .multilineTextAlignment(.trailing)
                         Text("\u{E900}")
-                            .font(.custom("saudi_riyalregular", size: 28))
+                            .font(.custom(maJuTaRiyalFontName, size: 28))
                             .foregroundColor(.maJuTaGold)
                     }
                     .padding(MaJuTaSpacing.md)
@@ -330,7 +334,7 @@ struct AssetDetailView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(L("حفظ")) {
-                            if let price = Double(newPrice), price > 0 {
+                            if let price = newPrice.arabicNormalizedDouble, price > 0 {
                                 DataStore.shared.updateInvestmentPrice(assetId: asset.id, newPrice: price)
                             }
                             showUpdatePrice = false
@@ -479,9 +483,9 @@ struct AddInvestmentView: View {
     }
 
     private func saveAsset() {
-        let unitsVal = Double(units) ?? 0
-        let pricePerUnit = Double(purchasePricePerUnit) ?? 0
-        let currentPrice = Double(lastPrice) ?? pricePerUnit
+        let unitsVal = units.arabicNormalizedDouble ?? 0
+        let pricePerUnit = purchasePricePerUnit.arabicNormalizedDouble ?? 0
+        let currentPrice = lastPrice.arabicNormalizedDouble ?? pricePerUnit
         let asset = InvestmentAsset(
             symbol: symbol,
             name: name,

@@ -213,7 +213,7 @@ struct AddLoanView: View {
     }()
 
     private var canSave: Bool {
-        !name.isEmpty && (Double(remainingText) ?? 0) > 0 && (Double(monthlyText) ?? 0) > 0
+        !name.isEmpty && (remainingText.arabicNormalizedDouble ?? 0) > 0 && (monthlyText.arabicNormalizedDouble ?? 0) > 0
     }
 
     var body: some View {
@@ -258,12 +258,14 @@ struct AddLoanView: View {
                             DatePicker("", selection: $startDate, displayedComponents: .date)
                                 .datePickerStyle(.compact)
                                 .labelsHidden()
+                                .environment(\.locale, Locale(identifier: "en_SA"))
                         }
                         divider()
                         fieldRow(label: L("تاريخ الدفعة القادمة")) {
                             DatePicker("", selection: $nextPaymentDate, displayedComponents: .date)
                                 .datePickerStyle(.compact)
                                 .labelsHidden()
+                                .environment(\.locale, Locale(identifier: "en_SA"))
                         }
                     }
                     .background(Color.maJuTaCard)
@@ -353,16 +355,17 @@ struct AddLoanView: View {
     }
 
     private func saveLoan() {
-        let principal = Double(principalText) ?? (Double(remainingText) ?? 0)
+        let remaining = remainingText.arabicNormalizedDouble ?? 0
+        let principal = principalText.arabicNormalizedDouble ?? remaining
         let loan = Loan(
             householdId: dataStore.currentHouseholdId,
             ownerUserId: dataStore.currentUserId,
             name: name.trimmingCharacters(in: .whitespaces),
             loanType: selectedType,
             principalAmount: principal,
-            remainingBalance: Double(remainingText) ?? 0,
-            monthlyPayment: Double(monthlyText) ?? 0,
-            interestRate: Double(interestText) ?? 0,
+            remainingBalance: remaining,
+            monthlyPayment: monthlyText.arabicNormalizedDouble ?? 0,
+            interestRate: interestText.arabicNormalizedDouble ?? 0,
             startDate: startDate,
             nextPaymentDate: nextPaymentDate
         )
@@ -414,7 +417,7 @@ struct LoanDetailView: View {
                 } label: {
                     Text(L("حذف القرض"))
                         .font(.maJuTaCaption)
-                        .foregroundColor(.maJuTaNegative.opacity(0.7))
+                        .foregroundColor(.maJuTaNegative)
                 }
                 .padding(.top, MaJuTaSpacing.sm)
             }
@@ -445,7 +448,7 @@ struct LoanDetailView: View {
                 SARText.hero(loan.remainingBalance,
                              color: loan.isFullyPaid ? .maJuTaPositive : .maJuTaNegative)
                 (Text(L("من أصل") + " \(Int(loan.principalAmount).formatted()) ").font(.maJuTaLabel)
-                 + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 11)))
+                 + Text("\u{E900}").font(.custom(maJuTaRiyalFontName, size: 11)))
                 .foregroundColor(.maJuTaTextSecondary)
             }
             Spacer()
@@ -537,7 +540,7 @@ struct LoanDetailView: View {
                 .foregroundColor(loan.isPaymentOverdue ? .maJuTaNegative : .maJuTaPositive)
                 .frame(maxWidth: .infinity)
                 .frame(height: 52)
-                .background((loan.isPaymentOverdue ? Color.maJuTaNegative : Color.maJuTaPositive).opacity(0.1))
+                .background(loan.isPaymentOverdue ? Color.maJuTaNegativeBg : Color.maJuTaPositiveBg)
                 .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
         }
     }
@@ -555,7 +558,7 @@ struct LoanDetailView: View {
                             .font(.maJuTaLargeNumber)
                             .multilineTextAlignment(.trailing)
                         Text("\u{E900}")
-                            .font(.custom("saudi_riyalregular", size: 28))
+                            .font(.custom(maJuTaRiyalFontName, size: 28))
                             .foregroundColor(.maJuTaGold)
                     }
                     .padding(MaJuTaSpacing.md)
@@ -565,10 +568,10 @@ struct LoanDetailView: View {
                 .padding(.horizontal, MaJuTaSpacing.horizontalPadding)
                 .padding(.top, MaJuTaSpacing.xl)
 
-                let remaining = max(0, loan.remainingBalance - (Double(paymentText) ?? 0))
+                let remaining = max(0, loan.remainingBalance - (paymentText.arabicNormalizedDouble ?? 0))
                 let remainingStr = String(format: "%.0f", remaining)
                 (Text(L("الرصيد المتبقي بعد السداد:") + " \(remainingStr) ").font(.maJuTaCaption)
-                 + Text("\u{E900}").font(.custom("saudi_riyalregular", size: 13)))
+                 + Text("\u{E900}").font(.custom(maJuTaRiyalFontName, size: 13)))
                 .foregroundColor(.maJuTaTextSecondary)
 
                 Spacer()
@@ -583,14 +586,14 @@ struct LoanDetailView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(L("تأكيد")) {
-                        if let amount = Double(paymentText), amount > 0 {
+                        if let amount = paymentText.arabicNormalizedDouble, amount > 0 {
                             dataStore.makeLoanPayment(loan, amount: amount)
                         }
                         showPaySheet = false
                     }
                     .foregroundColor(.maJuTaGold)
                     .font(.maJuTaBodyBold)
-                    .disabled((Double(paymentText) ?? 0) <= 0)
+                    .disabled((paymentText.arabicNormalizedDouble ?? 0) <= 0)
                 }
             }
         }

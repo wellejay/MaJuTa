@@ -10,6 +10,7 @@ struct ProfileView: View {
     @State private var photosPickerItem: PhotosPickerItem?
     @State private var showRemoveAlert = false
     @State private var resentEmailConfirm = false
+    @State private var resendEmailError: String?
 
     var body: some View {
         NavigationStack {
@@ -47,10 +48,11 @@ struct ProfileView: View {
                             Spacer()
                             Label(L("تسجيل الخروج"), systemImage: "lock.fill")
                                 .font(.maJuTaBodyMedium).foregroundColor(.maJuTaNegative)
+                                .accessibilityLabel(appState.isGuestMode ? L("الخروج من وضع الضيف") : L("تسجيل الخروج من الحساب"))
                             Spacer()
                         }
                         .padding(MaJuTaSpacing.md)
-                        .background(Color.maJuTaNegative.opacity(0.08))
+                        .background(Color.maJuTaNegativeBg)
                         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
                     }
                 }
@@ -84,6 +86,7 @@ struct ProfileView: View {
                             .offset(x: 2, y: 2)
                     }
             }
+            .accessibilityLabel(L("تغيير صورة الملف الشخصي"))
             .onChange(of: photosPickerItem) { _, item in
                 Task {
                     if let data = try? await item?.loadTransferable(type: Data.self),
@@ -130,17 +133,21 @@ struct ProfileView: View {
                         .background(Color.white.opacity(0.25))
                         .clipShape(Capsule())
                 }
+                .accessibilityLabel(L("تحديث حالة التحقق من البريد الإلكتروني"))
                 Button {
                     Task {
                         do {
                             try await firebaseAuth.resendVerificationEmail()
                             resentEmailConfirm = true
-                        } catch {}
+                        } catch {
+                            resendEmailError = error.localizedDescription
+                        }
                     }
                 } label: {
                     Text(L("إعادة الإرسال"))
                         .font(.maJuTaCaption).foregroundColor(.white.opacity(0.8))
                 }
+                .accessibilityLabel(L("إعادة إرسال رابط التحقق من البريد الإلكتروني"))
             }
         }
         .padding(MaJuTaSpacing.md)
@@ -176,6 +183,7 @@ struct ProfileView: View {
         HStack(spacing: MaJuTaSpacing.sm) {
             VStack(spacing: 4) {
                 SARText.compact(dataStore.netWorth)
+                    .accessibilityLabel(L("صافي الثروة: \(String(format: "%.0f", dataStore.netWorth)) ريال سعودي"))
                 Text(L("صافي الثروة")).font(.maJuTaCaption).foregroundColor(.maJuTaTextSecondary)
             }
             .frame(maxWidth: .infinity).padding(MaJuTaSpacing.md)
@@ -213,6 +221,7 @@ struct ProfileView: View {
                         .padding(MaJuTaSpacing.md).background(Color.maJuTaCard)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(L("الانتقال إلى \(item.title)"))
                     if item.id != items.last?.id { Divider() }
                 }
             }

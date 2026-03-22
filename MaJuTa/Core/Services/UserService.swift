@@ -119,9 +119,11 @@ final class UserService: ObservableObject {
     }
 
     /// Call this AFTER PIN is verified to properly sign in to Firebase Auth.
+    /// Loads DataStore AFTER sign-in completes so Firestore listeners have a valid auth token.
     func signInToFirebase(user: UserProfile, pin: String) {
         Task {
             await FirebaseAuthService.shared.signIn(email: user.email, pin: pin, userId: user.id)
+            DataStore.shared.loadForCurrentUser()
             await syncFromFirestore(for: user)
         }
     }

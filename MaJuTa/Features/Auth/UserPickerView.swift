@@ -171,19 +171,69 @@ struct UserPickerView: View {
     private func selectUser(_ user: UserProfile) {
         selectedUser = user
         pin = ""
-        pinError = ""
+        pinError = isLockedOut(user)
+            ? L("الحساب مقفل. حاول بعد \(lockoutRemaining(user) / 60 + 1) دقيقة")
+            : ""
         withAnimation { showPINEntry = true }
         Task { await authService.authenticate(as: user) }
     }
 
+    // MARK: - PIN Brute-Force Protection
+    private static let maxAttempts = 5
+    private static let lockoutSeconds: Double = 15 * 60 // 15 minutes
+
+    private func lockoutKey(for user: UserProfile) -> String { "pin_lockout_until_\(user.id.uuidString)" }
+    private func attemptsKey(for user: UserProfile) -> String { "pin_attempts_\(user.id.uuidString)" }
+
+    private func isLockedOut(_ user: UserProfile) -> Bool {
+        guard let str = KeychainService.getString(for: lockoutKey(for: user)),
+              let until = Double(str) else { return false }
+        return Date().timeIntervalSince1970 < until
+    }
+
+    private func lockoutRemaining(_ user: UserProfile) -> Int {
+        guard let str = KeychainService.getString(for: lockoutKey(for: user)),
+              let until = Double(str) else { return 0 }
+        return max(0, Int(until - Date().timeIntervalSince1970))
+    }
+
+    private func recordFailedAttempt(for user: UserProfile) {
+        let key = attemptsKey(for: user)
+        let attempts = (Int(KeychainService.getString(for: key) ?? "0") ?? 0) + 1
+        KeychainService.set(String(attempts), for: key)
+        if attempts >= Self.maxAttempts {
+            let until = Date().timeIntervalSince1970 + Self.lockoutSeconds
+            KeychainService.set(String(until), for: lockoutKey(for: user))
+            KeychainService.set("0", for: key)
+        }
+    }
+
+    private func clearAttempts(for user: UserProfile) {
+        KeychainService.set("0", for: attemptsKey(for: user))
+        KeychainService.delete(for: lockoutKey(for: user))
+    }
+
     private func verifyAndLogin(user: UserProfile, pin: String) {
+        if isLockedOut(user) {
+            let mins = lockoutRemaining(user) / 60 + 1
+            pinError = L("الحساب مقفل. حاول بعد \(mins) دقيقة")
+            self.pin = ""
+            return
+        }
         if UserService.shared.verifyPIN(pin, for: user) {
+            clearAttempts(for: user)
             UserService.shared.setCurrentUser(user)
             UserService.shared.signInToFirebase(user: user, pin: pin)
-            DataStore.shared.loadForCurrentUser()
             authService.isAuthenticated = true
         } else {
-            pinError = L("رمز PIN غير صحيح")
+            recordFailedAttempt(for: user)
+            if isLockedOut(user) {
+                pinError = L("تم قفل الحساب 15 دقيقة بعد محاولات متعددة")
+            } else {
+                let attempts = Int(KeychainService.getString(for: attemptsKey(for: user)) ?? "0") ?? 0
+                let remaining = Self.maxAttempts - attempts
+                pinError = L("رمز PIN غير صحيح — \(remaining) محاولات متبقية")
+            }
             self.pin = ""
         }
     }

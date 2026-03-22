@@ -50,6 +50,11 @@ struct FamilyView: View {
         .sheet(isPresented: $showJoinSheet) {
             joinCodeSheet
         }
+        .alert(L("تم الانضمام"), isPresented: $joinSuccess) {
+            Button(L("حسناً"), role: .cancel) {}
+        } message: {
+            Text(L("انضممت إلى المنزل بنجاح"))
+        }
     }
 
     // MARK: - Household Card
@@ -116,6 +121,8 @@ struct FamilyView: View {
                             .font(.system(size: 14))
                             .foregroundColor(.maJuTaNegative)
                     }
+                    .frame(minWidth: 44, minHeight: 44)
+                    .accessibilityLabel(L("حذف العضو \(member.name) من العائلة"))
                 } else if member.role == .owner {
                     Image(systemName: "crown.fill")
                         .font(.system(size: 12))
@@ -218,6 +225,7 @@ struct FamilyView: View {
             .maJuTaCardShadow()
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(L("دعوة أعضاء العائلة"))
     }
 
     // MARK: - Join Button
@@ -257,6 +265,7 @@ struct FamilyView: View {
             .maJuTaCardShadow()
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(L("الانضمام لعائلة موجودة باستخدام كود الدعوة"))
     }
 
     // MARK: - Invite Code Sheet
@@ -307,6 +316,7 @@ struct FamilyView: View {
                     .animation(.spring(), value: codeCopied)
             }
             .padding(.horizontal)
+            .accessibilityLabel(codeCopied ? L("تم نسخ كود الدعوة") : L("نسخ كود الدعوة إلى الحافظة"))
 
             Spacer()
         }
@@ -378,7 +388,7 @@ struct FamilyView: View {
                         .foregroundColor(.maJuTaTextSecondary)
                 }
                 .padding(MaJuTaSpacing.md)
-                .background(Color.maJuTaPositive.opacity(0.1))
+                .background(Color.maJuTaPositiveBg)
                 .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
             }
 
@@ -396,6 +406,7 @@ struct FamilyView: View {
                         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
                 }
                 .padding(.horizontal)
+                .accessibilityLabel(L("تأكيد الانضمام إلى العائلة"))
             }
 
             Spacer()
@@ -440,13 +451,11 @@ struct FamilyView: View {
                 .foregroundColor(.maJuTaTextPrimary)
 
             if dataStore.activityLog.isEmpty {
-                Text(L("لا يوجد نشاط بعد"))
-                    .font(.maJuTaCaption)
-                    .foregroundColor(.maJuTaTextSecondary)
-                    .frame(maxWidth: .infinity)
-                    .padding(MaJuTaSpacing.lg)
-                    .background(Color.maJuTaCard)
-                    .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.card))
+                EmptyStateView(
+                    icon: "clock.arrow.circlepath",
+                    title: L("لا يوجد نشاط بعد"),
+                    compact: true
+                )
             } else {
                 VStack(spacing: 1) {
                     ForEach(dataStore.activityLog.prefix(10)) { entry in

@@ -10,10 +10,19 @@ enum MaJuTaSpacing {
     static let xxl: CGFloat = 40
     static let xxxl: CGFloat = 48
 
+    // Micro spacing — named to avoid magic numbers in components
+    static let hairline: CGFloat = 1   // hairline row separator (card bg shows through)
+    static let tight: CGFloat    = 2   // tight label/sublabel pair spacing within cells
+
     // iOS Safe Area Margins
     static let horizontalPadding: CGFloat = 20
     static let cardPadding: CGFloat = 16
     static let sectionSpacing: CGFloat = 24
+
+    // Component sizing
+    static let iconBadge: CGFloat    = 40   // category/status icon badge in list rows
+    static let iconBadgeLg: CGFloat  = 44   // larger icon badge (equals min touch target)
+    static let pinButtonSize: CGFloat = 72  // PIN pad digit button size
 
     // Corner Radius
     static let radiusSm: CGFloat  = 8

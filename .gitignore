@@ -50,3 +50,21 @@ GoogleService-Info.plist
 
 # Crash logs
 *.crash
+
+# Build artefacts
+*.ipa
+*.xcarchive
+*.xcuserstate
+
+# Firebase
+firebase-debug.log
+.firebase/
+
+# Secrets
+AuthKey_*.p8
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output/

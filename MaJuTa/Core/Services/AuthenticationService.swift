@@ -24,6 +24,7 @@ final class AuthenticationService: ObservableObject {
                     isAuthenticated = true
                     if let user = selectedUser ?? UserService.shared.lastLoggedInUser() {
                         UserService.shared.setCurrentUser(user)
+                        await waitForFirebaseSession()
                         DataStore.shared.loadForCurrentUser()
                     }
                 }
@@ -53,6 +54,7 @@ final class AuthenticationService: ObservableObject {
             if success {
                 if let user = selectedUser ?? UserService.shared.lastLoggedInUser() {
                     UserService.shared.setCurrentUser(user)
+                    await waitForFirebaseSession()
                     DataStore.shared.loadForCurrentUser()
                 }
             } else {
@@ -61,6 +63,17 @@ final class AuthenticationService: ObservableObject {
         } catch {
             authError = error.localizedDescription
             isAuthenticated = false
+        }
+    }
+
+    /// Firebase Auth persists its session in Keychain and restores it asynchronously on launch.
+    /// Biometric auth (Face ID) completes in milliseconds — before the token is restored.
+    /// This waits up to 3 seconds for the Firebase UID to appear before setting up listeners.
+    private func waitForFirebaseSession() async {
+        guard FirebaseAuthService.shared.firebaseUID == nil else { return }
+        for _ in 0..<30 {
+            try? await Task.sleep(nanoseconds: 100_000_000) // 100ms × 30 = 3s max
+            if FirebaseAuthService.shared.firebaseUID != nil { return }
         }
     }
 

@@ -32,6 +32,7 @@ struct BillsView: View {
                     Button { showAddBill = true } label: {
                         Image(systemName: "plus.circle.fill").foregroundColor(.maJuTaGold)
                     }
+                    .accessibilityLabel(L("إضافة فاتورة جديدة"))
                 }
             }
             .sheet(isPresented: $showAddBill) {
@@ -128,6 +129,7 @@ struct AddBillView: View {
                         fieldRow(label: L("تاريخ الاستحقاق")) {
                             DatePicker("", selection: $dueDate, displayedComponents: .date)
                                 .datePickerStyle(.compact).labelsHidden()
+                                .environment(\.locale, Locale(identifier: "en_SA"))
                         }
                         Divider()
                         fieldRow(label: L("التكرار")) {
@@ -153,6 +155,7 @@ struct AddBillView: View {
                         .background(name.isEmpty ? Color.maJuTaTextSecondary.opacity(0.3) : Color.maJuTaPrimary)
                         .clipShape(RoundedRectangle(cornerRadius: MaJuTaRadius.button))
                         .disabled(name.isEmpty)
+                        .accessibilityLabel(L("حفظ الفاتورة الجديدة"))
                 }
                 .padding(MaJuTaSpacing.horizontalPadding).padding(.bottom, MaJuTaSpacing.xxxl)
             }
@@ -179,7 +182,7 @@ struct AddBillView: View {
         let accountId = dataStore.visibleAccounts.first?.id ?? UUID()
         let bill = Bill(
             name: name, nameArabic: name,
-            amount: Double(amount) ?? 0,
+            amount: amount.arabicNormalizedDouble ?? 0,
             dueDate: dueDate,
             categoryId: categoryId,
             accountId: accountId,

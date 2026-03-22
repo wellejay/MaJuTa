@@ -178,7 +178,7 @@ struct AddAccountView: View {
     private func saveAccount() {
         let userId = UserService.shared.currentUser?.id ?? UUID()
         let householdId = UserService.shared.currentUser?.householdId ?? UUID()
-        let account = Account(name: name, type: selectedType, balance: Double(balance) ?? 0,
+        let account = Account(name: name, type: selectedType, balance: balance.arabicNormalizedDouble ?? 0,
                               institution: institution, ownerUserId: userId,
                               householdId: householdId, isShared: isShared)
         dataStore.addAccount(account)

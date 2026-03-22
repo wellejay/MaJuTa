@@ -86,11 +86,11 @@ struct BillRowView: View {
                     .font(.maJuTaBodyMedium)
                     .foregroundColor(.maJuTaTextPrimary)
                 if bill.isDueSoon && bill.status != .paid {
-                    Text("خلال \(bill.daysUntilDue) أيام")
+                    Text(L("خلال \(bill.daysUntilDue) أيام"))
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaWarning)
                 } else if bill.isOverdue {
-                    Text("متأخرة")
+                    Text(L("متأخرة"))
                         .font(.maJuTaCaption)
                         .foregroundColor(.maJuTaNegative)
                 } else {

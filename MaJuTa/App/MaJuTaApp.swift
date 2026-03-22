@@ -64,7 +64,7 @@ struct MaJuTaApp: App {
             .overlay {
                 if scenePhase != .active {
                     ZStack {
-                        Color.black.opacity(0.85)
+                        Color.black
                         VStack(spacing: 16) {
                             Image(systemName: "lock.shield.fill")
                                 .font(.system(size: 60))
@@ -88,13 +88,13 @@ struct MaJuTaApp: App {
             // Handle majuta://email-verified deep link
             .onOpenURL { url in
                 guard url.scheme == "majuta",
-                      url.host == "email-verified" else { return }
+                      url.host == "email-verified",
+                      FirebaseAuthService.shared.firebaseUID != nil else { return }
                 Task {
                     await FirebaseAuthService.shared.handleEmailVerifiedDeepLink()
-                    if FirebaseAuthService.shared.isEmailVerified {
-                        authService.showEmailVerification = false
-                        authService.isAuthenticated = true
-                    }
+                    guard FirebaseAuthService.shared.isEmailVerified else { return }
+                    authService.showEmailVerification = false
+                    authService.isAuthenticated = true
                 }
             }
         }
